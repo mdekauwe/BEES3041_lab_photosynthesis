@@ -84,10 +84,10 @@ calc_michaelis_menten_constants <- function(p, Tleaf) {
   #       Michaelis-Menten constant
   #
 
-  Kc <- arrh(p.Kc25, p.Ec, Tleaf)
-  Ko <- arrh(p.Ko25, p.Eo, Tleaf)
+  Kc <- arrh(p["Kc25"], p["Ec"], Tleaf)
+  Ko <- arrh(p["Ko25"], p["Eo"], Tleaf)
 
-  Km <- Kc * (1.0 + p.Oi / Ko)
+  Km <- Kc * (1.0 + p["Oi"] / Ko)
 
   return ( Km )
 }
@@ -120,9 +120,9 @@ calc_electron_transport_rate <- function(p, Par, Jmax) {
   #     18, 1183– 1200, 1995. Leuning 1995, eqn C3.
   #
 
-  A <- p.theta_J
-  B <- -(p.alpha * Par + Jmax);
-  C <- p.alpha * Par * Jmax;
+  A <- p["theta_J"]
+  B <- -(p["alpha"] * Par + Jmax);
+  C <- p["alpha"] * Par * Jmax;
 
   J <- quadratic(A, B, C, large=False)
 

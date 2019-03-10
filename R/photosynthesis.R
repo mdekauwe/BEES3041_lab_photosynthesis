@@ -50,10 +50,15 @@ calc_photosynthesis <-function(p, Tleaf) {
   #
   #
 
+
   # calculate temp dependancies of MichaelisMenten constants for CO2, O2
   Km <- calc_michaelis_menten_constants(p, Tleaf)
 
   print(Km)
+
+  An <- 0.0
+  
+  return (An)
 }
 
 calc_michaelis_menten_constants <- function(p, Tleaf) {
@@ -84,10 +89,10 @@ calc_michaelis_menten_constants <- function(p, Tleaf) {
   #       Michaelis-Menten constant
   #
 
-  Kc <- arrh(p["Kc25"], p["Ec"], Tleaf)
-  Ko <- arrh(p["Ko25"], p["Eo"], Tleaf)
+  Kc <- arrh(p$Kc25, p$Ec, Tleaf)
+  Ko <- arrh(p$Ko25, p$Eo, Tleaf)
 
-  Km <- Kc * (1.0 + p["Oi"] / Ko)
+  Km <- Kc * (1.0 + p$Oi / Ko)
 
   return ( Km )
 }

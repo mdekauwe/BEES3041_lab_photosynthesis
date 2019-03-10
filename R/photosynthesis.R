@@ -1,4 +1,6 @@
 
+source("utils.R")
+
 arrh <- function(k25, Ea, Tk) {
   #
   # Temperature dependence of kinetic parameters is described by an

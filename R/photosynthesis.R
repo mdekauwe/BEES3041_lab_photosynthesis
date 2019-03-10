@@ -1,6 +1,44 @@
 
 source("utils.R")
 
+
+calc_electron_transport_rate <- function(p, Par, Jmax) {
+  #
+  # Electron transport rate for a given absorbed irradiance
+  #
+  #   Args:
+  #   -----
+  #   p : struct
+  #     contains all the model params
+  #   Par : float
+  #     photosynthetically active radiation [umol m-2 s-1].
+  #   Jmax : float
+  #     potential rate of electron transportzw
+  #   theta_J : float
+  #     Curvature of the light response (-)
+  #   alpha : float
+  #     Leaf quantum yield (initial slope of the A-light response curve)
+  #     [mol mol-1]
+  #
+  #   Reference:
+  #   ----------
+  #   * Farquhar G.D. & Wong S.C. (1984) An empirical model of stomatal
+  #     conductance. Australian Journal of Plant Physiology 11, 191-210,
+  #     eqn A but probably clearer in:
+  #   * Leuning, R. et a., Leaf nitrogen, photosynthesis, conductance and
+  #     transpiration: scaling from leaves to canopies, Plant Cell Environ.,
+  #     18, 1183– 1200, 1995. Leuning 1995, eqn C3.
+  #
+
+  A <- p.theta_J
+  B <- -(p.alpha * Par + Jmax);
+  C <- p.alpha * Par * Jmax;
+
+  J <- quadratic(A, B, C, large=False)
+
+  return ( J )
+}
+
 arrh <- function(k25, Ea, Tk) {
   #
   # Temperature dependence of kinetic parameters is described by an

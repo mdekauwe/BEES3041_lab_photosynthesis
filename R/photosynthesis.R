@@ -1,6 +1,96 @@
+####
+##  Model to calculate net leaf-level C3 photosynthesis.
+##
+##  Rate of photosynthesis in a leaf is calculated as the minimum of two states,
+##  ignoring a third state called the triose phosphate (TPU) or "export"
+##  limitation. This condition occurs under high levels of irradiance but is
+##  thought to rarely occur in field conditions.
+##
+##  In one state, the rate of photosynthesis is predicted by the
+##  properties of Ribulose-1,5-bisphosphate carboxylase/oxygenase (Rubisco),
+##  assuming a saturating supply of substrate, RuBP. This state is called
+##  Rubisco-limited photosynthesis and typically occurs when [CO2] is low. The
+##  The model assumes that Rubisco-limited A follows a Michaelis–Menten
+##  response function modified to account for a competitive inhibitor, oxygen.
+##  As is typical of any Michaelis–Menten reaction, increasing the limiting
+##  substrate (CO2), the amount of enzyme present (Rubisco), or decreasing
+##  the competitive inhibitor (O2) will yield higher reaction rates.
+##
+##  In the other state, photosynthetic rates are predicted assuming that the
+##  rate of regeneration of RuBP is limiting and so RuBP is used at a constant
+##  rate; this is called RuBP-regeneration-limited photosynthesis. This
+##  typically occurs at higher [CO2]. RuBP-regeneration-limited photosynthesis
+##  includes the conditions where light intensity limits the rate of
+##  photosynthesis. RuBP-regeneration-limited photosynthesis increases as [CO2]
+##  increases because increasing [CO2] causes more RuBP to be carboxylated at
+##  the expense of oxygenation.
+##
+##  References:
+##  ----------
+##  * Farquhar, G.D., Caemmerer, S. V. and Berry, J. A. (1980) A biochemical
+##    model of photosynthetic CO2 assimilation in leaves of C3 species. Planta,
+##    149, 78-90.
+##  * Medlyn, B. E., Dreyer, E., Ellsworth, D., Forstreuter, M., Harley, P.C.,
+##    Kirschbaum, M.U.F., Leroux, X., Montpied, P., Strassemeyer, J.,
+##    Walcroft, A., Wang, K. and Loustau, D. (2002) Temperature response of
+##    parameters of a biochemically based model of photosynthesis. II.
+##    A review of experimental data. Plant, Cell and Enviroment 25, 1167-1179.
+##
+##
+##  author: Martin De Kauwe
+##  date: 10th March, 2019
+##  email: mdekauwe@gmail.com
+####
 
 source("utils.R")
 
+calc_photosynthesis <-function(p, Tleaf) {
+  #
+  #
+  #
+  #
+
+  # calculate temp dependancies of MichaelisMenten constants for CO2, O2
+  Km <- calc_michaelis_menten_constants(p, Tleaf)
+
+  print(Km)
+}
+
+calc_michaelis_menten_constants <- function(p, Tleaf) {
+  #
+  # Michaelis-Menten constant for O2/CO2, Arrhenius temp dependancy
+  #
+  #   Args:
+  #   -----
+  #   Tleaf : float
+  #     leaf temperature [deg K]
+  #   Kc25 : float
+  #     Michaelis-Menten coefficents for carboxylation by Rubisco at
+  #     25degC [umol mol-1] or 298 K
+  #   Kc25 : float
+  #     Michaelis-Menten coefficents for oxygenation by Rubisco at
+  #     25degC [mmol mol-1]. Note value in Bernacchie 2001 is in mmol!!
+  #     or 298 K
+  #   Ec : float
+  #     Activation energy for carboxylation [J mol-1]
+  #   Eo : float
+  #     Activation energy for oxygenation [J mol-1]
+  #     Oi : float
+  #     åintercellular concentration of O2 [mmol mol-1]
+  #
+  #   Returns:
+  #   --------
+  #     Km : float
+  #       Michaelis-Menten constant
+  #
+
+  Kc <- arrh(p.Kc25, p.Ec, Tleaf)
+  Ko <- arrh(p.Ko25, p.Eo, Tleaf)
+
+  Km <- Kc * (1.0 + p.Oi / Ko)
+
+  return ( Km )
+}
 
 calc_electron_transport_rate <- function(p, Par, Jmax) {
   #

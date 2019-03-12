@@ -305,7 +305,7 @@ quadratic <- function(a, b, c, large=FALSE) {
         stop('Cant solve quadratic')
       }
     } else {
-      root <- (-b - np.sqrt(d)) / (2.0 * a)
+      root <- (-b - sqrt(d)) / (2.0 * a)
     }
 
   }

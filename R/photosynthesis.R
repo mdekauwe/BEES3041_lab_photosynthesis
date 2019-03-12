@@ -208,8 +208,8 @@ calc_michaelis_menten_constants <- function(p, Tleaf) {
 
 arrh <- function(k25, Ea, Tk) {
   #
-  # Temperature dependence of kinetic PARameters is described by an
-  # Arrhenius function.
+  #   Temperature dependence of kinetic PARameters is described by an
+  #   Arrhenius function.
   #
   #   Args:
   #   -----
@@ -235,8 +235,8 @@ arrh <- function(k25, Ea, Tk) {
 
 peaked_arrh <- function(k25, Ea, Tk, deltaS, Hd) {
   #
-  # Temperature dependancy approximated by peaked Arrhenius eqn,
-  # accounting for the rate of inhibition at higher temperatures.
+  #   Temperature dependancy approximated by peaked Arrhenius eqn,
+  #   accounting for the rate of inhibition at higher temperatures.
   #
   #   Args:
   #   -----
@@ -271,9 +271,9 @@ peaked_arrh <- function(k25, Ea, Tk, deltaS, Hd) {
 
 assim <- function(Ci, gamma_star, a1, a2) {
   #
-  # Calculation of assimilation rate with the limitation defined by the
-  # variables passed as a1 and a2, i.e. if we are calculating vcmax or
-  # jmax limited assimilation rates.
+  #   Calculation of assimilation rate with the limitation defined by the
+  #   variables passed as a1 and a2, i.e. if we are calculating vcmax or
+  #   jmax limited assimilation rates.
   #
   #   Args:
   #   -----

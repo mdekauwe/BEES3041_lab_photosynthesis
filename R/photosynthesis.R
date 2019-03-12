@@ -139,7 +139,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   # Hyperbolic minimum.
   A <- -quadratic(1.0-1E-04, Ac+Aj, Ac*Aj, large=TRUE)
 
-  # Net photosynthesis
+  # Net photosynthesis rate (umol m-2 s-1)
   An <- A - Rd
 
   # Calculate conductance to CO2

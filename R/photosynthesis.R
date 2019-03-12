@@ -45,7 +45,7 @@
 source("R/utils.R")
 source("R/constants.R")
 
-calc_photosynthesis <-function(p, Tleaf, peaked_Vcmax=TRUE) {
+calc_photosynthesis <-function(p, Tleaf, peaked_Vcmax=TRUE, peaked_Jmax=TRUE) {
   #
   #
   #
@@ -65,7 +65,12 @@ calc_photosynthesis <-function(p, Tleaf, peaked_Vcmax=TRUE) {
     Vcmax = arrh(p$Vcmax25, p$Eav, Tleaf)
   }
   
-  print(Vcmax)
+  if (peaked_Jmax) {
+    Jmax = peaked_arrh(p$Jmax25, p$Eaj, Tleaf, p$deltaSj, p$Hdj)
+  } else {
+    Jmax = arrh(p$Jmax25, p$Eaj, Tleaf)
+  }
+  print(Jmax)
   
   An <- 0.0
   

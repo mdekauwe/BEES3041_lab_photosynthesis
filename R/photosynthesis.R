@@ -81,10 +81,10 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   #    gsw:  float
   #       stomatal conductance to water [mol m-2 s-1]
   #
-  # calculate temp dependancies of MichaelisMenten constants for CO2, O2
+  # calculate temp dependancies of Michaelis-Menten constants for CO2, O2
   Km <- calc_michaelis_menten_constants(p, Tleaf)
 
-  # Effect of temp on CO2 compensation point
+  # Effect of temp on CO2 compensation point [umol mol-1]
   gamma_star <- arrh(p$gamstar25, p$Eag, Tleaf)
 
   # Calculate temperature dependancies on Vcmax
@@ -268,7 +268,7 @@ assim <- function(Ci, gamma_star, a1, a2) {
   #   Args:
   #   -----
   #   Ci : float
-  #     intercellular CO2 concentration.
+  #     intercellular CO2 concentration [umol mol-1]
   #   gamma_star : float
   #     CO2 compensation point in the abscence of mitochondrial respiration
   #     [umol m-2 s-1]
@@ -300,7 +300,7 @@ calc_electron_transport_rate <-function(p, PAR, Jmax) {
   #   PAR : float
   #     photosynthetically active radiation [umol m-2 s-1].
   #   Jmax : float
-  #     potential rate of electron transport
+  #     potential rate of electron transport  [umol m-2 s-1].
   #   theta_J : float
   #     Curvature of the light response (-)
   #   alpha : float
@@ -371,7 +371,7 @@ solve_ci <- function(p, gs_over_a, rd, Cs, gamma_star, gamma, beta) {
   #   gs_over_a : float
   #     stomatal coefficient
   #   rd : float
-  #     day rwspiration rate [umol m-2 s-1]
+  #     day respiration rate [umol m-2 s-1]
   #   Cs : float
   #     leaf surface CO2 concentration [umol mol-1]
   #   gamma_star : float

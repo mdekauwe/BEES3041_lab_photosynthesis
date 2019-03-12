@@ -1,44 +1,8 @@
 ####
 ##  Model to calculate net leaf-level C3 photosynthesis.
 ##
-##  Rate of photosynthesis in a leaf is calculated as the minimum of two states,
-##  ignoring a third state called the triose phosphate (TPU) or "export"
-##  limitation. This condition occurs under high levels of irradiance but is
-##  thought to rarely occur in field conditions.
-##
-##  In one state, the rate of photosynthesis is predicted by the
-##  properties of Ribulose-1,5-bisphosphate carboxylase/oxygenase (Rubisco),
-##  assuming a saturating supply of substrate, RuBP. This state is called
-##  Rubisco-limited photosynthesis and typically occurs when [CO2] is low. The
-##  The model assumes that Rubisco-limited A follows a Michaelis–Menten
-##  response function modified to account for a competitive inhibitor, oxygen.
-##  As is typical of any Michaelis–Menten reaction, increasing the limiting
-##  substrate (CO2), the amount of enzyme present (Rubisco), or decreasing
-##  the competitive inhibitor (O2) will yield higher reaction rates.
-##
-##  In the other state, photosynthetic rates are predicted assuming that the
-##  rate of regeneration of RuBP is limiting and so RuBP is used at a constant
-##  rate; this is called RuBP-regeneration-limited photosynthesis. This
-##  typically occurs at higher [CO2]. RuBP-regeneration-limited photosynthesis
-##  includes the conditions where light intensity limits the rate of
-##  photosynthesis. RuBP-regeneration-limited photosynthesis increases as [CO2]
-##  increases because increasing [CO2] causes more RuBP to be carboxylated at
-##  the expense of oxygenation.
-##
-##  References:
-##  ----------
-##  * Farquhar, G.D., Caemmerer, S. V. and Berry, J. A. (1980) A biochemical
-##    model of photosynthetic CO2 assimilation in leaves of C3 species. Planta,
-##    149, 78-90.
-##  * Medlyn, B. E., Dreyer, E., Ellsworth, D., Forstreuter, M., Harley, P.C.,
-##    Kirschbaum, M.U.F., Leroux, X., Montpied, P., Strassemeyer, J.,
-##    Walcroft, A., Wang, K. and Loustau, D. (2002) Temperature response of
-##    Parameters of a biochemically based model of photosynthesis. II.
-##    A review of experimental data. Plant, Cell and Enviroment 25, 1167-1179.
-##
-##
 ##  author: Martin De Kauwe
-##  date: 10th March, 2019
+##  date: 13th March, 2019
 ##  email: mdekauwe@gmail.com
 ####
 
@@ -48,27 +12,50 @@ source("R/constants.R")
 calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                                peaked_Jmax=TRUE) {
   #
-  #  Calculate photosyntheis following the Farquhar, von Caemmerer & Berry
-  #  (1980) model of C3 photosynthesis.
+  #   Calculate photosyntheis following the Farquhar, von Caemmerer & Berry
+  #   (1980) model of C3 photosynthesis.
   #
-  #  The model mechanistically represents the effects of PAR, temperature and
-  #  [CO2] on photosynthesis. The model has two major parameters, the potential
-  #  rate of electron transport (Jmax) and the maximum rate of
-  #  ribulose-1,5-bisphosphate carboxylase-oxygenase (Rubisco) activity (Vcmax).
-  #  Following Farquhar et al., photosynthesis is solved as the minimum of two
-  #  limiting rates (Ac and Aj). Model assumes the conductance between the
-  #  intercellular space and the site of carboxylation is negligible, i.e. an
-  #  infinite mesophyll conductance.
+  #   The model mechanistically represents the effects of PAR, temperature and
+  #   [CO2] on photosynthesis. The rate of photosynthesis in a leaf is
+  #   calculated as the minimum of two states, ignoring a third state called
+  #   the triose phosphate (TPU) or "export" limitation. This condition occurs
+  #   under high levels of irradiance but is thought to rarely occur in field
+  #   conditions.
   #
+  #   In one state, the rate of photosynthesis is predicted by the
+  #   properties of Ribulose-1,5-bisphosphate carboxylase/oxygenase (Rubisco),
+  #   assuming a saturating supply of substrate, RuBP. This state is called
+  #   Rubisco-limited photosynthesis and typically occurs when [CO2] is low.
+  #   The model assumes that Rubisco-limited A follows a Michaelis–Menten
+  #   response function modified to account for a competitive inhibitor, oxygen.
+  #   As is typical of any Michaelis–Menten reaction, increasing the limiting
+  #   substrate (CO2), the amount of enzyme present (Rubisco), or decreasing
+  #   the competitive inhibitor (O2) will yield higher reaction rates.
+  #
+  #   In the other state, photosynthetic rates are predicted assuming that the
+  #   rate of regeneration of RuBP is limiting and so RuBP is used at a constant
+  #   rate; this is called RuBP-regeneration-limited photosynthesis. This
+  #   typically occurs at higher [CO2]. RuBP-regeneration-limited
+  #   photosynthesis includes the conditions where light intensity limits the
+  #   rate of photosynthesis. RuBP-regeneration-limited photosynthesis
+  #   increases as [CO2] increases because increasing [CO2] causes more RuBP
+  #   to be carboxylated at the expense of oxygenation.
+  #
+  #   The model has two major parameters, the potential rate of electron
+  #   transport (Jmax) and the maximum rate of Rubisco activity (Vcmax).
+  #   Following Farquhar et al., photosynthesis is solved as the minimum of two
+  #   limiting rates (Ac and Aj), assuming the conductance between the
+  #   intercellular space and the site of carboxylation is negligible, i.e. an
+  #   infinite mesophyll conductance.
   #
   #   Args:
   #   -----
   #   p : list
-  #     contains all the model parameters
+  #      contains all the model parameters
   #   Tleaf : float
-  #     leaf temperature [deg K]
+  #      leaf temperature [deg K]
   #   PAR : float
-  #     photosynthetically active radiation [umol m-2 s-1].
+  #      photosynthetically active radiation [umol m-2 s-1].
   #   Cs : float
   #     CO2 concentration at the leaf surface [umol mol-1]
   #   vpd : float
@@ -80,11 +67,21 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   #
   #   Returns:
   #   --------
-  #    An : float
-  #      Net leaf assimilation rate [umol m-2 s-1]
-  #    gsw:  float
-  #       stomatal conductance to water [mol m-2 s-1]
+  #   An : float
+  #     Net leaf assimilation rate [umol m-2 s-1]
+  #   gsw:  float
+  #     stomatal conductance to water [mol m-2 s-1]
   #
+  #   References:
+  #   ----------
+  #   * Farquhar, G.D., Caemmerer, S. V. and Berry, J. A. (1980) A biochemical
+  #     model of photosynthetic CO2 assimilation in leaves of C3 species.
+  #     Planta, 149, 78-90.
+  #   * Medlyn, B. E., Dreyer, E., Ellsworth, D., Forstreuter, M., Harley, P.C.,
+  #     Kirschbaum, M.U.F., Leroux, X., Montpied, P., Strassemeyer, J.,
+  #     Walcroft, A., Wang, K. and Loustau, D. (2002) Temperature response of
+  #     Parameters of a biochemically based model of photosynthesis. II.
+  #     A review of experimental data. Plant, Cell and Enviroment 25, 1167-1179.
   #
 
   # calculate temp dependancies of Michaelis-Menten constants for CO2, O2

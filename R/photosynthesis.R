@@ -42,7 +42,8 @@
 ##  email: mdekauwe@gmail.com
 ####
 
-source("utils.R")
+source("R/utils.R")
+source("R/constants.R")
 
 calc_photosynthesis <-function(p, Tleaf) {
   #
@@ -88,50 +89,13 @@ calc_michaelis_menten_constants <- function(p, Tleaf) {
   #     Km : float
   #       Michaelis-Menten constant
   #
-
+  
   Kc <- arrh(p$Kc25, p$Ec, Tleaf)
   Ko <- arrh(p$Ko25, p$Eo, Tleaf)
-
+  
   Km <- Kc * (1.0 + p$Oi / Ko)
-
+  
   return ( Km )
-}
-
-calc_electron_transport_rate <- function(p, Par, Jmax) {
-  #
-  # Electron transport rate for a given absorbed irradiance
-  #
-  #   Args:
-  #   -----
-  #   p : struct
-  #     contains all the model params
-  #   Par : float
-  #     photosynthetically active radiation [umol m-2 s-1].
-  #   Jmax : float
-  #     potential rate of electron transportzw
-  #   theta_J : float
-  #     Curvature of the light response (-)
-  #   alpha : float
-  #     Leaf quantum yield (initial slope of the A-light response curve)
-  #     [mol mol-1]
-  #
-  #   Reference:
-  #   ----------
-  #   * Farquhar G.D. & Wong S.C. (1984) An empirical model of stomatal
-  #     conductance. Australian Journal of Plant Physiology 11, 191-210,
-  #     eqn A but probably clearer in:
-  #   * Leuning, R. et a., Leaf nitrogen, photosynthesis, conductance and
-  #     transpiration: scaling from leaves to canopies, Plant Cell Environ.,
-  #     18, 1183– 1200, 1995. Leuning 1995, eqn C3.
-  #
-
-  A <- p["theta_J"]
-  B <- -(p["alpha"] * Par + Jmax);
-  C <- p["alpha"] * Par * Jmax;
-
-  J <- quadratic(A, B, C, large=False)
-
-  return ( J )
 }
 
 arrh <- function(k25, Ea, Tk) {
@@ -158,7 +122,7 @@ arrh <- function(k25, Ea, Tk) {
   #   * Medlyn et al. 2002, PCE, 25, 1167-1179.
   #
   #
-  return ( k25 * exp((Ea * (Tk - 298.15)) / (298.15 * c.RGAS * Tk)) )
+  return ( k25 * exp((Ea * (Tk - 298.15)) / (298.15 * RGAS * Tk)) )
 }
 
 peaked_arrh <- function(k25, Ea, Tk, deltaS, Hd) {
@@ -188,11 +152,11 @@ peaked_arrh <- function(k25, Ea, Tk, deltaS, Hd) {
   #   -----------
   #   * Medlyn et al. 2002, PCE, 25, 1167-1179.
   #
-
+  
   arg1 <- arrh(k25, Ea, Tk)
   arg2 <- 1.0 + exp((298.15 * deltaS - Hd) / (298.15 * c.RGAS))
   arg3 <- 1.0 + exp((Tk * deltaS - Hd) / (Tk * c.RGAS))
-
+  
   return ( arg1 * arg2 / arg3 )
 }
 
@@ -222,6 +186,65 @@ assim <- function(Ci, gamma_star, a1, a2) {
   #     assimilation rate assuming either light or rubisco limitation.
   #     [umol m-2 s-1]
   #
-
+  
   return ( a1 * (Ci - gamma_star) / (a2 + Ci) )
+}
+
+quadratic <- function(a, b, c, large=FALSE) {
+  #
+  # minimilist quadratic solution as root for J solution should always
+  # be positive, so I have excluded other quadratic solution steps. I am
+  # only returning the smallest of the two roots
+  #
+  #   Args:
+  #   -----
+  #   a : float
+  #     co-efficient
+  #   b : float
+  #     co-efficient
+  #   c : float
+  #     co-efficient
+  #
+  #   Returns:
+  #   -------
+  #   val : float
+  #     positive root
+  #
+  
+  # discriminant
+  d <- b**2.0 - 4.0 * a * c
+  
+  if (d < 0.0) {
+    stop("imaginary root found")
+  }
+  
+  if (large) {
+    
+    if ( (is_close(a, 0.0)) & (b > 0.0) ) {
+      root <- -c / b
+    } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
+        root <- 0.0
+        if (c != 0.0) {
+          stop("Cant solve quadratic")
+        }
+    } else {
+        root <- (-b + sqrt(d)) / (2.0 * a)
+    }
+    
+  } else {
+    
+    if ( (is_close(a, 0.0)) & (b > 0.0) ) {
+      root <- -c / b
+    } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
+      root <- 0.0
+      if (c != 0.0) {
+        stop('Cant solve quadratic')
+      }
+    } else {
+      root <- (-b - np.sqrt(d)) / (2.0 * a)
+    }
+  
+  }
+  
+  return ( root )
 }

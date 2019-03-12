@@ -1,8 +1,21 @@
+---
+title: "BEES3041: Modelling the photosynthetic response to environmental conditions"
+output:
+  pdf_document: default
+  html_notebook: default
+---
 
+Blah 
+
+```{r}
 source("R/photosynthesis.R")
 source("R/parameters.R")
 source("R/constants.R")
+```
 
+Blah
+
+```{r}
 
 # Met variables ...
 Tleaf <- 25.0 + DEG_2_KELVIN
@@ -10,8 +23,14 @@ PAR <- 1800.0
 Cs <- 400.
 vpd <- 1.5
 
+```
+
+Blah
+
+```{r}
 out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
 
-print(out$gsc)
-print(out$An)
+
+```
+

@@ -110,3 +110,11 @@ soil_reflectance <- 0.1 #(same as MAESTRA)
 
 # light extinction coefficient
 k <- 0.5
+
+#
+## Build a params object
+#
+p <- list(Kc25=Kc25, Ko25=Ko25, Eo=Eo, Ec=Ec, Oi=Oi, gamstar25=gamstar25,
+          Eag=Eag, Vcmax25=Vcmax25, Eav=Eav, deltaSv=deltaSv, Hdv=Hdv,
+          Jmax25=Jmax25, Eaj=Eaj, deltaSj=deltaSj, Hdj=Hdj, theta_J=theta_J,
+          alpha=alpha, g0=g0, g1=g1)

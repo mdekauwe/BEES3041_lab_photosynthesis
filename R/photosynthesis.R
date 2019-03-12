@@ -83,19 +83,28 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
 
   gs_over_a <- calc_stomatal_coeff(p, Cs, vpd)
 
+  # Catch for bad met forcing
   if ( is_close(PAR, 0.0) | is_close(Vj, 0.0) ) {
     Cic <- Cs
     Cij <- Cs
   } else {
     # Solution when Rubisco activity is limiting
-    Cic = solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
+    Cic <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
 
     # Solution when electron transport rate is limiting
-    Cij = solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vj, 2.0*gamma_star)
+    Cij <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vj, 2.0*gamma_star)
   }
-  
-  print(Cic)
-  print(Cij)
+
+  if ( (Cic <= 0.0) | (Cic > Cs) ) {
+    Ac <- 0.0
+  } else {
+    Ac <- assim(Cic, gamma_star, a1=Vcmax, a2=Km)
+    Aj <- assim(Cij, gamma_star, a1=Vj, a2=2.0*gamma_star)
+  }
+
+  print(Ac)
+  print(Aj)
+
 
   An <- 0.0
 

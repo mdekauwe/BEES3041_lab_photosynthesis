@@ -88,14 +88,16 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   # Effect of temp on CO2 compensation point [umol mol-1]
   gamma_star <- arrh(p$gamstar25, p$Eag, Tleaf)
 
-  # Calculate temperature dependancies on Vcmax
+  # Calculate the maximum rate of Rubisco activity (Vcmax), accounting for
+  # temperature dependancies
   if (peaked_Vcmax) {
     Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
   } else {
     Vcmax <- arrh(p$Vcmax25, p$Eav, Tleaf)
   }
 
-  # Calculate temperature dependancies on Jmax
+  # Calculate the potential rate of electron transport (Jmax), accounting for
+  # temperature dependancies
   if (peaked_Jmax) {
     Jmax <- peaked_arrh(p$Jmax25, p$Eaj, Tleaf, p$deltaSj, p$Hdj)
   } else {

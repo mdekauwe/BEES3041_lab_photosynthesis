@@ -54,8 +54,9 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   #  The model mechanistically represents the effects of PAR, temperature and
   #  [CO2] on photosynthesis. The model has two major parameters, the potential
   #  rate of electron transport (Jmax) and the maximum rate of
-  #  ribulose-1,5-bisphosphate carboxylase-oxygenase (Rubisco) activity (Vcmax)
-  #
+  #  ribulose-1,5-bisphosphate carboxylase-oxygenase (Rubisco) activity (Vcmax).
+  #  Following Farquhar et al., photosynthesis is solved as the minimum of two
+  #  limiting rates (Ac and Aj).
   #
   #   Args:
   #   -----
@@ -125,13 +126,13 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
 
   # Catch for negative Ci and instances where Ci > Cs
   if ( (Cic <= 0.0) | (Cic > Cs) ) {
-    # Rubisco carboxylation limited rate of photosynthesis
+    # Rate of photosynthesis when Rubisco activity is limiting
     Ac <- 0.0
   } else {
-    # Rubisco carboxylation limited rate of photosynthesis
+    # Rate of photosynthesis when Rubisco activity is limiting
     Ac <- assim(Cic, gamma_star, Vcmax, Km)
 
-    # Light-limited rate of photosynthesis allowed by RuBP regeneration
+    # Rate of photosynthesis when RuBP-regeneration is limiting
     Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
 
@@ -139,7 +140,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   if (Aj <= Rd + 1E-09) {
     Cij <- Cs
 
-    # Light-limited rate of photosynthesis allowed by RuBP regeneration
+    # Rate of photosynthesis when RuBP-regeneration is limiting
     Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
 

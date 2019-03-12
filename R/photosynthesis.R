@@ -187,8 +187,8 @@ calc_michaelis_menten_constants <- function(p, Tleaf) {
   #     Activation energy for carboxylation [J mol-1]
   #   Eo : float
   #     Activation energy for oxygenation [J mol-1]
-  #     Oi : float
-  #     åintercellular concentration of O2 [mmol mol-1]
+  #   Oi : float
+  #     intercellular concentration of O2 [mmol mol-1]
   #
   #   Returns:
   #   --------
@@ -196,7 +196,10 @@ calc_michaelis_menten_constants <- function(p, Tleaf) {
   #       Michaelis-Menten constant
   #
 
+  # Michaelis– Menten coefficients of Rubisco, Kc (umol mol−1)
   Kc <- arrh(p$Kc25, p$Ec, Tleaf)
+
+  # Michaelis– Menten coefficients of Ko (mmol mol−1)
   Ko <- arrh(p$Ko25, p$Eo, Tleaf)
 
   Km <- Kc * (1.0 + p$Oi / Ko)

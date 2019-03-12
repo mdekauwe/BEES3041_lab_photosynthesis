@@ -191,15 +191,16 @@ calc_michaelis_menten_constants <- function(p, Tleaf) {
   #   Returns:
   #   --------
   #     Km : float
-  #       Michaelis-Menten constant
+  #       Michaelis-Menten constant [umol mol−1]
   #
 
   # Michaelis– Menten coefficients of Rubisco, Kc (umol mol−1)
   Kc <- arrh(p$Kc25, p$Ec, Tleaf)
 
-  # Michaelis– Menten coefficients of Ko (mmol mol−1)
+  # Michaelis– Menten coefficients of oxygenation, Ko (mmol mol−1)
   Ko <- arrh(p$Ko25, p$Eo, Tleaf)
 
+  # The Michaelis–Menten constant (umol mol−1)
   Km <- Kc * (1.0 + p$Oi / Ko)
 
   return ( Km )

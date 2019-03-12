@@ -14,5 +14,9 @@ Tleaf <- 25.0 + DEG_2_KELVIN
 PAR <- 1800.0
 Cs <- 400.
 vpd <- 1.5
-An <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
-                          peaked_Jmax=TRUE)
+
+out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+
+print(out$gsc)
+print(out$An)

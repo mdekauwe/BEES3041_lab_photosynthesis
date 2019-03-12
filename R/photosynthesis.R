@@ -98,20 +98,31 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   if ( (Cic <= 0.0) | (Cic > Cs) ) {
     Ac <- 0.0
   } else {
-    Ac <- assim(Cic, gamma_star, a1=Vcmax, a2=Km)
-    Aj <- assim(Cij, gamma_star, a1=Vj, a2=2.0*gamma_star)
+    Ac <- assim(Cic, gamma_star, Vcmax, Km)
+    Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
 
-  print(Ac)
-  print(Aj)
+  # When below light-compensation points, assume Ci=Ca.
+  if (Aj <= Rd + 1E-09) {
+    Cij <- Cs
+    Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
+  }
 
+  # Hyperbolic minimum.
+  A <- -quadratic(1.0-1E-04, Ac+Aj, Ac*Aj, large=TRUE)
 
-  An <- 0.0
+  # Net photosynthesis
+  An <- A - Rd
 
-  return (An)
+  # Calculate conductance to CO2
+  gsc <- max(p$g0, p$g0 + gs_over_a * An)
+
+  # Calculate conductance to water
+  gsw <- gsc * GSC_2_GSW
+
+  return ( list(An=An, gsc=gsc) )
+  
 }
-
-
 
 calc_michaelis_menten_constants <- function(p, Tleaf) {
   #

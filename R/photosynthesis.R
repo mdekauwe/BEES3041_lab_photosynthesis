@@ -123,16 +123,23 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
     Cij <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vj, 2.0*gamma_star)
   }
 
+  # Catch for negative Ci and instances where Ci > Cs
   if ( (Cic <= 0.0) | (Cic > Cs) ) {
+    # Rubisco carboxylation limited rate of photosynthesis
     Ac <- 0.0
   } else {
+    # Rubisco carboxylation limited rate of photosynthesis
     Ac <- assim(Cic, gamma_star, Vcmax, Km)
+
+    # Light-limited rate of photosynthesis allowed by RuBP regeneration
     Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
 
   # When below light-compensation points, assume Ci=Ca.
   if (Aj <= Rd + 1E-09) {
     Cij <- Cs
+
+    # Light-limited rate of photosynthesis allowed by RuBP regeneration
     Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
 

@@ -1,3 +1,12 @@
+####
+##  Parameters required by the Farquhar model. At the bottom of this module
+##  These params are joined together in a big list (p)
+##
+##  author: Martin De Kauwe
+##  date: 13th March, 2019
+##  email: mdekauwe@gmail.com
+####
+
 
 # intercellular concentration of O2 [mmol mol-1]
 Oi <- 210.0

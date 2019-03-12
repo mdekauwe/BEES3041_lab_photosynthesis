@@ -1,3 +1,10 @@
+####
+##  General funcs that the photosynthesis model depends on
+##
+##  author: Martin De Kauwe
+##  date: 13th March, 2019
+##  email: mdekauwe@gmail.com
+####
 
 is_close <- function(a, b, rel_tol=1e-09, abs_tol=0.0) {
   #

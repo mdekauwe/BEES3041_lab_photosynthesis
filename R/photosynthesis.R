@@ -71,7 +71,14 @@ calc_photosynthesis <-function(p, Tleaf, peaked_Vcmax=TRUE, peaked_Jmax=TRUE) {
   } else {
     Jmax = arrh(p$Jmax25, p$Eaj, Tleaf)
   }
-  print(Jmax)
+  
+  Rd = 0.015 * Vcmax
+  
+  # Rate of electron transport, which is a function of absorbed PAR
+  J = calc_electron_transport_rate(p, Par, Jmax)
+  Vj = J / 4.0
+  
+  print(Vj)
   
   An <- 0.0
   
@@ -175,6 +182,7 @@ peaked_arrh <- function(k25, Ea, Tk, deltaS, Hd) {
   
   return ( arg1 * arg2 / arg3 )
 }
+
 
 assim <- function(Ci, gamma_star, a1, a2) {
   #

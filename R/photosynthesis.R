@@ -83,11 +83,12 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   #       stomatal conductance to water [mol m-2 s-1]
   #
   #
-  
+
   # calculate temp dependancies of Michaelis-Menten constants for CO2, O2
   Km <- calc_michaelis_menten_constants(p, Tleaf)
 
-  # Effect of temp on CO2 compensation point [umol mol-1]
+  # CO2 compensation point in the absence of mitochondrial respiration
+  # [umol mol-1]
   gamma_star <- arrh(p$gamstar25, p$Eag, Tleaf)
 
   # Calculate the maximum rate of Rubisco activity (Vcmax), accounting for

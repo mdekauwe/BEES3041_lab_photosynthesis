@@ -33,7 +33,7 @@
 ##  * Medlyn, B. E., Dreyer, E., Ellsworth, D., Forstreuter, M., Harley, P.C.,
 ##    Kirschbaum, M.U.F., Leroux, X., Montpied, P., Strassemeyer, J.,
 ##    Walcroft, A., Wang, K. and Loustau, D. (2002) Temperature response of
-##    PARameters of a biochemically based model of photosynthesis. II.
+##    Parameters of a biochemically based model of photosynthesis. II.
 ##    A review of experimental data. Plant, Cell and Enviroment 25, 1167-1179.
 ##
 ##
@@ -48,7 +48,8 @@ source("R/constants.R")
 calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                                peaked_Jmax=TRUE) {
   #
-  #
+  # Calculate photosyntheis following the Farquhar, von Caemmerer & Berry
+  # (1980) model of C3 photosynthesis.
   #
   #
 
@@ -121,12 +122,12 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   gsw <- gsc * GSC_2_GSW
 
   return ( list(An=An, gsc=gsc) )
-  
+
 }
 
 calc_michaelis_menten_constants <- function(p, Tleaf) {
   #
-  # Michaelis-Menten constant for O2/CO2, Arrhenius temp dependancy
+  #   Michaelis-Menten constant for O2/CO2, Arrhenius temp dependancy
   #
   #   Args:
   #   -----
@@ -255,7 +256,7 @@ assim <- function(Ci, gamma_star, a1, a2) {
 
 calc_electron_transport_rate <-function(p, PAR, Jmax) {
   #
-  # Electron transport rate for a given absorbed irradiance
+  #   Electron transport rate for a given absorbed irradiance
   #
   #   Args:
   #   -----
@@ -263,9 +264,9 @@ calc_electron_transport_rate <-function(p, PAR, Jmax) {
   #     contains all the model Params
   #   PAR : float
   #     photosynthetically active radiation [umol m-2 s-1].
-  #  Jmax : float
+  #   Jmax : float
   #     potential rate of electron transport
-  #  theta_J : float
+  #   theta_J : float
   #     Curvature of the light response (-)
   #   alpha : float
   #     Leaf quantum yield (initial slope of the A-light response curve)
@@ -292,7 +293,7 @@ calc_electron_transport_rate <-function(p, PAR, Jmax) {
 
 calc_stomatal_coeff <- function(p, Cs, vpd) {
   #
-  # Stomatal coefficent, hardwired for Medlyn gs model
+  #   Stomatal coefficent, hardwired for Medlyn gs model
   #
   #   Args:
   #   -----
@@ -324,9 +325,9 @@ calc_stomatal_coeff <- function(p, Cs, vpd) {
 
 solve_ci <- function(p, gs_over_a, rd, Cs, gamma_star, gamma, beta) {
   #
-  # Solve intercellular CO2 concentration using quadric equation, following
-  # Leuning 1990, see eqn 15a-c, solving simultaneous solution for Eqs 2, 12
-  # and 13
+  #   Solve intercellular CO2 concentration using quadric equation, following
+  #   Leuning 1990, see eqn 15a-c, solving simultaneous solution for Eqs 2, 12
+  #   and 13
   #
   #   Args:
   #   -----

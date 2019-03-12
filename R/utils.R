@@ -1,7 +1,7 @@
 
 is_close <- function(a, b, rel_tol=1e-09, abs_tol=0.0) {
   #
-  # Check if two values are close ...
+  #   Check if two values are close ...
   #
   #   Args:
   #   -----
@@ -28,9 +28,9 @@ is_close <- function(a, b, rel_tol=1e-09, abs_tol=0.0) {
 
 quadratic <- function(a, b, c, large=FALSE) {
   #
-  # minimilist quadratic solution as root for J solution should always
-  # be positive, so I have excluded other quadratic solution steps. I am
-  # only returning the smallest of the two roots
+  #   Minimilist quadratic solution as root for J solution should always
+  #   be positive, so I have excluded other quadratic solution steps. I am
+  #   only returning the smallest of the two roots
   #
   #   Args:
   #   -----

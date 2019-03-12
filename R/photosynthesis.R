@@ -54,34 +54,36 @@ calc_photosynthesis <-function(p, Tleaf, peaked_Vcmax=TRUE, peaked_Jmax=TRUE) {
 
   # calculate temp dependancies of MichaelisMenten constants for CO2, O2
   Km <- calc_michaelis_menten_constants(p, Tleaf)
-  
+
   # Effect of temp on CO2 compensation point
   gamma_star = arrh(p$gamstar25, p$Eag, Tleaf)
-  
+
   # Calculate temperature dependancies on Vcmax
   if (peaked_Vcmax) {
     Vcmax = peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
   } else {
     Vcmax = arrh(p$Vcmax25, p$Eav, Tleaf)
   }
-  
+
   # Calculate temperature dependancies on Jmax
   if (peaked_Jmax) {
     Jmax = peaked_arrh(p$Jmax25, p$Eaj, Tleaf, p$deltaSj, p$Hdj)
   } else {
     Jmax = arrh(p$Jmax25, p$Eaj, Tleaf)
   }
-  
+
+  # Leaf mitochondrial respiration in the light or day respiration
+  # (umol m-2 s-1)
   Rd = 0.015 * Vcmax
-  
+
   # Rate of electron transport, which is a function of absorbed PAR
   J = calc_electron_transport_rate(p, Par, Jmax)
   Vj = J / 4.0
-  
+
   print(Vj)
-  
+
   An <- 0.0
-  
+
   return (An)
 }
 
@@ -112,12 +114,12 @@ calc_michaelis_menten_constants <- function(p, Tleaf) {
   #     Km : float
   #       Michaelis-Menten constant
   #
-  
+
   Kc <- arrh(p$Kc25, p$Ec, Tleaf)
   Ko <- arrh(p$Ko25, p$Eo, Tleaf)
-  
+
   Km <- Kc * (1.0 + p$Oi / Ko)
-  
+
   return ( Km )
 }
 
@@ -175,11 +177,11 @@ peaked_arrh <- function(k25, Ea, Tk, deltaS, Hd) {
   #   -----------
   #   * Medlyn et al. 2002, PCE, 25, 1167-1179.
   #
-  
+
   arg1 <- arrh(k25, Ea, Tk)
   arg2 <- 1.0 + exp((298.15 * deltaS - Hd) / (298.15 * RGAS))
   arg3 <- 1.0 + exp((Tk * deltaS - Hd) / (Tk * RGAS))
-  
+
   return ( arg1 * arg2 / arg3 )
 }
 
@@ -210,7 +212,7 @@ assim <- function(Ci, gamma_star, a1, a2) {
   #     assimilation rate assuming either light or rubisco limitation.
   #     [umol m-2 s-1]
   #
-  
+
   return ( a1 * (Ci - gamma_star) / (a2 + Ci) )
 }
 
@@ -234,16 +236,16 @@ quadratic <- function(a, b, c, large=FALSE) {
   #   val : float
   #     positive root
   #
-  
+
   # discriminant
   d <- b**2.0 - 4.0 * a * c
-  
+
   if (d < 0.0) {
     stop("imaginary root found")
   }
-  
+
   if (large) {
-    
+
     if ( (is_close(a, 0.0)) & (b > 0.0) ) {
       root <- -c / b
     } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
@@ -254,9 +256,9 @@ quadratic <- function(a, b, c, large=FALSE) {
     } else {
         root <- (-b + sqrt(d)) / (2.0 * a)
     }
-    
+
   } else {
-    
+
     if ( (is_close(a, 0.0)) & (b > 0.0) ) {
       root <- -c / b
     } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
@@ -267,8 +269,8 @@ quadratic <- function(a, b, c, large=FALSE) {
     } else {
       root <- (-b - np.sqrt(d)) / (2.0 * a)
     }
-  
+
   }
-  
+
   return ( root )
 }

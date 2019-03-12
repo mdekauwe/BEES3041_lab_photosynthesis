@@ -33,7 +33,7 @@
 ##  * Medlyn, B. E., Dreyer, E., Ellsworth, D., Forstreuter, M., Harley, P.C.,
 ##    Kirschbaum, M.U.F., Leroux, X., Montpied, P., Strassemeyer, J.,
 ##    Walcroft, A., Wang, K. and Loustau, D. (2002) Temperature response of
-##    parameters of a biochemically based model of photosynthesis. II.
+##    PARameters of a biochemically based model of photosynthesis. II.
 ##    A review of experimental data. Plant, Cell and Enviroment 25, 1167-1179.
 ##
 ##
@@ -77,7 +77,7 @@ calc_photosynthesis <-function(p, Tleaf, peaked_Vcmax=TRUE, peaked_Jmax=TRUE) {
   Rd = 0.015 * Vcmax
 
   # Rate of electron transport, which is a function of absorbed PAR
-  J = calc_electron_transport_rate(p, Par, Jmax)
+  J = calc_electron_transport_rate(p, PAR, Jmax)
   Vj = J / 4.0
 
   print(Vj)
@@ -125,22 +125,22 @@ calc_michaelis_menten_constants <- function(p, Tleaf) {
 
 arrh <- function(k25, Ea, Tk) {
   #
-  # Temperature dependence of kinetic parameters is described by an
+  # Temperature dependence of kinetic PARameters is described by an
   # Arrhenius function.
   #
   #   Args:
   #   -----
   #   k25 : float
-  #     rate parameter value at 25 degC or 298 K
+  #     rate PARameter value at 25 degC or 298 K
   #   Ea : float
-  #     activation energy for the parameter [J mol-1]
+  #     activation energy for the PARameter [J mol-1]
   #   Tk : float
   #     leaf temperature [deg K]
   #
   #   Returns:
   #   -------
   #   kt : float
-  #     temperature dependence on parameter
+  #     temperature dependence on PARameter
   #
   #   References:
   #   -----------
@@ -158,9 +158,9 @@ peaked_arrh <- function(k25, Ea, Tk, deltaS, Hd) {
   #   Args:
   #   -----
   #   k25 : float
-  #     rate parameter value at 25 degC or 298 K
+  #     rate PARameter value at 25 degC or 298 K
   #   Ea : float
-  #      activation energy for the parameter [J mol-1]
+  #      activation energy for the PARameter [J mol-1]
   #   Tk : float
   #      leaf temperature [deg K]
   #   deltaS : float
@@ -171,7 +171,7 @@ peaked_arrh <- function(k25, Ea, Tk, deltaS, Hd) {
   #   Returns:
   #   -------
   #   kt : float
-  #     temperature dependence on parameter
+  #     temperature dependence on PARameter
   #
   #   References:
   #   -----------
@@ -214,6 +214,43 @@ assim <- function(Ci, gamma_star, a1, a2) {
   #
 
   return ( a1 * (Ci - gamma_star) / (a2 + Ci) )
+}
+
+calc_electron_transport_rate <-function(p, PAR, Jmax) {
+  #
+  # Electron transport rate for a given absorbed irradiance
+  #
+  #   Args:
+  #   -----
+  #   p : struct
+  #     contains all the model PARams
+  #   PAR : float
+  #     photosynthetically active radiation [umol m-2 s-1].
+  #  Jmax : float
+  #     potential rate of electron transport
+  #  theta_J : float
+  #     Curvature of the light response (-)
+  #   alpha : float
+  #     Leaf quantum yield (initial slope of the A-light response curve)
+  #     [mol mol-1]
+  #
+  #   Reference:
+  #   ----------
+  #   * Farquhar G.D. & Wong S.C. (1984) An empirical model of stomatal
+  #     conductance. Australian Journal of Plant Physiology 11, 191-210,
+  #     eqn A but probably clearer in:
+  #   * Leuning, R. et a., Leaf nitrogen, photosynthesis, conductance and
+  #     transpiration: scaling from leaves to canopies, Plant Cell Environ.,
+  #     18, 1183– 1200, 1995. Leuning 1995, eqn C3.
+  #
+
+  A = p$theta_J
+  B = -(p$alpha * PAR + Jmax)
+  C = p$alpha * PAR * Jmax
+
+  J = quadratic(A, B, C, large=FALSE)
+
+  return ( J )
 }
 
 quadratic <- function(a, b, c, large=FALSE) {

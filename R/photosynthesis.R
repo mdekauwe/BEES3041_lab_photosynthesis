@@ -57,7 +57,8 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   #  ribulose-1,5-bisphosphate carboxylase-oxygenase (Rubisco) activity (Vcmax).
   #  Following Farquhar et al., photosynthesis is solved as the minimum of two
   #  limiting rates (Ac and Aj). Model assumes the conductance between the
-  #  intercellular space and the site of carboxylation is negligible.
+  #  intercellular space and the site of carboxylation is negligible, i.e. an
+  #  infinite mesophyll conductance.
   #
   #
   #   Args:

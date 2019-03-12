@@ -54,9 +54,12 @@ calc_photosynthesis <-function(p, Tleaf) {
 
   # calculate temp dependancies of MichaelisMenten constants for CO2, O2
   Km <- calc_michaelis_menten_constants(p, Tleaf)
-
-  print(Km)
-
+  
+  # Effect of temp on CO2 compensation point
+  gamma_star = arrh(p$gamstar25, p$Eag, Tleaf)
+  
+  print(gamma_star)
+  
   An <- 0.0
   
   return (An)

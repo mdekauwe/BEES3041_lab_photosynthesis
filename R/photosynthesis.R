@@ -48,12 +48,39 @@ source("R/constants.R")
 calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                                peaked_Jmax=TRUE) {
   #
-  # Calculate photosyntheis following the Farquhar, von Caemmerer & Berry
-  # (1980) model of C3 photosynthesis.
+  #  Calculate photosyntheis following the Farquhar, von Caemmerer & Berry
+  #  (1980) model of C3 photosynthesis.
+  #
+  #  The model mechanistically represents the effects of PAR, temperature and
+  #  [CO2] on photosynthesis. The model has two major parameters, the potential
+  #  rate of electron transport (Jmax) and the maximum rate of
+  #  ribulose-1,5-bisphosphate carboxylase-oxygenase (Rubisco) activity (Vcmax)
   #
   #
-
-
+  #   Args:
+  #   -----
+  #   p : list
+  #     contains all the model parameters
+  #   Tleaf : float
+  #     leaf temperature [deg K]
+  #   PAR : float
+  #     photosynthetically active radiation [umol m-2 s-1].
+  #   Cs : float
+  #     CO2 concentration at the leaf surface [umol mol-1]
+  #   vpd : float
+  #     vapour pressure deficit at the leaf surface [kPa]
+  #   peaked_Vcmax : logical
+  #     Use the peaked Arrhenius function (if true)
+  #   peaked_Jmax : logical
+  #     Use the peaked Arrhenius function (if true)
+  #
+  #   Returns:
+  #   --------
+  #    An : float
+  #      Net leaf assimilation rate [umol m-2 s-1]
+  #    gsw:  float
+  #       stomatal conductance to water [mol m-2 s-1]
+  #
   # calculate temp dependancies of MichaelisMenten constants for CO2, O2
   Km <- calc_michaelis_menten_constants(p, Tleaf)
 
@@ -260,8 +287,8 @@ calc_electron_transport_rate <-function(p, PAR, Jmax) {
   #
   #   Args:
   #   -----
-  #   p : struct
-  #     contains all the model Params
+  #   p : list
+  #     contains all the model parameters
   #   PAR : float
   #     photosynthetically active radiation [umol m-2 s-1].
   #   Jmax : float
@@ -297,8 +324,8 @@ calc_stomatal_coeff <- function(p, Cs, vpd) {
   #
   #   Args:
   #   -----
-  #   p : struct
-  #     contains all the model Params
+  #   p : list
+  #     contains all the model parameters
   #   Cs : float
   #     CO2 concentration at the leaf surface [umol mol-1]
   #   vpd : float
@@ -331,8 +358,8 @@ solve_ci <- function(p, gs_over_a, rd, Cs, gamma_star, gamma, beta) {
   #
   #   Args:
   #   -----
-  #   p : struct
-  #     contains all the model Params
+  #   p : list
+  #     contains all the model parameters
   #   gs_over_a : float
   #     stomatal coefficient
   #   rd : float

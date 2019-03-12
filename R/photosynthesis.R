@@ -82,6 +82,8 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   #    gsw:  float
   #       stomatal conductance to water [mol m-2 s-1]
   #
+  #
+  
   # calculate temp dependancies of Michaelis-Menten constants for CO2, O2
   Km <- calc_michaelis_menten_constants(p, Tleaf)
 

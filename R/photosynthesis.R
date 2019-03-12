@@ -45,7 +45,8 @@
 source("R/utils.R")
 source("R/constants.R")
 
-calc_photosynthesis <-function(p, Tleaf, peaked_Vcmax=TRUE, peaked_Jmax=TRUE) {
+calc_photosynthesis <-function(p, Tleaf, PAR, peaked_Vcmax=TRUE,
+                               peaked_Jmax=TRUE) {
   #
   #
   #

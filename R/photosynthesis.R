@@ -139,7 +139,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
     # Rate of photosynthesis when Rubisco activity is limiting
     Ac <- assim(Cic, gamma_star, Vcmax, Km)
 
-    # Rate of photosynthesis when RuBP-regeneration is limiting
+    # Rate of photosynthesis when RuBP regeneration is limiting
     Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
 
@@ -147,7 +147,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   if (Aj <= Rd + 1E-09) {
     Cij <- Cs
 
-    # Rate of photosynthesis when RuBP-regeneration is limiting
+    # Rate of photosynthesis when RuBP regeneration is limiting
     Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
 

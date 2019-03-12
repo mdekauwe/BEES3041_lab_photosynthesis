@@ -110,7 +110,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   }
 
   # Leaf mitochondrial respiration in the light or day respiration
-  # (umol m-2 s-1)
+  # (umol m-2 s-1). Following Collatz et al. (1991), assume Rd 1.5% of Vcmax 
   Rd <- 0.015 * Vcmax
 
   # Rate of electron transport, which is a function of absorbed PAR

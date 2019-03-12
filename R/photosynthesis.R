@@ -83,7 +83,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
 
   gs_over_a <- calc_stomatal_coeff(p, Cs, vpd)
 
-  # Catch for bad met forcing
+  # Catch for low PAR, issue with Vj
   if ( is_close(PAR, 0.0) | is_close(Vj, 0.0) ) {
     Cic <- Cs
     Cij <- Cs

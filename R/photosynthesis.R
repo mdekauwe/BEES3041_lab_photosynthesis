@@ -58,13 +58,14 @@ calc_photosynthesis <-function(p, Tleaf, peaked_Vcmax=TRUE, peaked_Jmax=TRUE) {
   # Effect of temp on CO2 compensation point
   gamma_star = arrh(p$gamstar25, p$Eag, Tleaf)
   
-  # Calculate temperature dependancies on Vcmax and Jmax
+  # Calculate temperature dependancies on Vcmax
   if (peaked_Vcmax) {
     Vcmax = peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
   } else {
     Vcmax = arrh(p$Vcmax25, p$Eav, Tleaf)
   }
   
+  # Calculate temperature dependancies on Jmax
   if (peaked_Jmax) {
     Jmax = peaked_arrh(p$Jmax25, p$Eaj, Tleaf, p$deltaSj, p$Hdj)
   } else {

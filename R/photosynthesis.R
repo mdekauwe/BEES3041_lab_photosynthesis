@@ -156,10 +156,10 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   # Net photosynthesis rate (umol m-2 s-1)
   An <- A - Rd
 
-  # Calculate conductance to CO2
+  # Calculate conductance to CO2 (mol m-2 s-1)
   gsc <- max(p$g0, p$g0 + gs_over_a * An)
 
-  # Calculate conductance to water
+  # Calculate conductance to water (mol m-2 s-1)
   gsw <- gsc * GSC_2_GSW
 
   return ( list(An=An, gsc=gsc) )

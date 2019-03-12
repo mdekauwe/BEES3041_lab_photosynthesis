@@ -45,7 +45,7 @@
 source("R/utils.R")
 source("R/constants.R")
 
-calc_photosynthesis <-function(p, Tleaf) {
+calc_photosynthesis <-function(p, Tleaf, peaked_Vcmax=TRUE) {
   #
   #
   #
@@ -58,7 +58,14 @@ calc_photosynthesis <-function(p, Tleaf) {
   # Effect of temp on CO2 compensation point
   gamma_star = arrh(p$gamstar25, p$Eag, Tleaf)
   
-  print(gamma_star)
+  # Calculate temperature dependancies on Vcmax and Jmax
+  if (peaked_Vcmax) {
+    Vcmax = peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
+  } else {
+    Vcmax = arrh(p$Vcmax25, p$Eav, Tleaf)
+  }
+  
+  print(Vcmax)
   
   An <- 0.0
   
@@ -157,8 +164,8 @@ peaked_arrh <- function(k25, Ea, Tk, deltaS, Hd) {
   #
   
   arg1 <- arrh(k25, Ea, Tk)
-  arg2 <- 1.0 + exp((298.15 * deltaS - Hd) / (298.15 * c.RGAS))
-  arg3 <- 1.0 + exp((Tk * deltaS - Hd) / (Tk * c.RGAS))
+  arg2 <- 1.0 + exp((298.15 * deltaS - Hd) / (298.15 * RGAS))
+  arg3 <- 1.0 + exp((Tk * deltaS - Hd) / (Tk * RGAS))
   
   return ( arg1 * arg2 / arg3 )
 }

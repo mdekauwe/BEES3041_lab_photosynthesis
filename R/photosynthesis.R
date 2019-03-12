@@ -143,7 +143,8 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
     Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
 
-  # Hyperbolic minimum.
+  # Hyperbolic minimum of Ac and Aj to smooth over discontinuity when moving
+  # from electron # transport limited to rubisco limited photosynthesis
   A <- -quadratic(1.0-1E-04, Ac+Aj, Ac*Aj, large=TRUE)
 
   # Net photosynthesis rate (umol m-2 s-1)

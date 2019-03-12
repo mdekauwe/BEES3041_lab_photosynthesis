@@ -45,7 +45,7 @@
 source("R/utils.R")
 source("R/constants.R")
 
-calc_photosynthesis <-function(p, Tleaf, PAR, peaked_Vcmax=TRUE,
+calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                                peaked_Jmax=TRUE) {
   #
   #
@@ -78,15 +78,18 @@ calc_photosynthesis <-function(p, Tleaf, PAR, peaked_Vcmax=TRUE,
   Rd = 0.015 * Vcmax
 
   # Rate of electron transport, which is a function of absorbed PAR
-  J = calc_electron_transport_rate(p, PAR, Jmax)
-  Vj = J / 4.0
+  J <- calc_electron_transport_rate(p, PAR, Jmax)
+  Vj <- J / 4.0
 
-  print(Vj)
+  gs_over_a <- calc_stomatal_coeff(p, Cs, vpd)
+  print(gs_over_a)
 
   An <- 0.0
 
   return (An)
 }
+
+
 
 calc_michaelis_menten_constants <- function(p, Tleaf) {
   #
@@ -224,7 +227,7 @@ calc_electron_transport_rate <-function(p, PAR, Jmax) {
   #   Args:
   #   -----
   #   p : struct
-  #     contains all the model PARams
+  #     contains all the model Params
   #   PAR : float
   #     photosynthetically active radiation [umol m-2 s-1].
   #  Jmax : float
@@ -245,13 +248,45 @@ calc_electron_transport_rate <-function(p, PAR, Jmax) {
   #     18, 1183– 1200, 1995. Leuning 1995, eqn C3.
   #
 
-  A = p$theta_J
-  B = -(p$alpha * PAR + Jmax)
-  C = p$alpha * PAR * Jmax
+  A <- p$theta_J
+  B <- -(p$alpha * PAR + Jmax)
+  C <- p$alpha * PAR * Jmax
 
-  J = quadratic(A, B, C, large=FALSE)
+  J <- quadratic(A, B, C, large=FALSE)
 
   return ( J )
+}
+
+calc_stomatal_coeff <- function(p, Cs, vpd) {
+  #
+  # Stomatal coefficent, hardwired for Medlyn gs model
+  #
+  #   Args:
+  #   -----
+  #   p : struct
+  #     contains all the model Params
+  #   Cs : float
+  #     CO2 concentration at the leaf surface [umol mol-1]
+  #   vpd : float
+  #     vapour pressure deficit at the leaf surface [kPa]
+  #   g1 : float
+  #     stomatal slope parameter [kpa^0.5]
+
+  # 1.6 (from corrigendum to Medlyn et al 2011) is missing here,
+  # because we are calculating conductance to CO2!
+  #
+  #   References:
+  #   -----------
+  #   * Medlyn et al. 2002, PCE, 25, 1167-1179.
+  #
+
+  if (is_close(Cs, 0.0)) {
+    gs_over_a <- 0.0
+  } else {
+    gs_over_a <- (1.0 + p$g1 / sqrt(vpd)) / Cs
+  }
+
+  return ( gs_over_a )
 }
 
 quadratic <- function(a, b, c, large=FALSE) {

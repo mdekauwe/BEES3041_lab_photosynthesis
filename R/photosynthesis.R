@@ -57,32 +57,45 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   Km <- calc_michaelis_menten_constants(p, Tleaf)
 
   # Effect of temp on CO2 compensation point
-  gamma_star = arrh(p$gamstar25, p$Eag, Tleaf)
+  gamma_star <- arrh(p$gamstar25, p$Eag, Tleaf)
 
   # Calculate temperature dependancies on Vcmax
   if (peaked_Vcmax) {
-    Vcmax = peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
+    Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
   } else {
-    Vcmax = arrh(p$Vcmax25, p$Eav, Tleaf)
+    Vcmax <- arrh(p$Vcmax25, p$Eav, Tleaf)
   }
 
   # Calculate temperature dependancies on Jmax
   if (peaked_Jmax) {
-    Jmax = peaked_arrh(p$Jmax25, p$Eaj, Tleaf, p$deltaSj, p$Hdj)
+    Jmax <- peaked_arrh(p$Jmax25, p$Eaj, Tleaf, p$deltaSj, p$Hdj)
   } else {
-    Jmax = arrh(p$Jmax25, p$Eaj, Tleaf)
+    Jmax <- arrh(p$Jmax25, p$Eaj, Tleaf)
   }
 
   # Leaf mitochondrial respiration in the light or day respiration
   # (umol m-2 s-1)
-  Rd = 0.015 * Vcmax
+  Rd <- 0.015 * Vcmax
 
   # Rate of electron transport, which is a function of absorbed PAR
   J <- calc_electron_transport_rate(p, PAR, Jmax)
   Vj <- J / 4.0
 
   gs_over_a <- calc_stomatal_coeff(p, Cs, vpd)
-  print(gs_over_a)
+
+  if ( is_close(PAR, 0.0) | is_close(Vj, 0.0) ) {
+    Cic <- Cs
+    Cij <- Cs
+  } else {
+    # Solution when Rubisco activity is limiting
+    Cic = solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
+
+    # Solution when electron transport rate is limiting
+    Cij = solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vj, 2.0*gamma_star)
+  }
+  
+  print(Cic)
+  print(Cij)
 
   An <- 0.0
 
@@ -289,61 +302,51 @@ calc_stomatal_coeff <- function(p, Cs, vpd) {
   return ( gs_over_a )
 }
 
-quadratic <- function(a, b, c, large=FALSE) {
+solve_ci <- function(p, gs_over_a, rd, Cs, gamma_star, gamma, beta) {
   #
-  # minimilist quadratic solution as root for J solution should always
-  # be positive, so I have excluded other quadratic solution steps. I am
-  # only returning the smallest of the two roots
+  # Solve intercellular CO2 concentration using quadric equation, following
+  # Leuning 1990, see eqn 15a-c, solving simultaneous solution for Eqs 2, 12
+  # and 13
   #
   #   Args:
   #   -----
-  #   a : float
-  #     co-efficient
-  #   b : float
-  #     co-efficient
-  #   c : float
-  #     co-efficient
+  #   p : struct
+  #     contains all the model Params
+  #   gs_over_a : float
+  #     stomatal coefficient
+  #   rd : float
+  #     day rwspiration rate [umol m-2 s-1]
+  #   Cs : float
+  #     leaf surface CO2 concentration [umol mol-1]
+  #   gamma_star : float
+  #     CO2 compensation point - base rate at 25 deg C / 298 K [umol mol-1]
+  #   gamma : float
+  #     if calculating Cic, this will be Vcmax
+  #     if calculating Cij, this will be Vj
+  #   beta : float
+  #     if calculating Cic, this will be Km
+  #     if calculating Cij, this will be 2.0*gamma_star
   #
-  #   Returns:
-  #   -------
-  #   val : float
-  #     positive root
+  #   Reference:
+  #   ----------
+  #   * Leuning (1990) Modelling Stomatal Behaviour and Photosynthesis of
+  #     Eucalyptus grandis. Aust. J. Plant Physiol., 17, 159-75.
   #
 
-  # discriminant
-  d <- b**2.0 - 4.0 * a * c
+  A = p$g0 + gs_over_a * (gamma - rd)
 
-  if (d < 0.0) {
-    stop("imaginary root found")
-  }
+  arg1 <- (1. - Cs * gs_over_a) * (gamma - rd)
+  arg2 <- p$g0 * (beta - Cs)
+  arg3 <- gs_over_a * (gamma * gamma_star + beta * rd)
+  B <- arg1 + arg2 - arg3
 
-  if (large) {
+  arg1 <- -(1.0 - Cs * gs_over_a)
+  arg2 <- (gamma * gamma_star + beta * rd)
+  arg3 <- p$g0 * beta * Cs
+  C <- arg1 * arg2 - arg3
 
-    if ( (is_close(a, 0.0)) & (b > 0.0) ) {
-      root <- -c / b
-    } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
-        root <- 0.0
-        if (c != 0.0) {
-          stop("Cant solve quadratic")
-        }
-    } else {
-        root <- (-b + sqrt(d)) / (2.0 * a)
-    }
+  Ci <- quadratic(A, B, C, large=TRUE)
 
-  } else {
+  return ( Ci )
 
-    if ( (is_close(a, 0.0)) & (b > 0.0) ) {
-      root <- -c / b
-    } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
-      root <- 0.0
-      if (c != 0.0) {
-        stop('Cant solve quadratic')
-      }
-    } else {
-      root <- (-b - sqrt(d)) / (2.0 * a)
-    }
-
-  }
-
-  return ( root )
 }

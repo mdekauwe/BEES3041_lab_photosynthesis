@@ -7,7 +7,7 @@ source("R/constants.R")
 p <- list(Kc25=Kc25, Ko25=Ko25, Eo=Eo, Ec=Ec, Oi=Oi, gamstar25=gamstar25,
           Eag=Eag, Vcmax25=Vcmax25, Eav=Eav, deltaSv=deltaSv, Hdv=Hdv,
           Jmax25=Jmax25, Eaj=Eaj, deltaSj=deltaSj, Hdj=Hdj, theta_J=theta_J,
-          alpha=alpha, g1=g1)
+          alpha=alpha, g0=g0, g1=g1)
 
 # Met variables ...
 Tleaf <- 25.0 + DEG_2_KELVIN

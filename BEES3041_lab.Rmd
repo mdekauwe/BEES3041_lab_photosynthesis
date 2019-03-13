@@ -19,30 +19,36 @@ In this practical we are going to:
 * we are going to apply this model to ecosystem-scale (~1 km^2) meteorological data and explore how well a leaf-level model can predict fluxes at a larger spatial scale.
 * we are going to use our new insights to consider the key assumptions we are making with our model and identify the key weaknesses in our approach.
 
+# Response to temperature
+
+Let's start by exploring the response of the model to temperature. First we need to generate some temperature data:
 
 ```{r}
+library(ggplot2)
+
 source("R/photosynthesis.R")
 source("R/parameters.R")
 source("R/constants.R")
+
+Tleaf <- seq(1, 50.0, 0.5) + DEG_2_KELVIN
 ```
 
-Blah
+The photosynthesis model has two major parameters, the potential rate of electron
+transport (Jmax) and the maximum rate of Rubisco activity (Vcmax). Both of these parameters vary as a function of temperature, let's plot them. I've copied the function calls from photosynthes.R:
 
 ```{r}
+Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
+Jmax <- peaked_arrh(p$Jmax25, p$Eaj, Tleaf, p$deltaSj, p$Hdj)
 
-# Met variables ...
-Tleaf <- 25.0 + DEG_2_KELVIN
-PAR <- 1800.0
-Cs <- 400.
-vpd <- 1.5
+df <- data.frame(Tleaf, Vcmax, Jmax)
 
+ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
+  geom_line(aes(y=Vcmax, colour="Vcmax")) +
+  geom_line(aes(y=Jmax, colour="Jmax")) +
+  ylab("Parameter (umol m-2 s-1)") +
+  xlab("Tleaf (deg C)")
 ```
 
-Blah
-
-```{r}
-out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
-                           peaked_Jmax=TRUE)
 
 
-```
+

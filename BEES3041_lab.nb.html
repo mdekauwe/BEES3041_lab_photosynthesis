@@ -1702,42 +1702,51 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>In this lab we will explore a leaf-level photosynthesis model (Farquhar et al. 1980), which is central to all land schemes embedded in coupled-climate models. The aim of this tutorial is to explore how the rate of photosynthesis changes in responses to the environment: photosynthetically active radiation (PAR), temperature and carbon dioxide (CO<sub>2</sub>). We will use this understanding to make predictions about how vegetation will response to global change.</p>
+<p>In this lab we will explore a leaf-level photosynthesis model (Farquhar et al. 1980), which is central to all land schemes embedded in coupled-climate models.</p>
+<p>In this practical we are going to:</p>
+<ul>
+<li>to learn about how leaf-level photosynthesis, responds to changes in the environmental forcing (photosynthetically active radiation, temperature and carbon dioxide).</li>
+<li>we are going to apply this model to ecosystem-scale (~1 km^2) meteorological data and explore how well a leaf-level model can predict fluxes at a larger spatial scale.</li>
+<li>we are going to use our new insights to consider the key assumptions we are making with our model and identify the key weaknesses in our approach.</li>
+</ul>
+</div>
+<div id="response-to-temperature" class="section level1">
+<h1>Response to temperature</h1>
+<p>Let’s start by exploring the response of the model to temperature. First we need to generate some temperature data:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKFwiUi9waG90b3N5bnRoZXNpcy5SXCIpXG5zb3VyY2UoXCJSL3BhcmFtZXRlcnMuUlwiKVxuc291cmNlKFwiUi9jb25zdGFudHMuUlwiKVxuYGBgIn0= -->
-<pre class="r"><code>source(&quot;R/photosynthesis.R&quot;)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShnZ3Bsb3QyKVxuXG5zb3VyY2UoXCJSL3Bob3Rvc3ludGhlc2lzLlJcIilcbnNvdXJjZShcIlIvcGFyYW1ldGVycy5SXCIpXG5zb3VyY2UoXCJSL2NvbnN0YW50cy5SXCIpXG5cblRsZWFmIDwtIHNlcSgxLCA1MC4wLCAwLjUpICsgREVHXzJfS0VMVklOXG5gYGAifQ== -->
+<pre class="r"><code>library(ggplot2)
+
+source(&quot;R/photosynthesis.R&quot;)
 source(&quot;R/parameters.R&quot;)
-source(&quot;R/constants.R&quot;)</code></pre>
+source(&quot;R/constants.R&quot;)
+
+Tleaf &lt;- seq(1, 50.0, 0.5) + DEG_2_KELVIN</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Blah</p>
+<p>The photosynthesis model has two major parameters, the potential rate of electron transport (Jmax) and the maximum rate of Rubisco activity (Vcmax). Both of these parameters vary as a function of temperature, let’s plot them. I’ve copied the function calls from photosynthes.R:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIE1ldCB2YXJpYWJsZXMgLi4uXG5UbGVhZiA8LSAyNS4wICsgREVHXzJfS0VMVklOXG5QQVIgPC0gMTgwMC4wXG5DcyA8LSA0MDAuXG52cGQgPC0gMS41XG5cbmBgYCJ9 -->
-<pre class="r"><code>
-# Met variables ...
-Tleaf &lt;- 25.0 + DEG_2_KELVIN
-PAR &lt;- 1800.0
-Cs &lt;- 400.
-vpd &lt;- 1.5
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmNtYXggPC0gcGVha2VkX2FycmgocCRWY21heDI1LCBwJEVhdiwgVGxlYWYsIHAkZGVsdGFTdiwgcCRIZHYpXG5KbWF4IDwtIHBlYWtlZF9hcnJoKHAkSm1heDI1LCBwJEVhaiwgVGxlYWYsIHAkZGVsdGFTaiwgcCRIZGopXG5cbmRmIDwtIGRhdGEuZnJhbWUoVGxlYWYsIFZjbWF4LCBKbWF4KVxuXG5nZ3Bsb3QoZGYsIGFlcyhUbGVhZi1ERUdfMl9LRUxWSU4pKSArXG4gIGdlb21fbGluZShhZXMoeT1WY21heCwgY29sb3VyPVwiVmNtYXhcIikpICtcbiAgZ2VvbV9saW5lKGFlcyh5PUptYXgsIGNvbG91cj1cIkptYXhcIikpICtcbiAgeWxhYihcIlBhcmFtZXRlciAodW1vbCBtLTIgcy0xKVwiKSArXG4gIHhsYWIoXCJUbGVhZiAoZGVnIEMpXCIpXG5gYGAifQ== -->
+<pre class="r"><code>Vcmax &lt;- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
+Jmax &lt;- peaked_arrh(p$Jmax25, p$Eaj, Tleaf, p$deltaSj, p$Hdj)
+
+df &lt;- data.frame(Tleaf, Vcmax, Jmax)
+
+ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
+  geom_line(aes(y=Vcmax, colour=&quot;Vcmax&quot;)) +
+  geom_line(aes(y=Jmax, colour=&quot;Jmax&quot;)) +
+  ylab(&quot;Parameter (umol m-2 s-1)&quot;) +
+  xlab(&quot;Tleaf (deg C)&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Blah</p>
 <!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3V0IDwtIGNhbGNfcGhvdG9zeW50aGVzaXMocCwgVGxlYWYsIFBBUiwgQ3MsIHZwZCwgcGVha2VkX1ZjbWF4PVRSVUUsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBwZWFrZWRfSm1heD1UUlVFKVxuXG5cbmBgYCJ9 -->
-<pre class="r"><code>out &lt;- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
-                           peaked_Jmax=TRUE)
-</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQkVFUzMwNDE6IE1vZGVsbGluZyB0aGUgcGhvdG9zeW50aGV0aWMgcmVzcG9uc2UgdG8gZW52aXJvbm1lbnRhbCBjb25kaXRpb25zIgpvdXRwdXQ6CiAgcGRmX2RvY3VtZW50OiBkZWZhdWx0CiAgaHRtbF9ub3RlYm9vazogZGVmYXVsdAotLS0KCmBgYHtyIHByZXNzdXJlLCBlY2hvPUZBTFNFLCBvdXQud2lkdGggPSAnMzAlJ30Ka25pdHI6OmluY2x1ZGVfZ3JhcGhpY3MoImRhdGEvbG9nby5qcGVnIikKYGBgCgojIEludHJvZHVjdGlvbgoKSW4gdGhpcyBsYWIgd2Ugd2lsbCBleHBsb3JlIGEgbGVhZi1sZXZlbCBwaG90b3N5bnRoZXNpcyBtb2RlbCAoRmFycXVoYXIgZXQgYWwuIDE5ODApLCB3aGljaCBpcyBjZW50cmFsIHRvIGFsbCBsYW5kIHNjaGVtZXMgZW1iZWRkZWQgaW4gY291cGxlZC1jbGltYXRlIG1vZGVscy4gVGhlIGFpbSBvZiB0aGlzIHR1dG9yaWFsIGlzIHRvIGV4cGxvcmUgaG93IHRoZSByYXRlIG9mIHBob3Rvc3ludGhlc2lzIGNoYW5nZXMgaW4gcmVzcG9uc2VzIHRvIHRoZSBlbnZpcm9ubWVudDogcGhvdG9zeW50aGV0aWNhbGx5IGFjdGl2ZSByYWRpYXRpb24gKFBBUiksIHRlbXBlcmF0dXJlIGFuZCBjYXJib24gZGlveGlkZSAoQ09+Mn4pLiBXZSB3aWxsIHVzZSB0aGlzIHVuZGVyc3RhbmRpbmcgdG8gbWFrZSBwcmVkaWN0aW9ucyBhYm91dCBob3cgdmVnZXRhdGlvbiB3aWxsIHJlc3BvbnNlIHRvIGdsb2JhbCBjaGFuZ2UuCgoKCmBgYHtyfQpzb3VyY2UoIlIvcGhvdG9zeW50aGVzaXMuUiIpCnNvdXJjZSgiUi9wYXJhbWV0ZXJzLlIiKQpzb3VyY2UoIlIvY29uc3RhbnRzLlIiKQpgYGAKCkJsYWgKCmBgYHtyfQoKIyBNZXQgdmFyaWFibGVzIC4uLgpUbGVhZiA8LSAyNS4wICsgREVHXzJfS0VMVklOClBBUiA8LSAxODAwLjAKQ3MgPC0gNDAwLgp2cGQgPC0gMS41CgpgYGAKCkJsYWgKCmBgYHtyfQpvdXQgPC0gY2FsY19waG90b3N5bnRoZXNpcyhwLCBUbGVhZiwgUEFSLCBDcywgdnBkLCBwZWFrZWRfVmNtYXg9VFJVRSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVha2VkX0ptYXg9VFJVRSkKCgpgYGAK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQkVFUzMwNDE6IE1vZGVsbGluZyB0aGUgcGhvdG9zeW50aGV0aWMgcmVzcG9uc2UgdG8gZW52aXJvbm1lbnRhbCBjb25kaXRpb25zIgpvdXRwdXQ6CiAgcGRmX2RvY3VtZW50OiBkZWZhdWx0CiAgaHRtbF9ub3RlYm9vazogZGVmYXVsdAotLS0KCmBgYHtyIHByZXNzdXJlLCBlY2hvPUZBTFNFLCBvdXQud2lkdGggPSAnMzAlJ30Ka25pdHI6OmluY2x1ZGVfZ3JhcGhpY3MoImRhdGEvbG9nby5qcGVnIikKYGBgCgojIEludHJvZHVjdGlvbgoKSW4gdGhpcyBsYWIgd2Ugd2lsbCBleHBsb3JlIGEgbGVhZi1sZXZlbCBwaG90b3N5bnRoZXNpcyBtb2RlbCAoRmFycXVoYXIgZXQgYWwuIDE5ODApLCB3aGljaCBpcyBjZW50cmFsIHRvIGFsbCBsYW5kIHNjaGVtZXMgZW1iZWRkZWQgaW4gY291cGxlZC1jbGltYXRlIG1vZGVscy4KCkluIHRoaXMgcHJhY3RpY2FsIHdlIGFyZSBnb2luZyB0bzoKCiogdG8gbGVhcm4gYWJvdXQgaG93IGxlYWYtbGV2ZWwgcGhvdG9zeW50aGVzaXMsIHJlc3BvbmRzIHRvIGNoYW5nZXMgaW4gdGhlIGVudmlyb25tZW50YWwgZm9yY2luZyAocGhvdG9zeW50aGV0aWNhbGx5IGFjdGl2ZSByYWRpYXRpb24sIHRlbXBlcmF0dXJlIGFuZCBjYXJib24gZGlveGlkZSkuCiogd2UgYXJlIGdvaW5nIHRvIGFwcGx5IHRoaXMgbW9kZWwgdG8gZWNvc3lzdGVtLXNjYWxlICh+MSBrbV4yKSBtZXRlb3JvbG9naWNhbCBkYXRhIGFuZCBleHBsb3JlIGhvdyB3ZWxsIGEgbGVhZi1sZXZlbCBtb2RlbCBjYW4gcHJlZGljdCBmbHV4ZXMgYXQgYSBsYXJnZXIgc3BhdGlhbCBzY2FsZS4KKiB3ZSBhcmUgZ29pbmcgdG8gdXNlIG91ciBuZXcgaW5zaWdodHMgdG8gY29uc2lkZXIgdGhlIGtleSBhc3N1bXB0aW9ucyB3ZSBhcmUgbWFraW5nIHdpdGggb3VyIG1vZGVsIGFuZCBpZGVudGlmeSB0aGUga2V5IHdlYWtuZXNzZXMgaW4gb3VyIGFwcHJvYWNoLgoKIyBSZXNwb25zZSB0byB0ZW1wZXJhdHVyZQoKTGV0J3Mgc3RhcnQgYnkgZXhwbG9yaW5nIHRoZSByZXNwb25zZSBvZiB0aGUgbW9kZWwgdG8gdGVtcGVyYXR1cmUuIEZpcnN0IHdlIG5lZWQgdG8gZ2VuZXJhdGUgc29tZSB0ZW1wZXJhdHVyZSBkYXRhOgoKYGBge3J9CmxpYnJhcnkoZ2dwbG90MikKCnNvdXJjZSgiUi9waG90b3N5bnRoZXNpcy5SIikKc291cmNlKCJSL3BhcmFtZXRlcnMuUiIpCnNvdXJjZSgiUi9jb25zdGFudHMuUiIpCgpUbGVhZiA8LSBzZXEoMSwgNTAuMCwgMC41KSArIERFR18yX0tFTFZJTgpgYGAKClRoZSBwaG90b3N5bnRoZXNpcyBtb2RlbCBoYXMgdHdvIG1ham9yIHBhcmFtZXRlcnMsIHRoZSBwb3RlbnRpYWwgcmF0ZSBvZiBlbGVjdHJvbgp0cmFuc3BvcnQgKEptYXgpIGFuZCB0aGUgbWF4aW11bSByYXRlIG9mIFJ1YmlzY28gYWN0aXZpdHkgKFZjbWF4KS4gQm90aCBvZiB0aGVzZSBwYXJhbWV0ZXJzIHZhcnkgYXMgYSBmdW5jdGlvbiBvZiB0ZW1wZXJhdHVyZSwgbGV0J3MgcGxvdCB0aGVtLiBJJ3ZlIGNvcGllZCB0aGUgZnVuY3Rpb24gY2FsbHMgZnJvbSBwaG90b3N5bnRoZXMuUjoKCmBgYHtyfQpWY21heCA8LSBwZWFrZWRfYXJyaChwJFZjbWF4MjUsIHAkRWF2LCBUbGVhZiwgcCRkZWx0YVN2LCBwJEhkdikKSm1heCA8LSBwZWFrZWRfYXJyaChwJEptYXgyNSwgcCRFYWosIFRsZWFmLCBwJGRlbHRhU2osIHAkSGRqKQoKZGYgPC0gZGF0YS5mcmFtZShUbGVhZiwgVmNtYXgsIEptYXgpCgpnZ3Bsb3QoZGYsIGFlcyhUbGVhZi1ERUdfMl9LRUxWSU4pKSArCiAgZ2VvbV9saW5lKGFlcyh5PVZjbWF4LCBjb2xvdXI9IlZjbWF4IikpICsKICBnZW9tX2xpbmUoYWVzKHk9Sm1heCwgY29sb3VyPSJKbWF4IikpICsKICB5bGFiKCJQYXJhbWV0ZXIgKHVtb2wgbS0yIHMtMSkiKSArCiAgeGxhYigiVGxlYWYgKGRlZyBDKSIpCmBgYAoKCgoK</div>
 
 
 

@@ -10,7 +10,7 @@ In this lab we will explore a leaf-level photosynthesis model (Farquhar et al. 1
 
 ### Running on your own computer
 
-To run the practical on your own computer:
+To run the practical:
 
 1. Download or clone the entire repository, either (hint, do b):
     a. Download the repository as a zip file, and uncompress it

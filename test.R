@@ -20,8 +20,9 @@ df <- data.frame(Tleaf, Vcmax, Jmax)
 ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   geom_line(aes(y=Vcmax, colour="Vcmax")) +
   geom_line(aes(y=Jmax, colour="Jmax")) +
-  ylab("Parameter (umol m-2 s-1)") +
-  xlab("Tleaf (deg C)")
+  ylab(expression("Paramater" ~ (mu * mol ~  m^{-2}  *  s^{-1}))) +
+  xlab(expression('Temperature ('*~degree*C*')')) + 
+  theme_classic()
   
 
 

@@ -13,6 +13,13 @@ knitr::include_graphics("data/logo.jpeg")
 
 In this lab we will explore a leaf-level photosynthesis model (Farquhar et al. 1980), which is central to all land schemes embedded in coupled-climate models. The aim of this tutorial is to explore how the rate of photosynthesis changes in responses to the environment: photosynthetically active radiation (PAR), temperature and carbon dioxide (CO~2~). We will use this understanding to make predictions about how vegetation will response to global change.
 
+# Practical aims:
+
+In this practical we are going to:
+
+* to learn about how photosynthesis at the leaf-level, responds to changes in the environmental forcing.
+* we are going to apply this model to ecosystem-scale (~1 km^2) driving data and explore how well a leaf-level model can predict fluxes at a larger spatial scale.
+* we are going to use our new insights to think consider the key assumptions we're making with this model and identify the key weaknesses in our approach.  
 
 
 ```{r}

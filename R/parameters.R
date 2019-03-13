@@ -73,10 +73,10 @@ Hdv <- 200000.0
 Hdj <- 200000.0
 
 # max rate of rubisco activity at 25 deg or 298 K
-Vcmax25 <- 103.6 # WTC estimates. Fitted to all ACi data
+Vcmax25 <- 40.0 # WTC estimates. Fitted to all ACi data
 
 # potential rate of electron transport at 25 deg or 298 K
-Jmax25 <- Vcmax25 * 1.72
+Jmax25 <- Vcmax25 * 1.67
 
 # Rspiration rate at the reference temperature 25 deg C or 298 K [deg K]
 Rd25 <- 1.4 # Aspinwall et al 2016 New Phyt (WTC3 estimates)

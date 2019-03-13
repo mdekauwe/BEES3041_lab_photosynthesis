@@ -78,3 +78,17 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 ```
 
 
+Let's get some CO2 data to run the model with
+
+```{r}
+mauna_loa_co2 <- read.table('ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt')
+names(mauna_loa_co2) <- c('year', 'co2ppm', 'unc')
+
+ggplot(mauna_loa_co2, aes(year, co2ppm)) +
+  geom_line() +
+  ylab("CO2 (ppm)") +
+  xlab('Year') + 
+  theme_classic()
+```
+
+

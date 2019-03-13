@@ -1702,37 +1702,42 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>In this lab we will explore a leaf-level photosynthesis model (Farquhar et al. 1980), which is central to all land schemes embedded in coupled climate models. We will explore how the rate of photosynthesis changes in responses to the environment: photosynthetically active radiation (PAR), temperature and carbon dioxide (CO<sub>2</sub>). We will use this understanding to make predictions about the vegetation will respons to global change.</p>
+<p>In this lab we will explore a leaf-level photosynthesis model (Farquhar et al. 1980), which is central to all land schemes embedded in coupled-climate models. The aim of this tutorial is to explore how the rate of photosynthesis changes in responses to the environment: photosynthetically active radiation (PAR), temperature and carbon dioxide (CO<sub>2</sub>). We will use this understanding to make predictions about how vegetation will response to global change.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Blah</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuXG4jIE1ldCB2YXJpYWJsZXMgLi4uXG5UbGVhZiA8LSAyNS4wICsgREVHXzJfS0VMVklOXG5QQVIgPC0gMTgwMC4wXG5DcyA8LSA0MDAuXG52cGQgPC0gMS41XG5cbmBgYFxuYGBgIn0= -->
-<p><code>r</code>r</p>
-</div>
-<div id="met-variables" class="section level1">
-<h1>Met variables …</h1>
-<p>Tleaf &lt;- 25.0 + DEG_2_KELVIN PAR &lt;- 1800.0 Cs &lt;- 400. vpd &lt;- 1.5</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKFwiUi9waG90b3N5bnRoZXNpcy5SXCIpXG5zb3VyY2UoXCJSL3BhcmFtZXRlcnMuUlwiKVxuc291cmNlKFwiUi9jb25zdGFudHMuUlwiKVxuYGBgIn0= -->
+<pre class="r"><code>source(&quot;R/photosynthesis.R&quot;)
+source(&quot;R/parameters.R&quot;)
+source(&quot;R/constants.R&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Blah</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxub3V0IDwtIGNhbGNfcGhvdG9zeW50aGVzaXMocCwgVGxlYWYsIFBBUiwgQ3MsIHZwZCwgcGVha2VkX1ZjbWF4PVRSVUUsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBwZWFrZWRfSm1heD1UUlVFKVxuXG5cbmBgYFxuYGBgIn0= -->
-<p><code>r</code>r out &lt;- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE, peaked_Jmax=TRUE)</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIE1ldCB2YXJpYWJsZXMgLi4uXG5UbGVhZiA8LSAyNS4wICsgREVHXzJfS0VMVklOXG5QQVIgPC0gMTgwMC4wXG5DcyA8LSA0MDAuXG52cGQgPC0gMS41XG5cbmBgYCJ9 -->
+<pre class="r"><code>
+# Met variables ...
+Tleaf &lt;- 25.0 + DEG_2_KELVIN
+PAR &lt;- 1800.0
+Cs &lt;- 400.
+vpd &lt;- 1.5
+</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>Blah</p>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3V0IDwtIGNhbGNfcGhvdG9zeW50aGVzaXMocCwgVGxlYWYsIFBBUiwgQ3MsIHZwZCwgcGVha2VkX1ZjbWF4PVRSVUUsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBwZWFrZWRfSm1heD1UUlVFKVxuXG5cbmBgYCJ9 -->
+<pre class="r"><code>out &lt;- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQkVFUzMwNDE6IE1vZGVsbGluZyB0aGUgcGhvdG9zeW50aGV0aWMgcmVzcG9uc2UgdG8gZW52aXJvbm1lbnRhbCBjb25kaXRpb25zIgpvdXRwdXQ6CiAgcGRmX2RvY3VtZW50OiBkZWZhdWx0CiAgaHRtbF9ub3RlYm9vazogZGVmYXVsdAotLS0KCmBgYHtyIHByZXNzdXJlLCBlY2hvPUZBTFNFLCBvdXQud2lkdGggPSAnMzAlJ30Ka25pdHI6OmluY2x1ZGVfZ3JhcGhpY3MoImRhdGEvbG9nby5qcGVnIikKYGBgCgojIEludHJvZHVjdGlvbgoKSW4gdGhpcyBsYWIgd2Ugd2lsbCBleHBsb3JlIGEgbGVhZi1sZXZlbCBwaG90b3N5bnRoZXNpcyBtb2RlbCAoRmFycXVoYXIgZXQgYWwuIDE5ODApLCB3aGljaCBpcyBjZW50cmFsIHRvIGFsbCBsYW5kIHNjaGVtZXMgZW1iZWRkZWQgaW4gY291cGxlZCBjbGltYXRlIG1vZGVscy4gV2Ugd2lsbCBleHBsb3JlIGhvdyB0aGUgcmF0ZSBvZiBwaG90b3N5bnRoZXNpcyBjaGFuZ2VzIGluIHJlc3BvbnNlcyB0byB0aGUgZW52aXJvbm1lbnQ6IHBob3Rvc3ludGhldGljYWxseSBhY3RpdmUgcmFkaWF0aW9uIChQQVIpLCB0ZW1wZXJhdHVyZSBhbmQgY2FyYm9uIGRpb3hpZGUgKENPfjJ+KS4gV2Ugd2lsbCB1c2UgdGhpcyB1bmRlcnN0YW5kaW5nIHRvIG1ha2UgcHJlZGljdGlvbnMgYWJvdXQgdGhlIHZlZ2V0YXRpb24gd2lsbCByZXNwb25zIHRvIGdsb2JhbCBjaGFuZ2UuIAogCmBgYHtyfQpzb3VyY2UoIlIvcGhvdG9zeW50aGVzaXMuUiIpCnNvdXJjZSgiUi9wYXJhbWV0ZXJzLlIiKQpzb3VyY2UoIlIvY29uc3RhbnRzLlIiKQpgYGAKCkJsYWgKCmBgYHtyfQoKIyBNZXQgdmFyaWFibGVzIC4uLgpUbGVhZiA8LSAyNS4wICsgREVHXzJfS0VMVklOClBBUiA8LSAxODAwLjAKQ3MgPC0gNDAwLgp2cGQgPC0gMS41CgpgYGAKCkJsYWgKCmBgYHtyfQpvdXQgPC0gY2FsY19waG90b3N5bnRoZXNpcyhwLCBUbGVhZiwgUEFSLCBDcywgdnBkLCBwZWFrZWRfVmNtYXg9VFJVRSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVha2VkX0ptYXg9VFJVRSkKCgpgYGAKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQkVFUzMwNDE6IE1vZGVsbGluZyB0aGUgcGhvdG9zeW50aGV0aWMgcmVzcG9uc2UgdG8gZW52aXJvbm1lbnRhbCBjb25kaXRpb25zIgpvdXRwdXQ6CiAgcGRmX2RvY3VtZW50OiBkZWZhdWx0CiAgaHRtbF9ub3RlYm9vazogZGVmYXVsdAotLS0KCmBgYHtyIHByZXNzdXJlLCBlY2hvPUZBTFNFLCBvdXQud2lkdGggPSAnMzAlJ30Ka25pdHI6OmluY2x1ZGVfZ3JhcGhpY3MoImRhdGEvbG9nby5qcGVnIikKYGBgCgojIEludHJvZHVjdGlvbgoKSW4gdGhpcyBsYWIgd2Ugd2lsbCBleHBsb3JlIGEgbGVhZi1sZXZlbCBwaG90b3N5bnRoZXNpcyBtb2RlbCAoRmFycXVoYXIgZXQgYWwuIDE5ODApLCB3aGljaCBpcyBjZW50cmFsIHRvIGFsbCBsYW5kIHNjaGVtZXMgZW1iZWRkZWQgaW4gY291cGxlZC1jbGltYXRlIG1vZGVscy4gVGhlIGFpbSBvZiB0aGlzIHR1dG9yaWFsIGlzIHRvIGV4cGxvcmUgaG93IHRoZSByYXRlIG9mIHBob3Rvc3ludGhlc2lzIGNoYW5nZXMgaW4gcmVzcG9uc2VzIHRvIHRoZSBlbnZpcm9ubWVudDogcGhvdG9zeW50aGV0aWNhbGx5IGFjdGl2ZSByYWRpYXRpb24gKFBBUiksIHRlbXBlcmF0dXJlIGFuZCBjYXJib24gZGlveGlkZSAoQ09+Mn4pLiBXZSB3aWxsIHVzZSB0aGlzIHVuZGVyc3RhbmRpbmcgdG8gbWFrZSBwcmVkaWN0aW9ucyBhYm91dCBob3cgdmVnZXRhdGlvbiB3aWxsIHJlc3BvbnNlIHRvIGdsb2JhbCBjaGFuZ2UuCgoKCmBgYHtyfQpzb3VyY2UoIlIvcGhvdG9zeW50aGVzaXMuUiIpCnNvdXJjZSgiUi9wYXJhbWV0ZXJzLlIiKQpzb3VyY2UoIlIvY29uc3RhbnRzLlIiKQpgYGAKCkJsYWgKCmBgYHtyfQoKIyBNZXQgdmFyaWFibGVzIC4uLgpUbGVhZiA8LSAyNS4wICsgREVHXzJfS0VMVklOClBBUiA8LSAxODAwLjAKQ3MgPC0gNDAwLgp2cGQgPC0gMS41CgpgYGAKCkJsYWgKCmBgYHtyfQpvdXQgPC0gY2FsY19waG90b3N5bnRoZXNpcyhwLCBUbGVhZiwgUEFSLCBDcywgdnBkLCBwZWFrZWRfVmNtYXg9VFJVRSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVha2VkX0ptYXg9VFJVRSkKCgpgYGAK</div>
 
 
 

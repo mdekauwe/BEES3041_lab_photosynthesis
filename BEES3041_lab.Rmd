@@ -62,14 +62,16 @@ Let's tweak these values and see how our functions response to temperature chang
 
 ```{r}
 Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
-Vcmax2 <- peaked_arrh(p$Vcmax25, 40000, Tleaf, 650.0, p$Hdv)
+Vcmax2 <- peaked_arrh(p$Vcmax25, 40000, Tleaf, 620.0, p$Hdv)
+Vcmax3 <- peaked_arrh(p$Vcmax25, 70000, Tleaf, 650.0, p$Hdv)
 
 
 df <- data.frame(Tleaf, Vcmax, Jmax)
 
 ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   geom_line(aes(y=Vcmax, colour="Vcmax")) +
-  geom_line(aes(y=Vcmax2, colour="Vcmax - test")) +
+  geom_line(aes(y=Vcmax2, colour="Vcmax2")) +
+  geom_line(aes(y=Vcmax3, colour="Vcmax3")) +
   ylab(expression("Vcmax" ~ (mu * mol ~  m^{-2}  *  s^{-1}))) +
   xlab(expression('Temperature ('*~degree*C*')')) + 
   theme_classic()

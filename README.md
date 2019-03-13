@@ -15,4 +15,4 @@ To run the practical:
 1. Download or clone the entire repository, either:
     - Download the repository as a zip file, and uncompress it.
     - `git clone https://github.com/mdekauwe/BEES3041_lab_photosynthesis.git`
-2. Then open up the project file (`BEES3041_lab.Rproj`) in the repository folder in RStudio.
+2. Then open up the [project file (`BEES3041_lab.Rproj`)](BEES3041_lab.Rproj) in the repository folder in RStudio.

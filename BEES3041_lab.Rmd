@@ -19,6 +19,8 @@ In this practical we are going to:
 * we are going to apply this model to ecosystem-scale (~1 km^2) meteorological data and explore how well a leaf-level model can predict fluxes at a larger spatial scale.
 * we are going to use our new insights to consider the key assumptions we are making with our model and identify the key weaknesses in our approach.
 
+***
+
 # Response to temperature
 
 Let's start by exploring the response of the model to temperature. First we need to generate some temperature data:
@@ -77,6 +79,13 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   theme_classic()
 ```
 
+***
+
+## Response to PAR
+
+***
+
+## Response to CO~2~
 
 Let's get some CO2 data to run the model with
 

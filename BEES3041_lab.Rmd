@@ -60,7 +60,7 @@ Let's see what values we used:
 print(c(p$Vcmax25, p$Eav, p$deltaSv, p$Hdv))
 ```
 
-Let's tweak these values and see how our functions response to temperature changes
+Let's tweak these values and see how our functions respond to temperature changes
 
 ```{r}
 Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)

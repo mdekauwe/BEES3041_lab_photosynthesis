@@ -24,3 +24,5 @@ To run the practical:
     - `git clone https://github.com/mdekauwe/BEES3041_lab_photosynthesis.git`
 2. Then open up the [project file](BEES3041_lab.Rproj) in the repository folder in RStudio.
 3. You will have to knit the [Rmd](BEES3041_lab.Rmd) file to generate the practical instructions. To do so, open the [Rmd](BEES3041_lab.Rmd) file and click the knit icon.
+
+<img src="data/knit.jpeg" width="50%">.

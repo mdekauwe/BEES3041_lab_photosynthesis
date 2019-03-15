@@ -3,6 +3,7 @@ title: "BEES3041: Modelling the photosynthetic response to environmental conditi
 output:
   pdf_document: default
   html_notebook: default
+  number_sections: TRUE
 ---
 
 ```{r pressure, echo=FALSE, out.width = '30%'}
@@ -78,6 +79,28 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   xlab(expression('Temperature ('*~degree*C*')')) + 
   theme_classic()
 ```
+
+From this understanding of how the two key model parameters change with temperature, can we make a prediction about how the rate of photosynthesis is likely to change with temperature? Let's make a plot to see:
+
+```{r}
+
+PAR <- 1800.0
+Cs <- 400.
+vpd <- 1.5
+
+out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+
+df <- data.frame(Tleaf, out$An)
+
+ggplot(df, aes(Tleaf-DEG_2_KELVIN, out.An)) +
+  geom_line() +
+  ylab(expression("An" ~ (mu * mol ~  m^{-2}  *  s^{-1}))) +
+  xlab(expression('Temperature ('*~degree*C*')')) + 
+  theme_classic()
+```
+
+
 
 ***
 

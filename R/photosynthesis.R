@@ -162,7 +162,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   # Calculate conductance to water (mol m-2 s-1)
   gsw <- gsc * GSC_2_GSW
 
-  return ( list(An=An, gsc=gsc) )
+  return ( list(An=An, Ac=Ac, Aj=Aj, gsc=gsc) )
 
 }
 

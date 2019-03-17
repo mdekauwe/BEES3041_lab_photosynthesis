@@ -87,16 +87,16 @@ Rd25 <- 1.4 # Aspinwall et al 2016 New Phyt (WTC3 estimates)
 Q10 <- 2.0
 
 # activation energy for the parameter [J mol-1]
-Eaj <- 30000.0
+Eaj <-  29680.0 #30000.0
 
 # activation energy for the parameter [J mol-1]
-Eav <- 60000.0
+Eav <- 58550.0 #60000.0
 
 # entropy factor [J mol-1 K-1)
-deltaSj <- 650.0
+deltaSj <- 631.88 #650.0
 
 # entropy factor [J mol-1 K-1)
-deltaSv <- 650.0
+deltaSv <- 629.26 #650.0
 
 # leaf width (m)
 leaf_width <- 0.02

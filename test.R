@@ -32,3 +32,19 @@ out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
 print(out$gsc)
 print(out$An)
 
+PAR <- 1800.0
+Cs <- 400.
+vpd <- 1.5
+
+out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+
+df <- data.frame(Tleaf, out$An, out$Ac, out$Aj)
+
+ggplot(df, aes(Tleaf-DEG_2_KELVIN, out.An)) +
+  geom_line() +
+  ylab(expression("An" ~ (mu * mol ~  m^{-2}  *  s^{-1}))) +
+  ylab(expression("Ac" ~ (mu * mol ~  m^{-2}  *  s^{-1}))) +
+  ylab(expression("Aj" ~ (mu * mol ~  m^{-2}  *  s^{-1}))) +
+  xlab(expression('Temperature ('*~degree*C*')')) + 
+  theme_classic()

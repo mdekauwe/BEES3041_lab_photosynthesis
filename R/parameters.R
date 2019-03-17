@@ -37,8 +37,7 @@ Eag <- 37830.0
 theta_hyperbol <- 0.9995
 
 # Curvature of the light response (-)
-# set to MAESTRA numbers
-theta_J <- 0.57
+theta_J <- 0.85
 
 quantum_yield <- 0.3
 
@@ -50,21 +49,21 @@ tau <- 0.1
 # ENF: 0.062;EBF: 0.076;DBF: 0.092; C3G: 0.11
 refl <- 0.1
 
-absorptance <- 1.0- refl - tau
+absorptance <- 1.0 - refl - tau
 
 # Leaf quantum yield (initial slope of the A-light response curve) [mol mol-1]
 # this value (0.246) is slightly lower than MAESTRA (0.26)
 # reflectance and transmittance should change to MAESTRA
 
 #alpha = quantum_yield * absorptance # (Medlyn et al 2002)
-alpha <- 0.26
+alpha <- 0.24
 
 # residual stomatal conductance as net assimilation rate reaches zero
 # (mol m-2 s-1)
 g0 <- 1E-09
 
 # slope of the sensitivity of stomatal conductance to assimilation (mol m-2 s-1)
-g1 <- 2.43 # WTC3 estimates.
+g1 <- 4.0
 
 # Deactivation energy for Vcmax [J mol-1]
 Hdv <- 200000.0

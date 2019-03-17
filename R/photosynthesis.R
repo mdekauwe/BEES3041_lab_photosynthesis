@@ -118,7 +118,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   gs_over_a <- calc_stomatal_coeff(p, Cs, vpd)
 
   # Catch for low PAR, issue with Vj
-  if ( is_close(PAR, 0.0) | is_close(Vj, 0.0) ) {
+  if ( any(is_close(PAR, 0.0) | is_close(Vj, 0.0)) ) {
     Cic <- Cs
     Cij <- Cs
   } else {
@@ -130,7 +130,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   }
 
   # Catch for negative Ci and instances where Ci > Cs
-  if ( (Cic <= 0.0) | (Cic > Cs) ) {
+  if ( any((Cic <= 0.0) | (Cic > Cs)) ) {
     # Rate of photosynthesis when Rubisco activity is limiting
     Ac <- 0.0
   } else {
@@ -142,7 +142,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   }
 
   # When below light-compensation points, assume Ci=Ca.
-  if (Aj <= Rd + 1E-09) {
+  if ( any(Aj <= Rd + 1E-09) ) {
     Cij <- Cs
 
     # Rate of photosynthesis when RuBP regeneration is limiting
@@ -362,6 +362,9 @@ calc_stomatal_coeff <- function(p, Cs, vpd) {
   if (is_close(Cs, 0.0)) {
     gs_over_a <- 0.0
   } else {
+    if (vpd < 0.05) {
+      vpd <- 0.05
+    }
     gs_over_a <- (1.0 + p$g1 / sqrt(vpd)) / Cs
   }
 

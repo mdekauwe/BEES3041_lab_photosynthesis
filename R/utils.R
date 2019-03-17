@@ -57,15 +57,15 @@ quadratic <- function(a, b, c, large=FALSE) {
   # discriminant
   d <- b**2.0 - 4.0 * a * c
 
-  if ( any(d < 0.0) ) {
+  if (d < 0.0) {
     stop("imaginary root found")
   }
 
   if (large) {
 
-    if ( any((is_close(a, 0.0)) & (b > 0.0)) ) {
+    if ( (is_close(a, 0.0)) & (b > 0.0) ) {
       root <- -c / b
-    } else if ( any((is_close(a, 0.0)) & (is_close(b, 0.0))) ) {
+    } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
         root <- 0.0
         if (c != 0.0) {
           stop("Cant solve quadratic")
@@ -76,9 +76,9 @@ quadratic <- function(a, b, c, large=FALSE) {
 
   } else {
 
-    if ( any((is_close(a, 0.0)) & (b > 0.0)) ) {
+    if ( (is_close(a, 0.0)) & (b > 0.0) ) {
       root <- -c / b
-    } else if ( any((is_close(a, 0.0)) & (is_close(b, 0.0))) ) {
+    } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
       root <- 0.0
       if (c != 0.0) {
         stop('Cant solve quadratic')

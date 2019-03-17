@@ -151,7 +151,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
 
   # Hyperbolic minimum of Ac and Aj to smooth over discontinuity when moving
   # from electron # transport limited to rubisco limited photosynthesis
-  A <- -quadratic(1.0-1E-04, Ac+Aj, Ac*Aj, large=TRUE)
+  A <- -mapply(quadratic, 1.0-1E-04, Ac+Aj, Ac*Aj, large=TRUE)
 
   # Net photosynthesis rate (umol m-2 s-1)
   An <- A - Rd
@@ -331,7 +331,7 @@ calc_electron_transport_rate <-function(p, PAR, Jmax) {
   B <- -(p$alpha * PAR + Jmax)
   C <- p$alpha * PAR * Jmax
 
-  J <- quadratic(A, B, C, large=FALSE)
+  J <- mapply(quadratic, A, B, C, large=FALSE)
 
   return ( J )
 }
@@ -414,7 +414,7 @@ solve_ci <- function(p, gs_over_a, rd, Cs, gamma_star, gamma, beta) {
   arg3 <- p$g0 * beta * Cs
   C <- arg1 * arg2 - arg3
 
-  Ci <- quadratic(A, B, C, large=TRUE)
+  Ci <- mapply(quadratic, A, B, C, large=TRUE)
 
   return ( Ci )
 

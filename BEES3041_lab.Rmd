@@ -12,16 +12,23 @@ knitr::include_graphics("data/logo.jpeg")
 
 # Introduction
 
-In this lab we will explore a leaf-level photosynthesis model (Farquhar et al. 1980), which is central to all land schemes embedded in coupled-climate models.
+In this lab we are going to explore the leaf-level photosynthesis model proposed by Farquhar et al. (1980) and use this to simulate photosynthesis at leaf, ecosystem and global scales. The model is central to all land schemes embedded in coupled-climate models and predicts that
+photosynthesis is limited by the slowest of three biochemical processes: 
+  1. Maximum rate of Rubisco-catalysed carboxylation
+  2. Rate of ribulose 1,5-bisphosphate (RuBP) regeneration via electron transport 
+  3. The rate of RuBP regeneration via triose phosphate utilisation 
 
-In this practical we are going to:
+We are going to use this model to:
 
-* learn how leaf-level photosynthesis, responds to changes in the environmental forcing (photosynthetically active radiation, temperature and carbon dioxide).
-* we are going to apply this model ton ecosystem-scale (~1 km^2) meteorological data and explore how well a leaf-level model can predict fluxes at a larger spatial scale.
-* we are going to make some simple assumptions and scale our model up to make an estimate of global GPP
-* we are going to use our new insights to consider the key assumptions we are making with our model and identify the key weaknesses in our approach.
+* learn how leaf-level photosynthesis responds to changes in the environmental forcing (photosynthetically active radiation, temperature and carbon dioxide).
+* simulate GPP at the ecosystem-scale (~1 km^2) using FLUXNET (eddy covariance) meteorological data.
+* simulate a global estimate of GPP.
+
+From playing with this model across scales, we should start to see the key assumptions that our model makes. We should also begin to identify the key weakness in our approach as we apply the model at different scales. 
 
 ***
+
+
 
 # Response to temperature
 

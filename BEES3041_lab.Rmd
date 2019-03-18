@@ -30,8 +30,9 @@ From playing with this model across scales, we should start to see the key assum
 
 ### Key References:
 
-* Farquhar GD, Von Caemmerer S and Berry JA (1980) A
-biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Planta 149: 78–90
+* Bernacchi, C. J., Bagley, J. E., Serbin, S. P., Ruiz‐Vera, U. M., Rosenthal, D. M. And Vanloocke, A. (2013), Scaling photosynthesis using models. Plant Cell Environ, 36: 1641-1657
+* Farquhar GD, Von Caemmerer S and Berry JA (1980) A biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Planta 149: 78–90
+* Medlyn B.E., Dreyer E., Ellsworth D., et al. (2002a) Temperature response of parameters of a biochemically based model of photosynthesis. II. A review of experimental data. Plant, Cell & Environment 25, 1167–1179.
 
 ***
 
@@ -149,6 +150,7 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 #ggsave("plots/Ac_Aj_temp.pdf", width=9, height=6) 
 ```
 
+The model assumes that the Rubisco-limited assimilation rate follows a Michaelis–Menten response function, accounting  for a competitive inhibitor, oxygen. With Michaelis-Menten reactions, increasing the limiting substrate, CO~2~, the amount of enzyme present, Rubisco, or decreasing the competitive inhibitor, O2, will yield higher reaction rates. 
 
 
 ***

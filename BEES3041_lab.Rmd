@@ -4,6 +4,8 @@ output:
   pdf_document: default
   html_notebook: default
   number_sections: TRUE
+  code_folding: hide
+bibliography: data/bibliography.bib
 ---
 
 ```{r logo, echo=FALSE, out.width = '30%'}
@@ -12,13 +14,13 @@ knitr::include_graphics("data/logo.jpeg")
 
 # Introduction
 
-In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by Farquhar et al. (1980) and use this to simulate photosynthesis at leaf, ecosystem and global scales. The model is central to all land schemes embedded in coupled-climate models and predicts that photosynthesis is limited by the slowest of three biochemical processes: 
+In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by @Far80 and use this to simulate photosynthesis at leaf, ecosystem and global scales. The model is central to all land schemes embedded in coupled-climate models and predicts that photosynthesis is limited by the slowest of three biochemical processes: 
 
   1. Maximum rate of Rubisco-catalysed carboxylation
   2. Rate of ribulose 1,5-bisphosphate (RuBP) regeneration via electron transport 
   3. The rate of RuBP regeneration via triose phosphate utilisation 
 
-In this practical we are only going to consider the first two limitations. 
+In this practical we are only going to consider the first two limitations. There a number of great papers which cover this subject in detail, see for example, @Ber13, @Med02 and @Sha85.
 
 We are going to use this model to:
 
@@ -27,13 +29,6 @@ We are going to use this model to:
 * simulate a global estimate of GPP.
 
 From playing with this model across scales, we should start to see the key assumptions that our model makes. We should also begin to identify the key weakness in our approach as we apply the model at different scales. 
-
-### Key References:
-
-* Bernacchi, C. J., Bagley, J. E., Serbin, S. P., Ruiz‐Vera, U. M., Rosenthal, D. M. And Vanloocke, A. (2013), Scaling photosynthesis using models. Plant Cell Environ, 36: 1641-1657
-* Farquhar GD, Von Caemmerer S and Berry JA (1980) A biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Planta 149: 78–90
-* Medlyn B.E., Dreyer E., Ellsworth D., et al. (2002a) Temperature response of parameters of a biochemically based model of photosynthesis. II. A review of experimental data. Plant, Cell & Environment 25, 1167–1179.
-* Sharkey T.D. (1985) Photosynthesis in intact leaves of C3 plants: physics, physiology, and rate limitations. Botanical Review 51, 53–105.
 
 ***
 
@@ -325,4 +320,4 @@ ggplot(mauna_loa_co2, aes(year, co2ppm)) +
   theme_classic()
 ```
 
-
+# References

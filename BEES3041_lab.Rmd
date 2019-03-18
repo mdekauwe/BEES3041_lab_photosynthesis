@@ -90,21 +90,14 @@ From this understanding of how the two key model parameters change with temperat
 Let's make a plot to see if our predictions matched the models...
 
 ```{r}
-source("R/photosynthesis.R")
-source("R/parameters.R")
-source("R/constants.R")
-
 Tleaf <- seq(0, 50.0, 0.5) + DEG_2_KELVIN
-
 PAR <- 1800.0
 Cs <- 400.0
 vpd <- 1.5
 
 out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
-
 df <- data.frame(Tleaf, out$An, out$Ac, out$Aj, out$Cic)
-
 
 ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   geom_line(aes(y=out.Ac, colour="Rubisco-limited (Ac)")) +

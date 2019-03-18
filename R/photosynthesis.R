@@ -141,6 +141,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   if ( any((Cic <= 0.0) | (Cic > Cs)) ) {
     # Rate of photosynthesis when Rubisco activity is limiting
     Ac <- 0.0
+    Aj <- 0.0
   } else {
     # Rate of photosynthesis when Rubisco activity is limiting
     Ac <- assim(Cic, gamma_star, Vcmax, Km)
@@ -170,7 +171,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   # Calculate conductance to water (mol m-2 s-1)
   gsw <- gsc * GSC_2_GSW
 
-  return ( list(An=An, Ac=Ac, Aj=Aj, gsc=gsc, Vcmax=Vcmax, Cic=Cic) )
+  return ( list(An=An, Ac=Ac, Aj=Aj, gsc=gsc, Vcmax=Vcmax, Cic=Cic, Rd=Rd) )
 
 }
 

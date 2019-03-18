@@ -99,19 +99,21 @@ out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
 df <- data.frame(Tleaf, out$An, out$Ac, out$Aj)
 
-mp <- ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
+ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   geom_line(aes(y=out.Ac, colour="Rubisco-limited (Ac)")) +
   geom_line(aes(y=out.Aj, colour="RuBP-limited (Aj)")) +
   ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
   xlab(expression('Temperature ('*~degree*C*')')) + 
-  theme_classic(base_size=16) +
+  #theme_classic(base_size=16) +
+  theme_classic() +
   theme(legend.title=element_blank()) +
   theme(legend.position = c(0.9, 0.9)) +
   scale_colour_brewer(palette = "Set2")
+
 #if (dir.exists("plots") == FALSE) {
 #  dir.create("plots")
 #}
-#ggsave("plots/Ac_Aj_temp.pdf", mp, width=9, height=6)  
+#ggsave("plots/Ac_Aj_temp.pdf", width=9, height=6) 
 ```
 
 
@@ -130,11 +132,11 @@ out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
 df <- data.frame(PAR, out$An)
 
-  
 ggplot(df, aes(PAR, out.An)) +
   geom_line() +
   ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
   xlab(expression('PAR' ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  #theme_classic(base_size=16) +
   theme_classic() +
   theme(legend.title=element_blank()) +
   scale_colour_brewer(palette = "Set2")
@@ -142,11 +144,39 @@ ggplot(df, aes(PAR, out.An)) +
 #if (dir.exists("plots") == FALSE) {
 #  dir.create("plots")
 #}
-#ggsave("plots/Ac_Aj_temp.pdf")  
+#ggsave("plots/An_PAR.pdf", width=9, height=6) 
 ```
 ***
 
 ## Response to CO~2~
+
+```{r}
+Tleaf <- 25.0 + DEG_2_KELVIN
+PAR <- 1800.0
+Cs <- seq(100., 1000, 0.5) 
+vpd <- 1.5
+
+out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+df <- data.frame(Cs, out$An, out$Ac, out$Aj, out$Rd)
+
+ggplot(df, aes(Cs)) +
+  geom_line(aes(y=out.Ac - out.Rd, colour="Ac"), size=1.0) +
+  geom_line(aes(y=out.Aj - out.Rd, colour="Aj"), size=1.0) +
+  geom_line(aes(y=out.An, color="An"), size=1.0) +
+  ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  xlab(expression('Ca' ~ (mu * mol ~ mol^{-1}))) +
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.1, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+
+#if (dir.exists("plots") == FALSE) {
+#  dir.create("plots")
+#}
+#ggsave("plots/An_CO2.pdf", width=9, height=6)  
+```
 
 ***
 

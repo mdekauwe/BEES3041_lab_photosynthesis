@@ -118,7 +118,7 @@ Now that you've seen how to call the functions to calculate V~cmax~ and J~max~, 
 
 # Response to temperature
 
-From this understanding of how the two key model parameters change with temperature, can we make a prediction about how the rate of photosynthesis is likely to change with temperature? 
+From this understanding of how the key model parameters change with temperature, can we make a prediction about how the rate of photosynthesis is likely to change with temperature? 
 
 Let's make a plot to see if our predictions matched the models...
 

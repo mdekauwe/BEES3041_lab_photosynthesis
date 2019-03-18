@@ -60,7 +60,7 @@ alpha <- 0.24
 
 # residual stomatal conductance as net assimilation rate reaches zero
 # (mol m-2 s-1)
-g0 <- 1E-09
+g0 <- 0.0
 
 # slope of the sensitivity of stomatal conductance to assimilation (mol m-2 s-1)
 g1 <- 4.0

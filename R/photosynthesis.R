@@ -83,14 +83,22 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   #     Parameters of a biochemically based model of photosynthesis. II.
   #     A review of experimental data. Plant, Cell and Enviroment 25, 1167-1179.
   #
-
+  
+  # g1 and g0 are in units of H20, g0 must be converted to CO2 (but not g1, see below)
+  if (any((is_close(p$g0, 0.0)))) {
+    # Numerical fix for a zero g0
+    p.g0 <- 1E-09
+  } else {
+    p.g0 = p.g0 * GSW_2_GSC
+  }
+  
   # calculate temp dependancies of Michaelis-Menten constants for CO2, O2
   Km <- calc_michaelis_menten_constants(p, Tleaf)
 
   # CO2 compensation point in the absence of mitochondrial respiration
   # [umol mol-1]
   gamma_star <- arrh(p$gamstar25, p$Eag, Tleaf)
-
+ 
   # Calculate the maximum rate of Rubisco activity (Vcmax), accounting for
   # temperature dependancies
   if (peaked_Vcmax) {
@@ -110,13 +118,13 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   # Leaf mitochondrial respiration in the light or day respiration
   # (umol m-2 s-1). Following Collatz et al. (1991), assume Rd 1.5% of Vcmax
   Rd <- 0.015 * Vcmax
-
+  
   # Rate of electron transport, which is a function of absorbed PAR
   J <- calc_electron_transport_rate(p, PAR, Jmax)
   Vj <- J / 4.0
 
   gs_over_a <- calc_stomatal_coeff(p, Cs, vpd)
-
+ 
   # Catch for low PAR, issue with Vj
   if ( any(is_close(PAR, 0.0) | is_close(Vj, 0.0)) ) {
     Cic <- Cs
@@ -124,11 +132,11 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   } else {
     # Solution when Rubisco activity is limiting
     Cic <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
-
+    
     # Solution when electron transport rate is limiting
     Cij <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vj, 2.0*gamma_star)
   }
-
+  
   # Catch for negative Ci and instances where Ci > Cs
   if ( any((Cic <= 0.0) | (Cic > Cs)) ) {
     # Rate of photosynthesis when Rubisco activity is limiting
@@ -148,7 +156,14 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
     # Rate of photosynthesis when RuBP regeneration is limiting
     Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
-
+  
+  
+ 
+  df <- data.frame(Ac, Cic, gamma_star, Km)
+  print(df)
+  
+  stop
+  
   # Hyperbolic minimum of Ac and Aj to smooth over discontinuity when moving
   # from electron # transport limited to rubisco limited photosynthesis
   A <- -mapply(quadratic, 1.0-1E-04, Ac+Aj, Ac*Aj, large=TRUE)
@@ -162,7 +177,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   # Calculate conductance to water (mol m-2 s-1)
   gsw <- gsc * GSC_2_GSW
 
-  return ( list(An=An, Ac=Ac, Aj=Aj, gsc=gsc) )
+  return ( list(An=An, Ac=Ac, Aj=Aj, gsc=gsc, Vcmax=Vcmax, Cic=Cic) )
 
 }
 
@@ -358,13 +373,15 @@ calc_stomatal_coeff <- function(p, Cs, vpd) {
   #   -----------
   #   * Medlyn et al. 2002, PCE, 25, 1167-1179.
   #
-
-  if (is_close(Cs, 0.0)) {
-    gs_over_a <- 0.0
+  
+  # Medlyn moment can't have v.low VPD vals
+  vpd <- ifelse(vpd<0.05, 0.05, vpd)
+  
+  # 1.6 (from corrigendum to Medlyn et al 2011) is missing here,
+  # because we are calculating conductance to CO2!
+  if (any((is_close(Cs, 0.0)))) {
+    gs_over_a = 0.0
   } else {
-    if (vpd < 0.05) {
-      vpd <- 0.05
-    }
     gs_over_a <- (1.0 + p$g1 / sqrt(vpd)) / Cs
   }
 
@@ -415,7 +432,7 @@ solve_ci <- function(p, gs_over_a, rd, Cs, gamma_star, gamma, beta) {
   C <- arg1 * arg2 - arg3
 
   Ci <- mapply(quadratic, A, B, C, large=TRUE)
-
+  
   return ( Ci )
 
 }

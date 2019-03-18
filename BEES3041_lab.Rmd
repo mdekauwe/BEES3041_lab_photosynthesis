@@ -108,7 +108,7 @@ In the model, the Rubisco-limited photosynthesis rate is made up of five paramat
   
 Each of these parameters is temperature dependent, thus the skill of the model depends on correctly accounting for these response to temperature when using the model. When we use these model parameters in global models we typical assume that the parameters (excluding V~cmax~) are conserved across species. This assumption is broadly supported by observations, but what do we think happens in different growing conditions? By contrast, leaf measurements suggest that V~cmax~ varies considerably: varying between leaves within a single plant, across growing seasons and across plants. In global models, we typically assume that we can represent this variability using 5-11 plant functional types, see Rogers, A. Photosynth Res (2014) 119: 15. https://doi.org/10.1007/s11120-013-9818-1 for more details. Even when we do this in models, the disagreement across models is striking.
 
-```{r rogers, echo=FALSE, out.width = '5%'}
+```{r rogers, echo=FALSE, out.width = '40%', fig.align = "center"}
 knitr::include_graphics("data/rogers.png")
 ```
 

@@ -10,8 +10,9 @@ In this lab we will explore a leaf-level photosynthesis model (Farquhar et al. 1
 
 In this practical we are going to:
 
-* to learn about how leaf-level photosynthesis, responds to changes in the environmental forcing (photosynthetically active radiation, temperature and carbon dioxide).
-* we are going to apply this model to ecosystem-scale (~1 km^2) meteorological data and explore how well a leaf-level model can predict fluxes at a larger spatial scale.
+* learn how leaf-level photosynthesis, responds to changes in the environmental forcing (photosynthetically active radiation, temperature and carbon dioxide).
+* we are going to apply this model ton ecosystem-scale (~1 km^2) meteorological data and explore how well a leaf-level model can predict fluxes at a larger spatial scale.
+* we are going to make some simple assumptions and scale our model up to make an estimate of global GPP
 * we are going to use our new insights to consider the key assumptions we are making with our model and identify the key weaknesses in our approach.
 
 

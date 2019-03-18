@@ -6,7 +6,7 @@ output:
   number_sections: TRUE
 ---
 
-```{r pressure, echo=FALSE, out.width = '30%'}
+```{r logo, echo=FALSE, out.width = '30%'}
 knitr::include_graphics("data/logo.jpeg")
 ```
 
@@ -106,7 +106,11 @@ In the model, the Rubisco-limited photosynthesis rate is made up of five paramat
   4. K~o~: Michaelis– Menten coefficients for oxygenation.
   5. K~c~: Michaelis– Menten coefficients for carboxylation.
   
-Each of these paramaters is temperature dependent, thus the skill of the model depends on correctly accounting for these response to temperature when using the model....
+Each of these parameters is temperature dependent, thus the skill of the model depends on correctly accounting for these response to temperature when using the model. When we use these model parameters in global models we typical assume that the parameters (excluding V~cmax~) are conserved across species. This assumption is broadly supported by observations, but what do we think happens in different growing conditions? By contrast, leaf measurements suggest that V~cmax~ varies considerably: varying between leaves within a single plant, across growing seasons and across plants. In global models, we typically assume that we can represent this variability using 5-11 plant functional types, see Rogers, A. Photosynth Res (2014) 119: 15. https://doi.org/10.1007/s11120-013-9818-1 for more details. Even when we do this in models, the disagreement across models is striking.
+
+```{r rogers, echo=FALSE, out.width = '5%'}
+knitr::include_graphics("data/rogers.png")
+```
 
 Now that you've seen how to call the functions to calculate V~cmax~ and J~max~, can you look in the code (R/photosynthesis.R) and also plot $\Gamma$$^{*}$, R~d~m, K~o~ and K~m~ as a function of temperature?
   

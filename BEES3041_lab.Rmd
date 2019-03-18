@@ -12,12 +12,13 @@ knitr::include_graphics("data/logo.jpeg")
 
 # Introduction
 
-In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by Farquhar et al. (1980) and use this to simulate photosynthesis at leaf, ecosystem and global scales. The model is central to all land schemes embedded in coupled-climate models and predicts that
-photosynthesis is limited by the slowest of three biochemical processes: 
+In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by Farquhar et al. (1980) and use this to simulate photosynthesis at leaf, ecosystem and global scales. The model is central to all land schemes embedded in coupled-climate models and predicts that photosynthesis is limited by the slowest of three biochemical processes: 
 
   1. Maximum rate of Rubisco-catalysed carboxylation
   2. Rate of ribulose 1,5-bisphosphate (RuBP) regeneration via electron transport 
   3. The rate of RuBP regeneration via triose phosphate utilisation 
+
+In this practical we are only going to consider the first two limitations. 
 
 We are going to use this model to:
 

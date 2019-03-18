@@ -35,7 +35,7 @@ biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Pl
 
 ***
 
-# Response to temperature
+# Temperature responses of model parameters
 
 Let's start by exploring the response of the model to temperature. First we need to generate some temperature data:
 
@@ -77,7 +77,7 @@ print(c(p$Vcmax25, p$Eav, p$deltaSv, p$Hdv))
 print(c(p$Jmax25, p$Eaj, p$deltaSj, p$Hdj))
 ```
 
-Let's tweak these values and see how our functions respond to temperature changes
+Let's tweak these values and see how our functions respond to temperature
 
 ```{r}
 Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
@@ -98,7 +98,23 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   scale_colour_brewer(palette = "Set2")
 ```
 
-From this understanding of how the two key model parameters change with temperature, can we make a prediction about how the rate of photosynthesis is likely to change with temperature (i.e. between 0 and 50 degrees?)? 
+In the model, the Rubisco-limited photosynthesis rate is made up of five paramaters: 
+
+  1. $\Gamma$$^{*}$: the CO~2~ compensation point in the absence of mitochondrial respiration.
+  2. V~cmax~: the maximum rate of Rubisco activity.
+  3. R~d~: leaf mitochondrial respiration in the light (day respiration).
+  4. K~o~: Michaelis– Menten coefficients for oxygenation.
+  5. K~c~: Michaelis– Menten coefficients for carboxylation.
+  
+Each of these paramaters is temperature dependent, thus the skill of the model depends on correctly accounting for these response to temperature when using the model....
+
+Now that you've seen how to call the functions to calculate V~cmax~ and J~max~, can you look in the code (R/photosynthesis.R) and also plot $\Gamma$$^{*}$, R~d~m, K~o~ and K~m~ as a function of temperature?
+  
+***
+
+# Response to temperature
+
+From this understanding of how the two key model parameters change with temperature, can we make a prediction about how the rate of photosynthesis is likely to change with temperature? 
 
 Let's make a plot to see if our predictions matched the models...
 

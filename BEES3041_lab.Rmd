@@ -33,6 +33,7 @@ From playing with this model across scales, we should start to see the key assum
 * Bernacchi, C. J., Bagley, J. E., Serbin, S. P., Ruiz‐Vera, U. M., Rosenthal, D. M. And Vanloocke, A. (2013), Scaling photosynthesis using models. Plant Cell Environ, 36: 1641-1657
 * Farquhar GD, Von Caemmerer S and Berry JA (1980) A biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Planta 149: 78–90
 * Medlyn B.E., Dreyer E., Ellsworth D., et al. (2002a) Temperature response of parameters of a biochemically based model of photosynthesis. II. A review of experimental data. Plant, Cell & Environment 25, 1167–1179.
+* Sharkey T.D. (1985) Photosynthesis in intact leaves of C3 plants: physics, physiology, and rate limitations. Botanical Review 51, 53–105.
 
 ***
 
@@ -150,8 +151,42 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 #ggsave("plots/Ac_Aj_temp.pdf", width=9, height=6) 
 ```
 
-The model assumes that the Rubisco-limited assimilation rate follows a Michaelis–Menten response function, accounting  for a competitive inhibitor, oxygen. With Michaelis-Menten reactions, increasing the limiting substrate, CO~2~, the amount of enzyme present, Rubisco, or decreasing the competitive inhibitor, O2, will yield higher reaction rates. 
+The model assumes that the Rubisco-limited assimilation rate follows a Michaelis–Menten response function, accounting for a competitive inhibitor, oxygen. With Michaelis-Menten reactions, increasing the limiting substrate, CO~2~, the amount of enzyme present, Rubisco, or decreasing the competitive inhibitor, O2, will yield higher reaction rates. The model also assumes that the RuBP regeneration-limited rate of assimilation depends on the rate at which the light reactions generate ATP and NADPH; this process is limited at low light intensity. 
 
+Let's demonstrate this is the case by reducing and increasing the intercellular concentration of O2 parameter and plotting the impact. Rubisco catalyses the oxygenation of RuBP as well as carboxylation, although the affinity for oxygen is lower than that for CO~2~. 
+
+```{r}
+Tleaf <- seq(0, 50.0, 0.5) + DEG_2_KELVIN
+PAR <- 1800.0
+Cs <- 400.0
+vpd <- 1.5
+
+p$Oi = 210.0
+out_std <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                               peaked_Jmax=TRUE)
+
+p$Oi = 150.0
+out_low <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                               peaked_Jmax=TRUE)
+p$Oi = 300.0
+out_high <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                               peaked_Jmax=TRUE)
+
+df<- data.frame(Tleaf, out_low$An, out_std$An, out_high$An)
+
+ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
+  geom_line(aes(y=out_low.An, colour="150")) +
+  geom_line(aes(y=out_std.An, colour="210")) +
+  geom_line(aes(y=out_high.An, colour="250")) +
+  ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  xlab(expression('Temperature ('*~degree*C*')')) + 
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.9, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+```
+Can you work out how to test the factors two?
 
 ***
 

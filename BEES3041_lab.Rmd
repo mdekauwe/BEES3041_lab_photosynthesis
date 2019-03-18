@@ -99,18 +99,19 @@ out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
 df <- data.frame(Tleaf, out$An, out$Ac, out$Aj)
 
-ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
+mp <- ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   geom_line(aes(y=out.Ac, colour="Rubisco-limited (Ac)")) +
   geom_line(aes(y=out.Aj, colour="RuBP-limited (Aj)")) +
   ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
   xlab(expression('Temperature ('*~degree*C*')')) + 
-  theme_classic() +
+  theme_classic(base_size=16) +
   theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.9, 0.9)) +
   scale_colour_brewer(palette = "Set2")
 #if (dir.exists("plots") == FALSE) {
 #  dir.create("plots")
 #}
-#ggsave("plots/Ac_Aj_temp.pdf")  
+#ggsave("plots/Ac_Aj_temp.pdf", mp, width=9, height=6)  
 ```
 
 

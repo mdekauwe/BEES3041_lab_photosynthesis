@@ -193,6 +193,12 @@ ggplot(df, aes(Cs)) +
 
 ***
 
+## How good a model is it?
+
+Compare to leaf level measurements...
+
+***
+
 ## Flux stuff
 
 Compare model to flux-derived GPP, what factors account for diff

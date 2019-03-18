@@ -151,6 +151,8 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 #ggsave("plots/Ac_Aj_temp.pdf", width=9, height=6) 
 ```
 
+The plot shows the response of A to temperature increases steadily until it reaches an optimum point (T~opt~), after which A declines at a faster rate.
+
 The model assumes that the Rubisco-limited assimilation rate follows a Michaelis–Menten response function, accounting for a competitive inhibitor, oxygen. With Michaelis-Menten reactions, increasing the limiting substrate, CO~2~, the amount of enzyme present, Rubisco, or decreasing the competitive inhibitor, O2, will yield higher reaction rates. The model also assumes that the RuBP regeneration-limited rate of assimilation depends on the rate at which the light reactions generate ATP and NADPH; this process is limited at low light intensity. 
 
 Let's demonstrate this is the case by reducing and increasing the intercellular concentration of O2 parameter and plotting the impact. Rubisco catalyses the oxygenation of RuBP as well as carboxylation, although the affinity for oxygen is lower than that for CO~2~. 
@@ -192,6 +194,10 @@ Can you work out how to test the factors two?
 
 ## Response to PAR
 
+At low PAR, A is RUBP regeneration-limited due to the low rates of electron transport. The slope of the inital portion of the A/PAR curve is referred to as the quantum efficieicy of CO~2~ assimilation (see alpha parameter). As light increases, the rapid increase of A with PAR begins to diminsh. The rate this occurs at depends on what we assumed for the curvuture parameter (theta_J). 
+
+Let's make a plot of A as a function of PAR, can you see figure out how to explore the sensitivity of A to alpha and theta_J?
+
 ```{r}
 Tleaf <- 25.0 + DEG_2_KELVIN
 PAR <- seq(0, 2000.0, 0.5) 
@@ -200,17 +206,19 @@ vpd <- 1.5
 
 out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
-df <- data.frame(PAR, out$An)
 
-ggplot(df, aes(PAR, out.An)) +
-  geom_line() +
+df <- data.frame(PAR, out$An, out$Ac, out$Aj, out$Rd)
+
+ggplot(df, aes(PAR)) +
+  geom_line(aes(y=out.Ac - out.Rd, colour="Ac")) +
+  geom_line(aes(y=out.Aj - out.Rd, colour="Aj")) +
+  geom_line(aes(y=out.An, colour="An")) +
   ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
-  xlab(expression('PAR' ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
-  #theme_classic(base_size=16) +
+  xlab(expression('Temperature ('*~degree*C*')')) + 
   theme_classic() +
   theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.9, 0.9)) +
   scale_colour_brewer(palette = "Set2")
-
 #if (dir.exists("plots") == FALSE) {
 #  dir.create("plots")
 #}

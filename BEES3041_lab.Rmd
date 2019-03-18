@@ -228,6 +228,8 @@ ggplot(df, aes(PAR)) +
 
 ## Response to CO~2~
 
+At low [CO~2~] concentrations, photosynthesis is Rubisco-limited except for when PAR is also low. With inceasing [CO~2~], A increases until an inflection point is reached where A is said to be co-limited by Rubisco and RuBP regeneration. 
+
 ```{r}
 Tleaf <- 25.0 + DEG_2_KELVIN
 PAR <- 1800.0
@@ -258,13 +260,31 @@ ggplot(df, aes(Cs)) +
 
 ***
 
-## How good a model is it?
+## Response to global change
 
-Compare to leaf level measurements...
+The plots you've made should have given you some insight into how A will respond to changes in temperature and [CO~2~]. This is very powerful as it means you should now have a good sense of what a climate model will simulate will happen to GPP in the future.
+
+You can probably also make an informed guess about some of the factors that we haven't accounted for in this model. For example, what happens to photosynthesis in a drought? What happens as the ozone concentration changes? The model predicts and instantaneous response to temperature but what about acclimation to temperature? 
 
 ***
 
 ## Flux stuff
+
+Let's now apply the leaf-level model at a coarser spatial scale and compare our model simulations to measured data. In doing so, try and keep in mind the assumptions we are making. Can we explain any model-data disagreements based on these?
+
+To apply the leaf-level model at a km^2^ scale, we are going to use a big-leaf approximation to scale up our leaf-level model. We are going to assume that:
+
+$$APAR = PAR * fPAR$$
+
+where 
+
+$$fPAR = 1.0 - exp(-k * LAI)) / k$$
+and k=0.5.
+
+
+To do this we are going to have to make an assumption to scale our leaf-level model up to the canopy scale. We are going to use a big-leaf approximation 
+
+
 
 Compare model to flux-derived GPP, what factors account for diff
 ***

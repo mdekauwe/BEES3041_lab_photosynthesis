@@ -132,7 +132,7 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
   } else {
     # Solution when Rubisco activity is limiting
     Cic <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
-    
+   
     # Solution when electron transport rate is limiting
     Cij <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vj, 2.0*gamma_star)
   }
@@ -156,13 +156,6 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
     # Rate of photosynthesis when RuBP regeneration is limiting
     Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
   }
-  
-  
- 
-  df <- data.frame(Ac, Cic, gamma_star, Km)
-  print(df)
-  
-  stop
   
   # Hyperbolic minimum of Ac and Aj to smooth over discontinuity when moving
   # from electron # transport limited to rubisco limited photosynthesis
@@ -388,7 +381,7 @@ calc_stomatal_coeff <- function(p, Cs, vpd) {
   return ( gs_over_a )
 }
 
-solve_ci <- function(p, gs_over_a, rd, Cs, gamma_star, gamma, beta) {
+solve_ci <- function(p, gs_over_a, Rd, Cs, gamma_star, gamma, beta) {
   #
   #   Solve intercellular CO2 concentration using quadric equation, following
   #   Leuning 1990, see eqn 15a-c, solving simultaneous solution for Eqs 2, 12
@@ -400,7 +393,7 @@ solve_ci <- function(p, gs_over_a, rd, Cs, gamma_star, gamma, beta) {
   #     contains all the model parameters
   #   gs_over_a : float
   #     stomatal coefficient
-  #   rd : float
+  #   Rd : float
   #     day respiration rate [umol m-2 s-1]
   #   Cs : float
   #     leaf surface CO2 concentration [umol mol-1]
@@ -419,15 +412,15 @@ solve_ci <- function(p, gs_over_a, rd, Cs, gamma_star, gamma, beta) {
   #     Eucalyptus grandis. Aust. J. Plant Physiol., 17, 159-75.
   #
 
-  A = p$g0 + gs_over_a * (gamma - rd)
+  A = p$g0 + gs_over_a * (gamma - Rd)
 
-  arg1 <- (1. - Cs * gs_over_a) * (gamma - rd)
+  arg1 <- (1. - Cs * gs_over_a) * (gamma - Rd)
   arg2 <- p$g0 * (beta - Cs)
-  arg3 <- gs_over_a * (gamma * gamma_star + beta * rd)
+  arg3 <- gs_over_a * (gamma * gamma_star + beta * Rd)
   B <- arg1 + arg2 - arg3
 
   arg1 <- -(1.0 - Cs * gs_over_a)
-  arg2 <- (gamma * gamma_star + beta * rd)
+  arg2 <- (gamma * gamma_star + beta * Rd)
   arg3 <- p$g0 * beta * Cs
   C <- arg1 * arg2 - arg3
 

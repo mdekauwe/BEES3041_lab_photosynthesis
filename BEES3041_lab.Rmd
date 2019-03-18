@@ -53,7 +53,6 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   theme_classic() +
   theme(legend.title=element_blank()) +
   scale_colour_brewer(palette = "Set2")
-
 ```
 
 In the model both parameters are modelled using a peaked form of the Arrhenius equation. The Eav/Eaj parameters give the exponential increase of the function below the optimum; the Hdv/Hdj parameters describe the rate of decrease of the function above the optimum. 
@@ -97,7 +96,6 @@ source("R/constants.R")
 
 Tleaf <- seq(0, 50.0, 0.5) + DEG_2_KELVIN
 
-
 PAR <- 1800.0
 Cs <- 400.0
 vpd <- 1.5
@@ -109,7 +107,6 @@ df <- data.frame(Tleaf, out$An, out$Ac, out$Aj, out$Cic)
 
 
 ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
-  geom_line(aes(y=out.An, colour="An")) +
   geom_line(aes(y=out.Ac, colour="Rubisco-limited (Ac)")) +
   geom_line(aes(y=out.Aj, colour="RuBP-limited (Aj)")) +
   ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  *  s^{-1}))) +
@@ -117,6 +114,10 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   theme_classic() +
   theme(legend.title=element_blank()) +
   scale_colour_brewer(palette = "Set2")
+#if (dir.exists("plots") == FALSE) {
+#  dir.create("plots")
+#}
+#ggsave("plots/Ac_Aj_temp.pdf")  
 ```
 
 
@@ -133,9 +134,12 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 
 ## Flux stuff
 
+Compare model to flux-derived GPP, what factors account for diff
 ***
 
 ## Global predictions
+
+Can we build a simple global map of GPP with some simple assumptions....
 
 
 

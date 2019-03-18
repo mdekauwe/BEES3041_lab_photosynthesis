@@ -37,7 +37,7 @@ Eag <- 37830.0
 theta_hyperbol <- 0.9995
 
 # Curvature of the light response (-)
-theta_J <- 0.85
+theta_J <- 0.7
 
 quantum_yield <- 0.3
 
@@ -72,7 +72,7 @@ Hdv <- 200000.0
 Hdj <- 200000.0
 
 # max rate of rubisco activity at 25 deg or 298 K
-Vcmax25 <- 40.0 # WTC estimates. Fitted to all ACi data
+Vcmax25 <- 40.0 
 
 # potential rate of electron transport at 25 deg or 298 K
 Jmax25 <- Vcmax25 * 1.67
@@ -86,13 +86,13 @@ Rd25 <- 1.4 # Aspinwall et al 2016 New Phyt (WTC3 estimates)
 Q10 <- 2.0
 
 # activation energy for the parameter [J mol-1]
-Eaj <-  29680.0 #30000.0
+Eaj <-43790.0 #30000.0
 
 # activation energy for the parameter [J mol-1]
-Eav <- 58550.0 #60000.0
+Eav <- 51560.0 #60000.0
 
 # entropy factor [J mol-1 K-1)
-deltaSj <- 631.88 #650.0
+deltaSj <- 644.4338 #650.0
 
 # entropy factor [J mol-1 K-1)
 deltaSv <- 629.26 #650.0

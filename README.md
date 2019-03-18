@@ -6,15 +6,18 @@
 
 ### 10:00 am - 12:00 pm, 14th June, 2019 (T2)
 
-In this lab we will explore a leaf-level photosynthesis model (Farquhar et al. 1980), which is central to all land schemes embedded in coupled-climate models.
+In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by Farquhar et al. (1980) and use this to simulate photosynthesis at leaf, ecosystem and global scale
 
-In this practical we are going to:
+We are going to use this model to:
 
-* learn how leaf-level photosynthesis, responds to changes in the environmental forcing (photosynthetically active radiation, temperature and carbon dioxide).
-* we are going to apply this model ton ecosystem-scale (~1 km^2) meteorological data and explore how well a leaf-level model can predict fluxes at a larger spatial scale.
-* we are going to make some simple assumptions and scale our model up to make an estimate of global GPP
-* we are going to use our new insights to consider the key assumptions we are making with our model and identify the key weaknesses in our approach.
+* learn how leaf-level photosynthesis responds to changes in the environmental forcing (photosynthetically active radiation, temperature and carbon dioxide).
+* simulate GPP at the ecosystem-scale (~1 km^2) using FLUXNET (eddy covariance) meteorological data.
+* simulate a global estimate of GPP.
 
+### Key References:
+
+* Farquhar GD, Von Caemmerer S and Berry JA (1980) A
+biochemical model of photosynthetic CO2 assimilation in leaves of C3 species. Planta 149: 78–90
 
 ### Running on your own computer
 

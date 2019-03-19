@@ -246,35 +246,10 @@ Q. Can you plot the model output?
 
 OK we've now modelled some GPP based on real data, it is time to see how sensible our model simulation was! Let's compare the model output to the flux derived GPP. It is important to note that GPP isn't measured at flux sites, but is derived from other measurements; however, for the purposes of this practical you can view it is as a set of observations.
 
-```{r}
-fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Flux.nc"
-f <- nc_open(fname)
-GPP_obs <- ncvar_get(f, "GPP") 
-df_obs <- data.frame(time, GPP_obs)
+Q. Can you use the previous logic to load the flux file and extract the GPP variable and make a dataframe?
+Q. Can you use your function to turn this dataframe into daily data?
+Q. Can you plot the obs and the model?
 
-# Let's use the dplyr lib to aggregate to daily data
-df_obs_day <- df_obs %>%
-  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
-  group_by(day) %>%                    # group by the day column
-  summarise(GPP=sum(GPP_obs * conv))   # calculate the SUM of all the photosynthesis that 
-                                       # occurred on each day. NB unit conversion
-nc_close(f) 
-
-df_flx <- merge(df_day, df_obs_day, by="day")
-colnames(df_flx)<- c("day", "GPP_obs", "GPP_mod") 
-
-ggplot(df_flx, aes(day)) +
-  geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
-  geom_line(aes(y=GPP_mod, colour="MOD"), size=1.0) +
-  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
-  xlab('Time') + 
-  #theme_classic(base_size=16) +
-  theme_classic() +
-  theme(legend.title=element_blank()) +
-  theme(legend.position = c(0.1, 0.9)) +
-  scale_colour_brewer(palette = "Set2")
-
-```
 
 Our simple model doesn't do that bad a job at simulating GPP at a larger scale, nevertheless there are some notable periods of divergence. 
 

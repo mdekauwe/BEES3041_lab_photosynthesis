@@ -260,11 +260,11 @@ Let's now apply the leaf-level model at a coarser spatial scale and compare our 
 
 To apply the leaf-level model at a km^2^ scale, we are going to use a big-leaf approximation to scale up our leaf-level model. We are going to assume that:
 
-$$APAR = PAR $\times$ fPAR$$
+$$APAR = PAR * fPAR$$
 
 where 
 
-$$fPAR = (1.0 - exp(-k $\times$ LAI)) / k$$
+$$fPAR = (1.0 - exp(-k * LAI)) / k$$
 and k=0.5.
 
 Across the globe there is large network of sites (~900) with meteorological sensors measuring a range of variables (e.g. temperature, humidity, wind speed, rainfall) on a continuous basis. At each of these sites, the eddy covariance method is also used to measure the exchange of carbon dioxide, energy and water vapour fluxes between the vegetation and soils and the atmosphere. These data are freely avaliable at a number of sites (but not all!) under a release called FLUXNET2015 (https://fluxnet.fluxdata.org/).
@@ -292,6 +292,7 @@ print(c(lat,lon))
 
 
 ```{r}
+t <- ncvar_get(f, "time")
 time_from <- substr(ncatt_get(f, "time")$units, 15, 33)
 time <- as.POSIXct(t, origin=time_from)
 head(time)
@@ -409,7 +410,7 @@ Why do you think the model overestimates GPP after July?
 
 In contrast to the complicated leaf photosynthesis model following Farquhar, we could use a much simpler light use efficiency (LUE) model to estimate GPP. The LUE model predicts that GPP is directly proportional to the absorbed PAR,.
 
-$$GPP = $\epsilon$ * fPAR * PAR$$
+$$GPP = \epsilon * fPAR * PAR$$
 
 where $\epsilon$ is the light use efficiency constant. The LUE model originated from work by John Monteith. @Mon72 suggested that the NPP of well-watered and fertilized annual crop plants was linearly related to the amount of solar energy the plants absorbed over a growing season. In a follow up study, @Mon77 observed linear relationships between aboveground NPP and APAR for several different agricultural crops in Britain, leading him to suggest that $\epsilon$ was a conservative parameter. This approach is now used in combination with satellite data to model GPP at the global scale. In the MODIS algorithm, $\epsilon$ (emax below) varies by vegetation type and is reduces with temperature (temperature scalar) and water stress (via VPD scalar).
 
@@ -429,33 +430,21 @@ colnames(df)<- c("time", "PAR")
 df_par <- df %>%
   mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
   group_by(day) %>%                  # group by the day column
-  summarise(PAR=sum(PAR * conv))   # calculate the SUM 
+  summarise(PAR=sum(PAR * conv))     # calculate the SUM 
                                      # NB unit conversion
 
-df <- data.frame(time, Tair)
-colnames(df)<- c("time", "Tair") 
+df <- data.frame(time, vpd, Tair)
+colnames(df)<- c("time", "vpd", "Tair") 
 
 # Let's use the dplyr lib to aggregate to daily data
-df_tair <- df %>%
+df_vpd_tair <- df %>%
   mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
-  group_by(day) %>%                  # group by the day column
-  summarise(Tair=mean(Tair))   # calculate the SUM 
-                                     # NB unit conversion
+  group_by(day) %>%                          # group by the day column
+  summarise(vpd=mean(vpd), Tair=mean(Tair))  # calculate the mean 
+                                             # NB unit conversion
 
-df <- data.frame(time, vpd)
-colnames(df)<- c("time", "vpd") 
-
-# Let's use the dplyr lib to aggregate to daily data
-df_vpd <- df %>%
-  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
-  group_by(day) %>%                  # group by the day column
-  summarise(vpd=mean(vpd))   # calculate the mean 
-                                     # NB unit conversion
-
-df_tmp <- merge(df_par, df_tair, by="day")
-colnames(df_tmp)<- c("day", "PAR", "Tair") 
-df <- merge(df_tmp, df_vpd, by="day")
-colnames(df)<- c("day", "PAR", "Tair", "vpd") 
+df <- merge(df_par, df_vpd_tair, by="day")
+colnames(df)<- c("day", "PAR", "vpd", "Tair") 
 
 # Calculate temperature and vapour pressure deficit scalars, i.e. scale btw 0 and 1
 T_scal <- (df$Tair - min(df$Tair)) / (max(df$Tair) - min(df$Tair))
@@ -463,7 +452,7 @@ D_scal <- (df$vpd - min(df$vpd)) / (max(df$vpd) - min(df$vpd))
 
 # You should play with this value and see how your plot changes, can you predict
 # the impact before you change this value?
-emax <- 1.23 # g C m−2 MJ−1 APAR
+emax <- 1.0 # g C m−2 MJ−1 APAR
 
 GPP <- calc_lue(fPAR, df$PAR, T_scal, D_scal, emax)
 
@@ -486,7 +475,7 @@ ggplot(df, aes(day)) +
   scale_colour_brewer(palette = "Set2")
 ```
 
-By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? For example, why does the LUE have a much stronger seasonality? What assumption do you think drives this? Can you test this by adjusting the LUE equation?
+By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? For example, why does the LUE have a much stronger seasonality? What assumption do you think drive this? Can you test what you think the cause is by adjusting the LUE equation?
 
 ## Global predictions
 

@@ -8,12 +8,14 @@ output:
 bibliography: data/bibliography.bib
 ---
 
-```{r global_options, warning=FALSE}
+```{r global_options, message=F, warning=F}
 ```
 
 ```{r logo, echo=FALSE, out.width = '30%'}
 knitr::include_graphics("data/logo.jpeg")
 ```
+
+
 
 # Introduction
 
@@ -41,10 +43,13 @@ Let's start by exploring the response of the model to temperature. First we need
 
 ```{r}
 library(ggplot2)
+library(dplyr)
+library(ncdf4)
 
 source("R/photosynthesis.R")
 source("R/parameters.R")
 source("R/constants.R")
+source("R/lue.R")
 
 # The model expects the temperature to be in Kelvin so we need to do a conversion
 Tleaf <- seq(0.0, 50.0, 0.5) + DEG_2_KELVIN
@@ -308,8 +313,6 @@ The original data from FLUXNET aren't readily useable by land surface models. Th
 NetCDF files are the gold standard for the climate community as they are a self describing format that allows you to associate many layers of metadata with a binary file that wouldn't be possible with a text file. To be able to read these data we are going to have to use a NetCDF library and learn a few new commands...
 
 ```{r}
-library(ncdf4)
-
 fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Met.nc"
 f <- nc_open(fname)
 head(f)
@@ -372,8 +375,6 @@ ggplot(df, aes(time, Tair)) +
 LSMs typically use SWdown, so we will need to convert this to PAR and for our big-leaf scaling we also need to transform this to APAR using the equations we outlined above.
 
 ```{r}
-library(dplyr)
-
 PAR <- SWdown * SW_2_PAR
 k = 0.5
 LAI = 1.5
@@ -494,8 +495,6 @@ where $\epsilon$ is the light use efficiency constant. The LUE model originated 
 Let's generate a LUE, similar to the MODIS model and apply it at our flux site. 
 
 ```{r}
-source("R/lue.R")
-
 # PAR half of SW (W m-2 -> J m-2 s-1 -> MJ m-2 30 min-1)
 conv <- 0.5 * J_TO_MJ * SEC_2_HLFHR
 

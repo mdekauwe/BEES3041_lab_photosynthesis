@@ -264,7 +264,7 @@ $$APAR = PAR * fPAR$$
 
 where 
 
-$$fPAR = 1.0 - exp(-k * LAI)) / k$$
+$$fPAR = (1.0 - exp(-k * LAI)) / k$$
 and k=0.5.
 
 Across the globe there is large network of sites (~900) with meteorological sensors measuring a range of variables (e.g. temperature, humidity, wind speed, rainfall) on a continuous basis. At each of these sites, the eddy covariance method is also used to measure the exchange of carbon dioxide, energy and water vapour fluxes between the vegetation and soils and the atmosphere. These data are freely avaliable at a number of sites (but not all!) under a release called FLUXNET2015 (https://fluxnet.fluxdata.org/).
@@ -276,7 +276,95 @@ NetCDF files are the gold standard for the climate community as they are a self 
 
 
 ```{r}
-library(ncdf)
+library(ncdf4)
+
+fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Met.nc"
+f <- nc_open(fname)
+print(f)
+```
+
+Let's query the lat and lon 
+```{r}
+lon <- ncvar_get(f, "longitude")
+lat <- ncvar_get(f, "latitude")
+print(c(lat,lon))
+```
+
+
+```{r}
+time_from <- substr(ncatt_get(f, "time")$units, 15, 33)
+time <- as.POSIXct(t, origin=time_from)
+head(time)
+```
+
+Now let's extract the data we need to run our leaf model
+```{r}
+Tair <- ncvar_get(f, "Tair") 
+vpd <- ncvar_get(f, "VPD")
+SWdown <- ncvar_get(f, "SWdown")
+```
+
+It's a good idea to make a sanity plot at this point, garbage into a model leads to garbage out...
+```{r}
+
+# Just plot the first year
+df <- data.frame(time[1:(48*365)], Tair[1:(48*365)] - DEG_2_KELVIN)
+colnames(df)<- c("time","Tair") 
+
+ggplot(df, aes(time, Tair)) +
+  geom_line() +
+  xlab('Time') + 
+  ylab(expression('Temperature ('*~degree*C*')')) + 
+  theme_classic()
+```
+
+
+LSMs typically use SWdown, so we will need to convert this to PAR and for our big-leaf scaling we also need to transform this to APAR.
+
+```{r}
+library(dplyr)
+
+PAR <- SWdown * SW_2_PAR
+k = 0.5
+LAI = 1.5
+fPAR <- (1.0 - exp(-k * LAI)) / k
+APAR <- PAR * fPAR
+
+# Let's just assume this
+Cs <- 400.0
+
+out <- calc_photosynthesis(p, Tleaf, APAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+
+# Let's convert from 30 mins to daily sums as these will be easier to view.
+conv <- UMOL_TO_MOL * MOL_C_TO_GRAMS_C * SEC_2_HLFHR
+
+# build a dataframe to ease manipulation
+df <- data.frame(time, out$An)
+colnames(df)<- c("time", "An") 
+
+# Let's use the dplyr lib to aggregate to daily data
+df_day <- df %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%               # group by the day column
+  summarise(GPP=sum(An * conv))   # calculate the SUM of all the photosynthesis that occurred on each day
+                                  # NB unit conversion
+
+ggplot(df_day, aes(day, GPP)) +
+  geom_line() +
+  xlab('Time') + 
+  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
+  theme_classic()
+  scale_colour_brewer(palette = "Set2")
+
+```
+
+
+
+
+It is good practice to clean up when we're done with the NetCDF file.
+```{r}
+nc_close(nc) 
 ```
 
 

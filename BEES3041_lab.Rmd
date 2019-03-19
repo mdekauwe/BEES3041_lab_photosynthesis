@@ -382,10 +382,11 @@ df_obs_day <- df_obs %>%
 nc_close(f) 
 
 df <- merge(df_day, df_obs_day, by="day")
+colnames(df)<- c("day", "GPP_obs", "GPP_mod") 
 
-ggplot(df, aes(Cs)) +
-  geom_line(aes(y=df.GPP, colour="Model"), size=1.0) +
-  geom_line(aes(y=df.GPP_obs, colour="Obs"), size=1.0) +
+ggplot(df, aes(day)) +
+  geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
+  geom_line(aes(y=GPP_mod, colour="MOD"), size=1.0) +
   ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
   xlab('Time') + 
   #theme_classic(base_size=16) +

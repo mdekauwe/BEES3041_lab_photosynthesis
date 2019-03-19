@@ -452,7 +452,7 @@ D_scal <- (df$vpd - min(df$vpd)) / (max(df$vpd) - min(df$vpd))
 
 # You should play with this value and see how your plot changes, can you predict
 # the impact before you change this value?
-emax <- 1.0 # g C m−2 MJ−1 APAR
+emax <- 1.0 # g C m-2 MJ-1 APAR
 
 GPP <- calc_lue(fPAR, df$PAR, T_scal, D_scal, emax)
 

@@ -67,7 +67,7 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 
 In the model both parameters are modelled using a peaked form of the Arrhenius equation. The Eav/Eaj parameters give the exponential increase of the function below the optimum; the Hdv/Hdj parameters describe the rate of decrease of the function above the optimum. 
 
-Q. Can you work out what values you used? 
+**Q. Can you work out what values you used?**
 
 Answer:
 
@@ -76,7 +76,7 @@ print(c(p$Vcmax25, p$Eav, p$deltaSv, p$Hdv))
 print(c(p$Jmax25, p$Eaj, p$deltaSj, p$Hdj))
 ```
 
-Q. Can you now tweak these values and explore how the functions respond to temperature?
+**Q. Can you now tweak these values and explore how the functions respond to temperature?**
 
 Answer: 
 ```{r}
@@ -108,7 +108,7 @@ In the model, the Rubisco-limited photosynthesis rate is made up of five paramat
   
 Each of these parameters is temperature dependent, thus the skill of the model depends on correctly accounting for these response to temperature when using the model. When we use these model parameters in global models we typical assume that the parameters (excluding V~cmax~) are conserved across species. This assumption is broadly supported by observations.
 
-Q. What do we think happens in different growing conditions? 
+**Q. What do we think happens in different growing conditions?**
 
 By contrast, leaf measurements suggest that V~cmax~ varies considerably: varying between leaves within a single plant, across growing seasons and across plants. In global models, we typically assume that we can represent this variability using 5-11 plant functional types, see @Rog14 for more details. Even when we do this in models, the disagreement across models is striking.
 
@@ -116,15 +116,17 @@ By contrast, leaf measurements suggest that V~cmax~ varies considerably: varying
 knitr::include_graphics("data/rogers.png")
 ```
 
-Q. What impact do you think this variability will have on model simulations of GPP? 
-Q. Now that you've seen how to call the functions to calculate V~cmax~ and J~max~, can you look in the code (R/photosynthesis.R) and also plot $\Gamma$$^{*}$, R~d~m, K~o~ and K~m~ as a function of temperature?
+**Q. What impact do you think this variability will have on model simulations of GPP?**
+
+**Q. Now that you've seen how to call the functions to calculate V~cmax~ and J~max~, can you look in the code (R/photosynthesis.R) and also plot $\Gamma$$^{*}$, R~d~m, K~o~ and K~m~ as a function of temperature?**
   
 ***
 
 # Response to temperature
 
-Q. From your new understanding of how the key model parameters change with temperature, can you predict how the rate of photosynthesis is likely to change with temperature? 
-Q. Can you make a plot to see if your prediction matched the models? (hint ... You will need to call the calc_photosynthesis function)
+**Q. From your new understanding of how the key model parameters change with temperature, can you predict how the rate of photosynthesis is likely to change with temperature? **
+
+**Q. Can you make a plot to see if your prediction matched the models? (hint ... You will need to call the calc_photosynthesis function)**
 
 Answer:
 
@@ -159,8 +161,9 @@ The plot shows the response of A to temperature increases steadily until it reac
 
 The model assumes that the Rubisco-limited assimilation rate follows a Michaelis–Menten response function, accounting for a competitive inhibitor, oxygen. With Michaelis-Menten reactions: (i) increasing the limiting substrate, CO~2~; (ii) the amount of enzyme present, Rubisc; and/or (iii)  decreasing the competitive inhibitor, O2, will yield higher reaction rates. The model also assumes that the RuBP regeneration-limited rate of assimilation depends on the rate at which the light reactions generate ATP and NADPH; this process is limited at low light intensity. 
 
-Q. Can you increase and decrease the intercellular concentration of O2 parameter (Oi) and plot the impact. Does your plot fit with what I said above?
-Q. Can you figure out how to test the other factors?
+**Q. Can you increase and decrease the intercellular concentration of O2 parameter (Oi) and plot the impact. Does your plot fit with what I said above?**
+
+**Q. Can you figure out how to test the other factors?**
 
 Answer: 
 ```{r}
@@ -201,8 +204,9 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 
 At low PAR, A is RUBP regeneration-limited due to the low rates of electron transport. The slope of the inital portion of the A/PAR curve is referred to as the quantum efficieicy of CO~2~ assimilation (see alpha parameter). As light increases, the rapid increase of A with PAR begins to diminsh. The rate this occurs at depends on what we assumed for the curvuture parameter (theta_J). 
 
-Q. Can you vary PAR and plot the response of A (hint ... see how you made an array of temperature)?
-Q. Can youexplore the sensitivity of the A-PAR relationship to alpha and theta_J parameters?
+**Q. Can you vary PAR and plot the response of A (hint ... see how you made an array of temperature)?**
+
+**Q. Can youexplore the sensitivity of the A-PAR relationship to alpha and theta_J parameters?**
 
 Answer:
 
@@ -229,7 +233,7 @@ df <- data.frame(PAR, out$An, out$Ac, out$Aj, out$Rd)
 
 At low [CO~2~] concentrations, photosynthesis is Rubisco-limited except for when PAR is also low. With inceasing [CO~2~], A increases until an inflection point is reached where A is said to be co-limited by Rubisco and RuBP regeneration. 
 
-Q. Can you vary [CO~2~] and plot the response of A?
+**Q. Can you vary [CO~2~] and plot the response of A?**
 
 Answer:
 ```{r}
@@ -266,15 +270,19 @@ ggplot(df, aes(Cs)) +
 
 The plots you've made should have given you some insight into how photosynthesis will respond to changes in temperature and [CO~2~]. This is very powerful as it means you should now have a sense of what a climate model will simulate will happen to GPP in the future.
 
-Q. Given your new insights, what do you predict will happen to carbon uptake [CO~2~] keeps increasing?
-Q. What will happen in response to increasing temperature?
-Q. Do you think there will be an interaction in response to increasing temperature and [CO~2~]?
+**Q. Given your new insights, what do you predict will happen to carbon uptake [CO~2~] keeps increasing?**
+
+**Q. What will happen in response to increasing temperature?**
+
+**Q. Do you think there will be an interaction in response to increasing temperature and [CO~2~]?**
 
 You can probably also make an informed guess about some of the factors that we haven't accounted for in this model. 
 
-Q. What does the photosynthesis model predict happens in a drought? 
-Q. What happens to photosynthesis as the ozone concentration changes? 
-Q. The model predicts and instantaneous response to temperature but what about acclimation to temperature? 
+**Q. What does the photosynthesis model predict happens in a drought? **
+
+**Q. What happens to photosynthesis as the ozone concentration changes? **
+
+**Q. The model predicts and instantaneous response to temperature but what about acclimation to temperature? **
 
 ***
 
@@ -327,7 +335,7 @@ vpd <- ncvar_get(f, "VPD")
 SWdown <- ncvar_get(f, "SWdown")
 ```
 
-Q. Can you get also get the wind and precipitation variables?
+**Q. Can you get also get the wind and precipitation variables?**
 
 Answer:
 ```{r}
@@ -342,7 +350,7 @@ nc_close(f)
 
 It is a good idea to make a sanity plot at this point, garbage into a model leads to garbage out...
 
-Q. Can you plot Tair for the first year (the timestep of the data is 30 mins)?
+**Q. Can you plot Tair for the first year (the timestep of the data is 30 mins)?**
 
 Answer:
 ```{r}
@@ -395,7 +403,7 @@ df_day <- df %>%
                                   # NB unit conversion
 ```
 
-Q. Transforming the data from 30min to daily might be something we repeat, can you create a function to do this?
+**Q. Transforming the data from 30min to daily might be something we repeat, can you create a function to do this?**
 
 Answer:
 
@@ -410,7 +418,7 @@ conv_hlf_hr_to_daily <- function(df, var, var_name, stat) {
 }
 ```
 
-Q. Can you plot the model output?
+**Q. Can you plot the model output?**
 
 ```{r}
 ggplot(df_day, aes(day, GPP)) +
@@ -423,7 +431,7 @@ ggplot(df_day, aes(day, GPP)) +
 
 OK we've now modelled some GPP based on real data, it is time to see how sensible our model simulation was! Let's compare the model output to the flux derived GPP. It is important to note that GPP isn't measured at flux sites, but is derived from other measurements; however, for the purposes of this practical you can view it is as a set of observations.
 
-Q. Can you use the previous logic to load the flux file and extract the GPP variable and make a dataframe?
+**Q. Can you use the previous logic to load the flux file and extract the GPP variable and make a dataframe?**
 
 Answer:
 ```{r}
@@ -435,8 +443,9 @@ nc_close(f)
 df_obs <- data.frame(time, GPP_obs)
 ```
 
-Q. Can you use your function to turn this dataframe into daily data?
-Q. Can you plot the obs and the model?
+**Q. Can you use your function to turn this dataframe into daily data?**
+
+**Q. Can you plot the obs and the model?**
 
 Answer:
 ```{r}
@@ -467,8 +476,9 @@ ggplot(df_flx, aes(day)) +
 
 Our simple model doesn't do that bad a job at simulating GPP at a larger scale, nevertheless there are some notable periods of divergence. 
 
-Q. Why do you think the model underestimate GPP during the peak of summer? 
-Q. Why do you think the model overestimates GPP after July?
+**Q. Why do you think the model underestimate GPP during the peak of summer? **
+
+**Q. Why do you think the model overestimates GPP after July?**
 
 ***
 
@@ -499,7 +509,7 @@ df_par <- df %>%
                                      # NB unit conversion
 ```
 
-Q. Can you do the same for vpd and Tair, taking the mean instead?
+**Q. Can you do the same for vpd and Tair, taking the mean instead?**
 
 Answer:
 ```{r}
@@ -514,7 +524,7 @@ df_vpd_tair <- df %>%
                                              # NB unit conversion
 ```
 
-Q. Can you merge par, tair and tair into one dataframe?
+**Q. Can you merge par, tair and tair into one dataframe?**
 
 Answer
 ```{r}
@@ -541,7 +551,7 @@ df <- merge(df_flx, df_lue, by="day")
 colnames(df)<- c("day", "GPP_obs", "GPP_mod", "GPP_lue") 
 ```
 
-Q. Can you plot the obs, farquhar model and the LUE model on one plot?
+**Q. Can you plot the obs, farquhar model and the LUE model on one plot?**
 
 Answer:
 ```{r}
@@ -558,10 +568,11 @@ ggplot(df, aes(day)) +
   scale_colour_brewer(palette = "Set2")
 ```
 
-Q. By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? 
-Q. Why does the LUE have a much stronger seasonality? 
-What assumption do you think drive this? 
-Q. Can you test what you think the cause is by adjusting the LUE equation?
+**Q. By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? **
+
+**Q. Why does the LUE have a much stronger seasonality? What assumption do you think drive this? **
+
+**Q. Can you test what you think the cause is by adjusting the LUE equation?**
 
 ## Global predictions
 

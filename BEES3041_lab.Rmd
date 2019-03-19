@@ -304,6 +304,11 @@ vpd <- ncvar_get(f, "VPD")
 SWdown <- ncvar_get(f, "SWdown")
 ```
 
+It is good practice to clean up when we're done with the NetCDF file.
+```{r}
+nc_close(f) 
+```
+
 It's a good idea to make a sanity plot at this point, garbage into a model leads to garbage out...
 ```{r}
 
@@ -360,12 +365,40 @@ ggplot(df_day, aes(day, GPP)) +
 ```
 
 
+OK we've now modelled some GPP based on real data, it is time to see how sensible our model simulation was! Let's compare the model output to the flux derived GPP. It is important to note that GPP isn't measured at flux sites, but is derived from other measurements; however, for the purposes of this practical you can view it is as a set of observations.
 
-
-It is good practice to clean up when we're done with the NetCDF file.
 ```{r}
-nc_close(nc) 
+fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Flux.nc"
+f <- nc_open(fname)
+GPP_obs <- ncvar_get(f, "GPP") 
+df_obs <- data.frame(time, GPP_obs)
+
+# Let's use the dplyr lib to aggregate to daily data
+df_obs_day <- df_obs %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%                    # group by the day column
+  summarise(GPP=sum(GPP_obs * conv))   # calculate the SUM of all the photosynthesis that 
+                                       # occurred on each day. NB unit conversion
+nc_close(f) 
+
+df <- merge(df_day, df_obs_day, by="day")
+
+ggplot(df, aes(Cs)) +
+  geom_line(aes(y=df.GPP, colour="Model"), size=1.0) +
+  geom_line(aes(y=df.GPP_obs, colour="Obs"), size=1.0) +
+  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
+  xlab('Time') + 
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.1, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+
 ```
+
+
+
+
 
 
 In order to read the meteorological

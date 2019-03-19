@@ -411,7 +411,7 @@ In contrast to the complicated leaf photosynthesis model following Farquhar, we 
 
 $$GPP = $\epsilon$ * fPAR * PAR$$
 
-where $\epsilon$ is the light use efficiency constant. The LUE model originated from work by John Monteith. @Mon77 observed linear relationships between aboveground NPP and APAR for several different agricultural crops in Britain, leading him to suggest that $\epsilon$ was a conservative parameter. This approach is now used in combination with satellite data to model GPP at the global scale. In the MODIS algorithm, $\epsilon$ (emax below) varies by vegetation type and is reduces with temperature (temperature scalar) and water stress (via VPD scalar).
+where $\epsilon$ is the light use efficiency constant. The LUE model originated from work by John Monteith. @Mon72 suggested that the NPP of well-watered and fertilized annual crop plants was linearly related to the amount of solar energy the plants absorbed over a growing season. In a follow up study, @Mon77 observed linear relationships between aboveground NPP and APAR for several different agricultural crops in Britain, leading him to suggest that $\epsilon$ was a conservative parameter. This approach is now used in combination with satellite data to model GPP at the global scale. In the MODIS algorithm, $\epsilon$ (emax below) varies by vegetation type and is reduces with temperature (temperature scalar) and water stress (via VPD scalar).
 
 Let's generate a LUE, similar to the MODIS model and apply it at our flux site. 
 

@@ -297,8 +297,6 @@ The original data from FLUXNET aren't readily useable by land surface models. Th
 
 NetCDF files are the gold standard for the climate community as they are a self describing format that allows you to associate many layers of metadata with a binary file that wouldn't be possible with a text file. To be able to read these data we are going to have to use a NetCDF library and learn a few new commands...
 
-
-
 ```{r}
 library(ncdf4)
 
@@ -334,7 +332,10 @@ It is good practice to clean up when we're done with the NetCDF file.
 nc_close(f) 
 ```
 
-It's a good idea to make a sanity plot at this point, garbage into a model leads to garbage out...
+It is a good idea to make a sanity plot at this point, garbage into a model leads to garbage out...
+Q. Can you plot Tair for the first year (the timestep of the data is 30 mins)?
+
+Answer:
 ```{r}
 
 # Just plot the first year
@@ -349,7 +350,7 @@ ggplot(df, aes(time, Tair)) +
 ```
 
 
-LSMs typically use SWdown, so we will need to convert this to PAR and for our big-leaf scaling we also need to transform this to APAR.
+LSMs typically use SWdown, so we will need to convert this to PAR and for our big-leaf scaling we also need to transform this to APAR using the equations we outlined above.
 
 ```{r}
 library(dplyr)
@@ -424,9 +425,8 @@ ggplot(df_flx, aes(day)) +
 
 Our simple model doesn't do that bad a job at simulating GPP at a larger scale, nevertheless there are some notable periods of divergence. 
 
-Why do you think the model underestimate GPP during the peak of summer? 
-Why do you think the model overestimates GPP after July?
-
+Q. Why do you think the model underestimate GPP during the peak of summer? 
+Q. Why do you think the model overestimates GPP after July?
 
 ***
 
@@ -499,7 +499,10 @@ ggplot(df, aes(day)) +
   scale_colour_brewer(palette = "Set2")
 ```
 
-By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? For example, why does the LUE have a much stronger seasonality? What assumption do you think drive this? Can you test what you think the cause is by adjusting the LUE equation?
+Q. By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? 
+Q. Why does the LUE have a much stronger seasonality? 
+What assumption do you think drive this? 
+Q. Can you test what you think the cause is by adjusting the LUE equation?
 
 ## Global predictions
 

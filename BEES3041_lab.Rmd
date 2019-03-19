@@ -148,4 +148,191 @@ The original data from FLUXNET aren't readily useable by land surface models. Th
 
 NetCDF files are the gold standard for the climate community as they are a self describing format that allows you to associate many layers of metadata with a binary file that wouldn't be possible with a text file. To be able to read these data we are going to have to use a NetCDF library and learn a few new commands...
 
+```{r}
+library(ncdf4)
 
+fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Met.nc"
+f <- nc_open(fname)
+head(f)
+```
+
+Let's query the lat and lon 
+```{r}
+lon <- ncvar_get(f, "longitude")
+lat <- ncvar_get(f, "latitude")
+print(c(lat,lon))
+```
+
+
+```{r}
+t <- ncvar_get(f, "time")
+time_from <- substr(ncatt_get(f, "time")$units, 15, 33)
+time <- as.POSIXct(t, origin=time_from)
+head(time)
+```
+
+Now let's extract the data we need to run our leaf model
+```{r}
+Tair <- ncvar_get(f, "Tair") 
+vpd <- ncvar_get(f, "VPD")
+SWdown <- ncvar_get(f, "SWdown")
+```
+
+It is good practice to clean up when we're done with the NetCDF file.
+```{r}
+nc_close(f) 
+```
+
+It is a good idea to make a sanity plot at this point, garbage into a model leads to garbage out...
+Q. Can you plot Tair for the first year (the timestep of the data is 30 mins)?
+
+LSMs typically use SWdown, so we will need to convert this to PAR and for our big-leaf scaling we also need to transform this to APAR using the equations we outlined above.
+
+```{r}
+library(dplyr)
+
+PAR <- SWdown * SW_2_PAR
+k = 0.5
+LAI = 1.5
+fPAR <- (1.0 - exp(-k * LAI)) / k
+APAR <- PAR * fPAR
+
+# Let's just assume this
+Cs <- 400.0
+
+out <- calc_photosynthesis(p, Tleaf, APAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+
+# Let's convert from 30 mins to daily sums as these will be easier to view.
+conv <- UMOL_TO_MOL * MOL_C_TO_GRAMS_C * SEC_2_HLFHR
+
+# build a dataframe to ease manipulation
+df <- data.frame(time, out$An)
+colnames(df)<- c("time", "An") 
+
+# Let's use the dplyr lib to aggregate to daily data
+df_day <- df %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%               # group by the day column
+  summarise(GPP=sum(An * conv))   # calculate the SUM of all the photosynthesis that occurred on each day
+                                  # NB unit conversion
+
+ggplot(df_day, aes(day, GPP)) +
+  geom_line() +
+  xlab('Time') + 
+  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
+  theme_classic() +
+  scale_colour_brewer(palette = "Set2")
+```
+
+OK we've now modelled some GPP based on real data, it is time to see how sensible our model simulation was! Let's compare the model output to the flux derived GPP. It is important to note that GPP isn't measured at flux sites, but is derived from other measurements; however, for the purposes of this practical you can view it is as a set of observations.
+
+```{r}
+fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Flux.nc"
+f <- nc_open(fname)
+GPP_obs <- ncvar_get(f, "GPP") 
+df_obs <- data.frame(time, GPP_obs)
+
+# Let's use the dplyr lib to aggregate to daily data
+df_obs_day <- df_obs %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%                    # group by the day column
+  summarise(GPP=sum(GPP_obs * conv))   # calculate the SUM of all the photosynthesis that 
+                                       # occurred on each day. NB unit conversion
+nc_close(f) 
+
+df_flx <- merge(df_day, df_obs_day, by="day")
+colnames(df_flx)<- c("day", "GPP_obs", "GPP_mod") 
+
+ggplot(df_flx, aes(day)) +
+  geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
+  geom_line(aes(y=GPP_mod, colour="MOD"), size=1.0) +
+  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
+  xlab('Time') + 
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.1, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+
+```
+
+Our simple model doesn't do that bad a job at simulating GPP at a larger scale, nevertheless there are some notable periods of divergence. 
+
+Q. Why do you think the model underestimate GPP during the peak of summer? 
+Q. Why do you think the model overestimates GPP after July?
+
+***
+
+## Can we make a simpler model of GPP?
+
+In contrast to the complicated leaf photosynthesis model following Farquhar, we could use a much simpler light use efficiency (LUE) model to estimate GPP. The LUE model predicts that GPP is directly proportional to the absorbed PAR,.
+
+$$GPP = \epsilon * fPAR * PAR$$
+
+where $\epsilon$ is the light use efficiency constant. The LUE model originated from work by John Monteith. @Mon72 suggested that the NPP of well-watered and fertilized annual crop plants was linearly related to the amount of solar energy the plants absorbed over a growing season. In a follow up study, @Mon77 observed linear relationships between aboveground NPP and APAR for several different agricultural crops in Britain, leading him to suggest that $\epsilon$ was a conservative parameter. This approach is now used in combination with satellite data to model GPP at the global scale. In the MODIS algorithm, $\epsilon$ (emax below) varies by vegetation type and is reduces with temperature (temperature scalar) and water stress (via VPD scalar).
+
+Let's generate a LUE, similar to the MODIS model and apply it at our flux site. 
+
+```{r}
+source("R/lue.R")
+
+# PAR half of SW (W m-2 -> J m-2 s-1 -> MJ m-2 30 min-1)
+conv <- 0.5 * J_TO_MJ * SEC_2_HLFHR
+
+df <- data.frame(time, SWdown)
+colnames(df)<- c("time", "PAR") 
+
+# Let's use the dplyr lib to aggregate to daily data
+df_par <- df %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%                  # group by the day column
+  summarise(PAR=sum(PAR * conv))     # calculate the SUM 
+                                     # NB unit conversion
+
+df <- data.frame(time, vpd, Tair)
+colnames(df)<- c("time", "vpd", "Tair") 
+
+# Let's use the dplyr lib to aggregate to daily data
+df_vpd_tair <- df %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%                          # group by the day column
+  summarise(vpd=mean(vpd), Tair=mean(Tair))  # calculate the mean 
+                                             # NB unit conversion
+
+df <- merge(df_par, df_vpd_tair, by="day")
+colnames(df)<- c("day", "PAR", "vpd", "Tair") 
+
+# Calculate temperature and vapour pressure deficit scalars, i.e. scale btw 0 and 1
+T_scal <- (df$Tair - min(df$Tair)) / (max(df$Tair) - min(df$Tair))
+D_scal <- (df$vpd - min(df$vpd)) / (max(df$vpd) - min(df$vpd))
+
+# You should play with this value and see how your plot changes, can you predict
+# the impact before you change this value?
+emax <- 1.0 # g C m-2 MJ-1 APAR
+
+GPP <- calc_lue(fPAR, df$PAR, T_scal, D_scal, emax)
+
+df_lue <- data.frame(df_flx$day, GPP)
+colnames(df_lue)<- c("day", "GPP_lue") 
+
+df <- merge(df_flx, df_lue, by="day")
+colnames(df)<- c("day", "GPP_obs", "GPP_mod", "GPP_lue") 
+
+ggplot(df, aes(day)) +
+  geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
+  geom_line(aes(y=GPP_mod, colour="MOD - Farq"), size=1.0) +
+  geom_line(aes(y=GPP_lue, colour="MOD - LUE"), size=1.0) +
+  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
+  xlab('Time') + 
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.1, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+```
+
+Q. By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? 
+Q. Why does the LUE have a much stronger seasonality? 
+What assumption do you think drive this? 
+Q. Can you test what you think the cause is by adjusting the LUE equation?

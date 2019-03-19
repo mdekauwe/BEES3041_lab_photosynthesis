@@ -21,8 +21,8 @@ knitr::include_graphics("data/logo.jpeg")
 
 In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by @Far80 and use this to simulate photosynthesis at leaf, ecosystem and global scales. The model is central to all land schemes embedded in coupled-climate models and predicts that photosynthesis is limited by the slowest of three biochemical processes: 
 
-  1. Maximum rate of Rubisco-catalysed carboxylation
-  2. Rate of ribulose 1,5-bisphosphate (RuBP) regeneration via electron transport 
+  1. The maximum rate of Rubisco-catalysed carboxylation
+  2. The rate of ribulose 1,5-bisphosphate (RuBP) regeneration via electron transport 
   3. The rate of RuBP regeneration via triose phosphate utilisation 
 
 In this practical we are only going to consider the first two limitations. There a number of great papers which cover this subject in detail, see for example, @Ber13, @Med02 and @Sha85.
@@ -33,7 +33,7 @@ We are going to use the photosynthesis model to:
 * simulate GPP at the ecosystem-scale (~1 km^2) using FLUXNET (eddy covariance) meteorological data.
 * build a simpler GPP model and apply this at the ecosystem scale.
 
-From playing with these model across scales, we should start to see the key assumptions that our model makes. We should also begin to identify the key weakness in our approach as we apply the model at different scales. 
+From playing with these model we should start to see the key assumptions that our models make. We should also begin to identify the key weakness in our approach as we apply the model at different scales. We should also start to build an understanding that would allow us to predict how vegetation will respond to global change.
 
 ***
 
@@ -45,6 +45,7 @@ Let's start by exploring the response of the model to temperature. First we need
 library(ggplot2)
 library(dplyr)
 library(ncdf4)
+library(car, quietly=TRUE, warn.conflicts=FALSE)
 
 source("R/photosynthesis.R")
 source("R/parameters.R")

@@ -203,9 +203,6 @@ LSMs typically use SWdown, so we will need to convert this to PAR and for our bi
 ```{r}
 library(dplyr)
 
-# don't do this, just doing this to compile
-SWdown <- NULL
-
 PAR <- SWdown * SW_2_PAR
 k = 0.5
 LAI = 1.5

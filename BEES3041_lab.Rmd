@@ -283,20 +283,13 @@ df_par <- df %>%
   group_by(day) %>%                  # group by the day column
   summarise(PAR=sum(PAR * conv))     # calculate the SUM 
                                      # NB unit conversion
+```
 
-df <- data.frame(time, vpd, Tair)
-colnames(df)<- c("time", "vpd", "Tair") 
+Q. Can you do the same for vpd and Tair, taking the mean instead?
+Q. Can you merge par, tair and tair into one dataframe?
 
-# Let's use the dplyr lib to aggregate to daily data
-df_vpd_tair <- df %>%
-  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
-  group_by(day) %>%                          # group by the day column
-  summarise(vpd=mean(vpd), Tair=mean(Tair))  # calculate the mean 
-                                             # NB unit conversion
-
-df <- merge(df_par, df_vpd_tair, by="day")
-colnames(df)<- c("day", "PAR", "vpd", "Tair") 
-
+Let's generate the LUE inputs and plot create a dataframe
+```{r}
 # Calculate temperature and vapour pressure deficit scalars, i.e. scale btw 0 and 1
 T_scal <- (df$Tair - min(df$Tair)) / (max(df$Tair) - min(df$Tair))
 D_scal <- (df$vpd - min(df$vpd)) / (max(df$vpd) - min(df$vpd))
@@ -312,20 +305,9 @@ colnames(df_lue)<- c("day", "GPP_lue")
 
 df <- merge(df_flx, df_lue, by="day")
 colnames(df)<- c("day", "GPP_obs", "GPP_mod", "GPP_lue") 
-
-ggplot(df, aes(day)) +
-  geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
-  geom_line(aes(y=GPP_mod, colour="MOD - Farq"), size=1.0) +
-  geom_line(aes(y=GPP_lue, colour="MOD - LUE"), size=1.0) +
-  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
-  xlab('Time') + 
-  #theme_classic(base_size=16) +
-  theme_classic() +
-  theme(legend.title=element_blank()) +
-  theme(legend.position = c(0.1, 0.9)) +
-  scale_colour_brewer(palette = "Set2")
 ```
 
+Q. Can you plot the obs, farquhar model and the LUE model on one plot?
 Q. By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? 
 Q. Why does the LUE have a much stronger seasonality? 
 What assumption do you think drive this? 

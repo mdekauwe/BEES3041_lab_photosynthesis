@@ -30,11 +30,20 @@ We are going to use the photosynthesis model to:
 
 From playing with these model across scales, we should start to see the key assumptions that our model makes. We should also begin to identify the key weakness in our approach as we apply the model at different scales. 
 
-***
-
 # Temperature responses of model parameters
 
 Let's start by exploring the response of the model to temperature. First we need to generate some temperature data:
+
+```{r}
+library(ggplot2)
+
+source("R/photosynthesis.R")
+source("R/parameters.R")
+source("R/constants.R")
+
+# The model expects the temperature to be in Kelvin so we need to do a conversion
+Tleaf <- seq(0.0, 50.0, 0.5) + DEG_2_KELVIN
+```
 
 The photosynthesis model has two major parameters, the potential rate of electron transport (Jmax) and the maximum rate of Rubisco activity (Vcmax). Both of these parameters vary as a function of temperature, let's plot them. I've copied the function calls from photosynthes.R:
 

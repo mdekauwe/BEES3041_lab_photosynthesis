@@ -8,6 +8,9 @@ output:
 bibliography: data/bibliography.bib
 ---
 
+```{r global_options, warning=FALSE}
+```
+
 ```{r logo, echo=FALSE, out.width = '30%'}
 knitr::include_graphics("data/logo.jpeg")
 ```
@@ -29,6 +32,8 @@ We are going to use the photosynthesis model to:
 * build a simpler GPP model and apply this at the ecosystem scale.
 
 From playing with these model across scales, we should start to see the key assumptions that our model makes. We should also begin to identify the key weakness in our approach as we apply the model at different scales. 
+
+***
 
 # Temperature responses of model parameters
 
@@ -65,11 +70,35 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 
 In the model both parameters are modelled using a peaked form of the Arrhenius equation. The Eav/Eaj parameters give the exponential increase of the function below the optimum; the Hdv/Hdj parameters describe the rate of decrease of the function above the optimum. 
 
-In the model both parameters are modelled using a peaked form of the Arrhenius equation. The Eav/Eaj parameters give the exponential increase of the function below the optimum; the Hdv/Hdj parameters describe the rate of decrease of the function above the optimum. 
-
 **Q. Can you work out what values you used?**
 
+Answer:
+```{r, include=FALSE}
+print(c(p$Vcmax25, p$Eav, p$deltaSv, p$Hdv))
+print(c(p$Jmax25, p$Eaj, p$deltaSj, p$Hdj))
+```
+
 **Q. Can you now tweak these values and explore how the functions respond to temperature?**
+
+Answer: 
+```{r, include=FALSE}
+Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
+Vcmax2 <- peaked_arrh(p$Vcmax25, 40000, Tleaf, 620.0, p$Hdv)
+Vcmax3 <- peaked_arrh(p$Vcmax25, 70000, Tleaf, 650.0, p$Hdv)
+
+
+df <- data.frame(Tleaf, Vcmax, Jmax)
+
+ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
+  geom_line(aes(y=Vcmax, colour="Vcmax")) +
+  geom_line(aes(y=Vcmax2, colour="Vcmax2")) +
+  geom_line(aes(y=Vcmax3, colour="Vcmax3")) +
+  ylab(expression("Vcmax" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  xlab(expression('Temperature ('*~degree*C*')')) + 
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  scale_colour_brewer(palette = "Set2")
+```
 
 In the model, the Rubisco-limited photosynthesis rate is made up of five paramaters: 
 
@@ -92,14 +121,43 @@ knitr::include_graphics("data/rogers.png")
 **Q. What impact do you think this variability will have on model simulations of GPP?**
 
 **Q. Now that you've seen how to call the functions to calculate V~cmax~ and J~max~, can you look in the code (R/photosynthesis.R) and also plot $\Gamma$$^{*}$, R~d~m, K~o~ and K~m~ as a function of temperature?**
-
+  
 ***
 
 # Response to temperature
 
-**Q. From your new understanding of how the key model parameters change with temperature, can you predict how the rate of photosynthesis is likely to change with temperature?**
+**Q. From your new understanding of how the key model parameters change with temperature, can you predict how the rate of photosynthesis is likely to change with temperature? **
 
 **Q. Can you make a plot to see if your prediction matched the models? (hint ... You will need to call the calc_photosynthesis function)**
+
+Answer:
+
+```{r, include=FALSE}
+Tleaf <- seq(0, 50.0, 0.5) + DEG_2_KELVIN
+PAR <- 1800.0
+Cs <- 400.0
+vpd <- 1.5
+
+out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+df <- data.frame(Tleaf, out$An, out$Ac, out$Aj)
+
+ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
+  geom_line(aes(y=out.Ac, colour="Rubisco-limited (Ac)")) +
+  geom_line(aes(y=out.Aj, colour="RuBP-limited (Aj)")) +
+  ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  xlab(expression('Temperature ('*~degree*C*')')) + 
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.9, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+
+#if (dir.exists("plots") == FALSE) {
+#  dir.create("plots")
+#}
+#ggsave("plots/Ac_Aj_temp.pdf", width=9, height=6) 
+```
 
 The plot shows the response of A to temperature increases steadily until it reaches an optimum point (T~opt~), after which A declines at a faster rate.
 
@@ -108,6 +166,39 @@ The model assumes that the Rubisco-limited assimilation rate follows a Michaelis
 **Q. Can you increase and decrease the intercellular concentration of O2 parameter (Oi) and plot the impact. Does your plot fit with what I said above?**
 
 **Q. Can you figure out how to test the other factors?**
+
+Answer: 
+```{r, include=FALSE}
+Tleaf <- seq(0, 50.0, 0.5) + DEG_2_KELVIN
+PAR <- 1800.0
+Cs <- 400.0
+vpd <- 1.5
+
+p$Oi = 210.0
+out_std <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                               peaked_Jmax=TRUE)
+
+p$Oi = 150.0
+out_low <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                               peaked_Jmax=TRUE)
+p$Oi = 300.0
+out_high <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                               peaked_Jmax=TRUE)
+
+df<- data.frame(Tleaf, out_low$An, out_std$An, out_high$An)
+
+ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
+  geom_line(aes(y=out_low.An, colour="150")) +
+  geom_line(aes(y=out_std.An, colour="210")) +
+  geom_line(aes(y=out_high.An, colour="250")) +
+  ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  xlab(expression('Temperature ('*~degree*C*')')) + 
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.9, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+```
 
 ***
 
@@ -119,6 +210,25 @@ At low PAR, A is RUBP regeneration-limited due to the low rates of electron tran
 
 **Q. Can youexplore the sensitivity of the A-PAR relationship to alpha and theta_J parameters?**
 
+Answer:
+
+```{r, include=FALSE}
+Tleaf <- 25.0 + DEG_2_KELVIN
+PAR <- seq(0, 2000.0, 0.5) 
+Cs <- 400.0
+vpd <- 1.5
+
+out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+df <- data.frame(PAR, out$An, out$Ac, out$Aj, out$Rd)
+
+
+
+#if (dir.exists("plots") == FALSE) {
+#  dir.create("plots")
+#}
+#ggsave("plots/An_PAR.pdf", width=9, height=6) 
+```
 ***
 
 ## Response to CO~2~
@@ -126,6 +236,35 @@ At low PAR, A is RUBP regeneration-limited due to the low rates of electron tran
 At low [CO~2~] concentrations, photosynthesis is Rubisco-limited except for when PAR is also low. With inceasing [CO~2~], A increases until an inflection point is reached where A is said to be co-limited by Rubisco and RuBP regeneration. 
 
 **Q. Can you vary [CO~2~] and plot the response of A?**
+
+Answer:
+```{r, include=FALSE}
+Tleaf <- 25.0 + DEG_2_KELVIN
+PAR <- 1800.0
+Cs <- seq(100., 1000, 0.5) 
+vpd <- 1.5
+
+out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
+                           peaked_Jmax=TRUE)
+df <- data.frame(Cs, out$An, out$Ac, out$Aj, out$Rd)
+
+ggplot(df, aes(Cs)) +
+  geom_line(aes(y=out.Ac - out.Rd, colour="Ac"), size=1.0) +
+  geom_line(aes(y=out.Aj - out.Rd, colour="Aj"), size=1.0) +
+  geom_line(aes(y=out.An, color="An"), size=1.0) +
+  ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  xlab(expression('Ca' ~ (mu * mol ~ mol^{-1}))) +
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.1, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+
+#if (dir.exists("plots") == FALSE) {
+#  dir.create("plots")
+#}
+#ggsave("plots/An_CO2.pdf", width=9, height=6)  
+```
 
 ***
 
@@ -146,6 +285,8 @@ You can probably also make an informed guess about some of the factors that we h
 **Q. What happens to photosynthesis as the ozone concentration changes? **
 
 **Q. The model predicts and instantaneous response to temperature but what about acclimation to temperature? **
+
+***
 
 ## Ecosystem scale
 
@@ -198,6 +339,12 @@ SWdown <- ncvar_get(f, "SWdown")
 
 **Q. Can you get also get the wind and precipitation variables?**
 
+Answer:
+```{r, include=FALSE}
+wind <- ncvar_get(f, "Wind")
+precip <- ncvar_get(f, "Precip")
+```
+
 It is good practice to clean up when we're done with the NetCDF file.
 ```{r}
 nc_close(f) 
@@ -206,6 +353,21 @@ nc_close(f)
 It is a good idea to make a sanity plot at this point, garbage into a model leads to garbage out...
 
 **Q. Can you plot Tair for the first year (the timestep of the data is 30 mins)?**
+
+Answer:
+```{r, include=FALSE}
+
+# Just plot the first year
+df <- data.frame(time[1:(48*365)], Tair[1:(48*365)] - DEG_2_KELVIN)
+colnames(df)<- c("time","Tair") 
+
+ggplot(df, aes(time, Tair)) +
+  geom_line() +
+  xlab('Time') + 
+  ylab(expression('Temperature ('*~degree*C*')')) + 
+  theme_classic()
+```
+
 
 LSMs typically use SWdown, so we will need to convert this to PAR and for our big-leaf scaling we also need to transform this to APAR using the equations we outlined above.
 
@@ -245,16 +407,73 @@ df_day <- df %>%
 
 **Q. Transforming the data from 30min to daily might be something we repeat, can you create a function to do this?**
 
+Answer:
+```{r, include=FALSE}
+conv_hlf_hr_to_daily <- function(df, var, var_name, stat) {
+  df_day <- df %>%
+    mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+    group_by(day) %>%               # group by the day column
+    summarise(var_name=stat(var))   # calculate the sum/mean/max/min 
+                                    
+  return (df_day)
+}
+```
+
 **Q. Can you plot the model output?**
+
+```{r}
+ggplot(df_day, aes(day, GPP)) +
+  geom_line() +
+  xlab('Time') + 
+  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
+  theme_classic() +
+  scale_colour_brewer(palette = "Set2")
+```
 
 OK we've now modelled some GPP based on real data, it is time to see how sensible our model simulation was! Let's compare the model output to the flux derived GPP. It is important to note that GPP isn't measured at flux sites, but is derived from other measurements; however, for the purposes of this practical you can view it is as a set of observations.
 
 **Q. Can you use the previous logic to load the flux file and extract the GPP variable and make a dataframe?**
 
+Answer:
+```{r, include=FALSE}
+fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Flux.nc"
+f <- nc_open(fname)
+GPP_obs <- ncvar_get(f, "GPP") 
+nc_close(f) 
+
+df_obs <- data.frame(time, GPP_obs)
+```
+
 **Q. Can you use your function to turn this dataframe into daily data?**
 
 **Q. Can you plot the obs and the model?**
 
+Answer:
+```{r, include=FALSE}
+# Let's use the dplyr lib to aggregate to daily data
+df_obs_day <- df_obs %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%                    # group by the day column
+  summarise(GPP=sum(GPP_obs * conv))   # calculate the SUM of all the photosynthesis that 
+                                       # occurred on each day. NB unit conversion
+
+df_flx <- merge(df_day, df_obs_day, by="day")
+colnames(df_flx)<- c("day", "GPP_obs", "GPP_mod")
+
+
+
+ggplot(df_flx, aes(day)) +
+  geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
+  geom_line(aes(y=GPP_mod, colour="MOD"), size=1.0) +
+  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
+  xlab('Time') + 
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.1, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+
+```
 
 Our simple model doesn't do that bad a job at simulating GPP at a larger scale, nevertheless there are some notable periods of divergence. 
 
@@ -293,32 +512,8 @@ df_par <- df %>%
 
 **Q. Can you do the same for vpd and Tair, taking the mean instead?**
 
-**Q. Can you merge par, tair and tair into one dataframe?**
-
-Let's generate the LUE inputs and plot create a dataframe
-
-
-This should have been done earlier, it was one of the questions
-I'm putting it here otherwise the code won't knit together - try not to peak!
-
-```{r}
-fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Flux.nc"
-f <- nc_open(fname)
-GPP_obs <- ncvar_get(f, "GPP") 
-nc_close(f) 
-
-df_obs <- data.frame(time, GPP_obs)
-
-df_obs_day <- df_obs %>%
-  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
-  group_by(day) %>%                    # group by the day column
-  summarise(GPP=sum(GPP_obs * conv))   # calculate the SUM of all the photosynthesis that 
-                                       # occurred on each day. NB unit conversion
-
-df_flx <- merge(df_day, df_obs_day, by="day")
-colnames(df_flx)<- c("day", "GPP_obs", "GPP_mod")
-
-
+Answer:
+```{r, include=FALSE}
 df <- data.frame(time, vpd, Tair)
 colnames(df)<- c("time", "vpd", "Tair") 
 
@@ -328,16 +523,17 @@ df_vpd_tair <- df %>%
   group_by(day) %>%                          # group by the day column
   summarise(vpd=mean(vpd), Tair=mean(Tair))  # calculate the mean 
                                              # NB unit conversion
-
-
-df <- merge(df_par, df_vpd_tair, by="day")
-colnames(df)<- c("day", "PAR", "vpd", "Tair") 
-# This should have been done earlier, it was one of the questions
-# I'm putting it here otherwise the code won't knit together
 ```
 
+**Q. Can you merge par, tair and tair into one dataframe?**
 
+Answer
+```{r, include=FALSE}
+df <- merge(df_par, df_vpd_tair, by="day")
+colnames(df)<- c("day", "PAR", "vpd", "Tair") 
+```
 
+Let's generate the LUE inputs and plot create a dataframe
 ```{r}
 # Calculate temperature and vapour pressure deficit scalars, i.e. scale btw 0 and 1
 T_scal <- (df$Tair - min(df$Tair)) / (max(df$Tair) - min(df$Tair))
@@ -347,7 +543,7 @@ D_scal <- (df$vpd - min(df$vpd)) / (max(df$vpd) - min(df$vpd))
 # the impact before you change this value?
 emax <- 1.0 # g C m-2 MJ-1 APAR
 
-GPP <- calc_lue(fPAR, df_par$PAR, T_scal, D_scal, emax)
+GPP <- calc_lue(fPAR, df$PAR, T_scal, D_scal, emax)
 
 df_lue <- data.frame(df_flx$day, GPP)
 colnames(df_lue)<- c("day", "GPP_lue") 
@@ -358,8 +554,64 @@ colnames(df)<- c("day", "GPP_obs", "GPP_mod", "GPP_lue")
 
 **Q. Can you plot the obs, farquhar model and the LUE model on one plot?**
 
+Answer:
+```{r, include=FALSE}
+ggplot(df, aes(day)) +
+  geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
+  geom_line(aes(y=GPP_mod, colour="MOD - Farq"), size=1.0) +
+  geom_line(aes(y=GPP_lue, colour="MOD - LUE"), size=1.0) +
+  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
+  xlab('Time') + 
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.1, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+```
+
 **Q. By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? **
 
 **Q. Why does the LUE have a much stronger seasonality? What assumption do you think drive this? **
 
 **Q. Can you test what you think the cause is by adjusting the LUE equation?**
+
+## Global predictions
+
+Can we build a simple global map of GPP with some simple assumptions....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Let's get some CO2 data to run the model with
+
+#```{r}
+#mauna_loa_co2 <- read.table('ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt')
+#names(mauna_loa_co2) <- c('year', 'co2ppm', 'unc')
+#
+#ggplot(mauna_loa_co2, aes(year, co2ppm)) +
+#  geom_line() +
+#  ylab("CO2 (ppm)") +
+#  xlab('Year') + 
+#  theme_classic()
+#```
+
+# References

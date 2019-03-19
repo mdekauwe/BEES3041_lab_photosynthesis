@@ -397,7 +397,7 @@ ggplot(df, aes(day)) +
 
 ```
 
-
+Our simple model doesn't do that bad a job at simulating GPP at a larger scale, nevertheless there are some notable periods of dirergence. Why do you think the model underestimate GPP during the peak of summer? 
 
 
 

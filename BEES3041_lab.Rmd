@@ -183,18 +183,9 @@ head(time)
 Now let's extract the data we need to run our leaf model
 ```{r}
 Tair <- ncvar_get(f, "Tair") 
-vpd <- ncvar_get(f, "VPD")
-SWdown <- ncvar_get(f, "SWdown")
 ```
 
 Q. Can you get VPD and SWdown?
-
-Answer:
-```{r}
-vpd <- ncvar_get(f, "VPD")
-SWdown <- ncvar_get(f, "SWdown")
-```
-
 
 It is good practice to clean up when we're done with the NetCDF file.
 ```{r}

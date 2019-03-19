@@ -327,6 +327,12 @@ Tair <- ncvar_get(f, "Tair")
 
 Q. Can you get VPD and SWdown?
 
+Answer:
+```{r}
+vpd <- ncvar_get(f, "VPD")
+SWdown <- ncvar_get(f, "SWdown")
+```
+
 It is good practice to clean up when we're done with the NetCDF file.
 ```{r}
 nc_close(f) 
@@ -419,7 +425,7 @@ Q. Can you use the previous logic to load the flux file and extract the GPP vari
 
 Answer:
 ```{r}
-name <- "data/FR-Pue_2002-2003_FLUXNET2015_Flux.nc"
+fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Flux.nc"
 f <- nc_open(fname)
 GPP_obs <- ncvar_get(f, "GPP") 
 nc_close(f) 

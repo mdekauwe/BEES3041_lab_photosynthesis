@@ -201,7 +201,10 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 
 At low PAR, A is RUBP regeneration-limited due to the low rates of electron transport. The slope of the inital portion of the A/PAR curve is referred to as the quantum efficieicy of CO~2~ assimilation (see alpha parameter). As light increases, the rapid increase of A with PAR begins to diminsh. The rate this occurs at depends on what we assumed for the curvuture parameter (theta_J). 
 
-Let's make a plot of A as a function of PAR, can you see figure out how to explore the sensitivity of A to alpha and theta_J?
+Q. Can you vary PAR and plot the response of A (hint ... see how you made an array of temperature)?
+Q. Can youexplore the sensitivity of the A-PAR relationship to alpha and theta_J parameters?
+
+Answer:
 
 ```{r}
 Tleaf <- 25.0 + DEG_2_KELVIN
@@ -226,6 +229,9 @@ df <- data.frame(PAR, out$An, out$Ac, out$Aj, out$Rd)
 
 At low [CO~2~] concentrations, photosynthesis is Rubisco-limited except for when PAR is also low. With inceasing [CO~2~], A increases until an inflection point is reached where A is said to be co-limited by Rubisco and RuBP regeneration. 
 
+Q. Can you vary [CO~2~] and plot the response of A?
+
+Answer:
 ```{r}
 Tleaf <- 25.0 + DEG_2_KELVIN
 PAR <- 1800.0
@@ -258,15 +264,23 @@ ggplot(df, aes(Cs)) +
 
 ## Response to global change
 
-The plots you've made should have given you some insight into how A will respond to changes in temperature and [CO~2~]. This is very powerful as it means you should now have a good sense of what a climate model will simulate will happen to GPP in the future.
+The plots you've made should have given you some insight into how photosynthesis will respond to changes in temperature and [CO~2~]. This is very powerful as it means you should now have a sense of what a climate model will simulate will happen to GPP in the future.
 
-You can probably also make an informed guess about some of the factors that we haven't accounted for in this model. For example, what happens to photosynthesis in a drought? What happens as the ozone concentration changes? The model predicts and instantaneous response to temperature but what about acclimation to temperature? 
+Q. Given your new insights, what do you predict will happen to carbon uptake [CO~2~] keeps increasing?
+Q. What will happen in response to increasing temperature?
+Q. Do you think there will be an interaction in response to increasing temperature and [CO~2~]?
+
+You can probably also make an informed guess about some of the factors that we haven't accounted for in this model. 
+
+Q. What does the photosynthesis model predict happens in a drought? 
+Q. What happens to photosynthesis as the ozone concentration changes? 
+Q. The model predicts and instantaneous response to temperature but what about acclimation to temperature? 
 
 ***
 
 ## Ecosystem scale
 
-Let's now apply the leaf-level model at a coarser spatial scale and compare our model simulations to measured data. In doing so, try and keep in mind the assumptions we are making. Can we explain any model-data disagreements based on these?
+Let's now apply the leaf-level model at a coarser spatial scale and compare our model simulations to measured data. In doing so, try and keep in mind the assumptions we are making. Can we explain any model-data disagreements based on these.
 
 To apply the leaf-level model at a km^2^ scale, we are going to use a big-leaf approximation to scale up our leaf-level model. We are going to assume that:
 

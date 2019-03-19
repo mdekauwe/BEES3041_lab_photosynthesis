@@ -182,10 +182,12 @@ head(time)
 
 Now let's extract the data we need to run our leaf model
 ```{r}
-Tair <- ncvar_get(f, "Tair") 
+Tair <- ncvar_get(f, "Tair")
+vpd <- ncvar_get(f, "VPD")
+SWdown <- ncvar_get(f, "SWdown")
 ```
 
-Q. Can you get VPD and SWdown?
+Q. Can you get also get the wind and precipitation variables?
 
 It is good practice to clean up when we're done with the NetCDF file.
 ```{r}
@@ -200,6 +202,9 @@ LSMs typically use SWdown, so we will need to convert this to PAR and for our bi
 
 ```{r}
 library(dplyr)
+
+# don't do this, just doing this to compile
+SWdown <- NULL
 
 PAR <- SWdown * SW_2_PAR
 k = 0.5

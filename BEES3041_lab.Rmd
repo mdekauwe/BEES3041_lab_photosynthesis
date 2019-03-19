@@ -274,26 +274,6 @@ ggplot(df, aes(Cs)) +
 
 ***
 
-## Response to global change
-
-The plots you've made should have given you some insight into how photosynthesis will respond to changes in temperature and [CO~2~]. This is very powerful as it means you should now have a sense of what a climate model will simulate will happen to GPP in the future.
-
-**Q. Given your new insights, what do you predict will happen to carbon uptake [CO~2~] keeps increasing?**
-
-**Q. What will happen in response to increasing temperature?**
-
-**Q. Do you think there will be an interaction in response to increasing temperature and [CO~2~]?**
-
-You can probably also make an informed guess about some of the factors that we haven't accounted for in this model. 
-
-**Q. What does the photosynthesis model predict happens in a drought? **
-
-**Q. What happens to photosynthesis as the ozone concentration changes? **
-
-**Q. The model predicts and instantaneous response to temperature but what about acclimation to temperature? **
-
-***
-
 ## Ecosystem scale
 
 Let's now apply the leaf-level model at a coarser spatial scale and compare our model simulations to measured data. In doing so, try and keep in mind the assumptions we are making. Can we explain any model-data disagreements based on these.
@@ -575,9 +555,21 @@ ggplot(df, aes(day)) +
 
 **Q. Can you test what you think the cause is by adjusting the LUE equation?**
 
-## Global predictions
+***
 
-Can we build a simple global map of GPP with some simple assumptions....
+## Response to global change
+
+The plots you've made should have given you some insight into how photosynthesis will respond to changes in temperature and [CO~2~]. This is very powerful as it means you should now have a sense of what a climate model will simulate will happen to GPP in the future.
+
+**Q. Given your new insights, what do you predict will happen to carbon uptake if [CO~2~] keeps increasing?**
+
+**Q. What will happen in response to increasing temperature?**
+
+You can probably also make an informed guess about some of the factors that we haven't accounted for in this model. 
+
+**Q. What does the photosynthesis model predict happens in a drought? **
+
+**Q. The model predicts and instantaneous response to temperature but what about acclimation to temperature? **
 
 
 

@@ -360,7 +360,7 @@ ggplot(df_day, aes(day, GPP)) +
   geom_line() +
   xlab('Time') + 
   ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
-  theme_classic()
+  theme_classic() +
   scale_colour_brewer(palette = "Set2")
 
 ```

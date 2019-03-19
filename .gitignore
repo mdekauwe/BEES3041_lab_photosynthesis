@@ -7,3 +7,5 @@
 plots/*
 *.log
 *.tex
+*.knit.md
+*.utf8.md

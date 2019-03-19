@@ -260,11 +260,11 @@ Let's now apply the leaf-level model at a coarser spatial scale and compare our 
 
 To apply the leaf-level model at a km^2^ scale, we are going to use a big-leaf approximation to scale up our leaf-level model. We are going to assume that:
 
-$$APAR = PAR * fPAR$$
+$$APAR = PAR $\times$ fPAR$$
 
 where 
 
-$$fPAR = (1.0 - exp(-k * LAI)) / k$$
+$$fPAR = (1.0 - exp(-k $\times$ LAI)) / k$$
 and k=0.5.
 
 Across the globe there is large network of sites (~900) with meteorological sensors measuring a range of variables (e.g. temperature, humidity, wind speed, rainfall) on a continuous basis. At each of these sites, the eddy covariance method is also used to measure the exchange of carbon dioxide, energy and water vapour fluxes between the vegetation and soils and the atmosphere. These data are freely avaliable at a number of sites (but not all!) under a release called FLUXNET2015 (https://fluxnet.fluxdata.org/).
@@ -280,7 +280,7 @@ library(ncdf4)
 
 fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Met.nc"
 f <- nc_open(fname)
-print(f)
+head(f)
 ```
 
 Let's query the lat and lon 
@@ -381,10 +381,10 @@ df_obs_day <- df_obs %>%
                                        # occurred on each day. NB unit conversion
 nc_close(f) 
 
-df <- merge(df_day, df_obs_day, by="day")
-colnames(df)<- c("day", "GPP_obs", "GPP_mod") 
+df_flx <- merge(df_day, df_obs_day, by="day")
+colnames(df_flx)<- c("day", "GPP_obs", "GPP_mod") 
 
-ggplot(df, aes(day)) +
+ggplot(df_flx, aes(day)) +
   geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
   geom_line(aes(y=GPP_mod, colour="MOD"), size=1.0) +
   ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
@@ -397,28 +397,100 @@ ggplot(df, aes(day)) +
 
 ```
 
-Our simple model doesn't do that bad a job at simulating GPP at a larger scale, nevertheless there are some notable periods of divergence 
+Our simple model doesn't do that bad a job at simulating GPP at a larger scale, nevertheless there are some notable periods of divergence. 
 
 Why do you think the model underestimate GPP during the peak of summer? 
 Why do you think the model overestimates GPP after July?
 
 
-
-
-In order to read the meteorological
-Explain about GPP
-
-Explain about netcdf
-
-Build df to force model
-
-Pick drought and non-drought year?
-
-
-
 ***
 
+## Can we make a simpler model of GPP?
+
+In contrast to the complicated leaf photosynthesis model following Farquhar, we could use a much simpler light use efficiency (LUE) model to estimate GPP. The LUE model predicts that GPP is directly proportional to the absorbed PAR,.
+
+$$GPP = $\epsilon$ * fPAR * PAR$$
+
+where $\epsilon$ is the light use efficiency constant. The LUE model originated from work by John Monteith. @Mon77 observed linear relationships between aboveground NPP and APAR for several different agricultural crops in Britain, leading him to suggest that $\epsilon$ was a conservative parameter. This approach is now used in combination with satellite data to model GPP at the global scale. In the MODIS algorithm, $\epsilon$ (emax below) varies by vegetation type and is reduces with temperature (temperature scalar) and water stress (via VPD scalar).
+
+Let's generate a LUE, similar to the MODIS model and apply it at our flux site. 
+
+
+```{r}
+source("R/lue.R")
+
+# PAR half of SW (W m-2 -> J m-2 s-1 -> MJ m-2 30 min-1)
+conv <- 0.5 * J_TO_MJ * SEC_2_HLFHR
+
+df <- data.frame(time, SWdown)
+colnames(df)<- c("time", "PAR") 
+
+# Let's use the dplyr lib to aggregate to daily data
+df_par <- df %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%                  # group by the day column
+  summarise(PAR=sum(PAR * conv))   # calculate the SUM 
+                                     # NB unit conversion
+
+df <- data.frame(time, Tair)
+colnames(df)<- c("time", "Tair") 
+
+# Let's use the dplyr lib to aggregate to daily data
+df_tair <- df %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%                  # group by the day column
+  summarise(Tair=mean(Tair))   # calculate the SUM 
+                                     # NB unit conversion
+
+df <- data.frame(time, vpd)
+colnames(df)<- c("time", "vpd") 
+
+# Let's use the dplyr lib to aggregate to daily data
+df_vpd <- df %>%
+  mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+  group_by(day) %>%                  # group by the day column
+  summarise(vpd=mean(vpd))   # calculate the mean 
+                                     # NB unit conversion
+
+df_tmp <- merge(df_par, df_tair, by="day")
+colnames(df_tmp)<- c("day", "PAR", "Tair") 
+df <- merge(df_tmp, df_vpd, by="day")
+colnames(df)<- c("day", "PAR", "Tair", "vpd") 
+
+# Calculate temperature and vapour pressure deficit scalars, i.e. scale btw 0 and 1
+T_scal <- (df$Tair - min(df$Tair)) / (max(df$Tair) - min(df$Tair))
+D_scal <- (df$vpd - min(df$vpd)) / (max(df$vpd) - min(df$vpd))
+
+# You should play with this value and see how your plot changes, can you predict
+# the impact before you change this value?
+emax <- 1.23 # g C m−2 MJ−1 APAR
+
+GPP <- calc_lue(fPAR, df$PAR, T_scal, D_scal, emax)
+
+df_lue <- data.frame(df_flx$day, GPP)
+colnames(df_lue)<- c("day", "GPP_lue") 
+
+df <- merge(df_flx, df_lue, by="day")
+colnames(df)<- c("day", "GPP_obs", "GPP_mod", "GPP_lue") 
+
+ggplot(df, aes(day)) +
+  geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
+  geom_line(aes(y=GPP_mod, colour="MOD - Farq"), size=1.0) +
+  geom_line(aes(y=GPP_lue, colour="MOD - LUE"), size=1.0) +
+  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
+  xlab('Time') + 
+  #theme_classic(base_size=16) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  theme(legend.position = c(0.1, 0.9)) +
+  scale_colour_brewer(palette = "Set2")
+```
+
+By comparing the simple LUE model with our more complicated model, can we spot any weaknesses in the model assumptions? For example, why does the LUE have a much stronger seasonality? What assumption do you think drives this? Can you test this by adjusting the LUE equation?
+
 ## Global predictions
+
+
 
 Can we build a simple global map of GPP with some simple assumptions....
 
@@ -446,15 +518,15 @@ Can we build a simple global map of GPP with some simple assumptions....
 
 Let's get some CO2 data to run the model with
 
-```{r}
-mauna_loa_co2 <- read.table('ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt')
-names(mauna_loa_co2) <- c('year', 'co2ppm', 'unc')
-
-ggplot(mauna_loa_co2, aes(year, co2ppm)) +
-  geom_line() +
-  ylab("CO2 (ppm)") +
-  xlab('Year') + 
-  theme_classic()
-```
+#```{r}
+#mauna_loa_co2 <- read.table('ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt')
+#names(mauna_loa_co2) <- c('year', 'co2ppm', 'unc')
+#
+#ggplot(mauna_loa_co2, aes(year, co2ppm)) +
+#  geom_line() +
+#  ylab("CO2 (ppm)") +
+#  xlab('Year') + 
+#  theme_classic()
+#```
 
 # References

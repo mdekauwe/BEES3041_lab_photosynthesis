@@ -367,6 +367,10 @@ Cs <- 400.0
 
 out <- calc_photosynthesis(p, Tleaf, APAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
+```
+
+Plotting half-hourly output will be a bit much, so let's generate daily output
+```{r}
 
 # Let's convert from 30 mins to daily sums as these will be easier to view.
 conv <- UMOL_TO_MOL * MOL_C_TO_GRAMS_C * SEC_2_HLFHR
@@ -381,14 +385,32 @@ df_day <- df %>%
   group_by(day) %>%               # group by the day column
   summarise(GPP=sum(An * conv))   # calculate the SUM of all the photosynthesis that occurred on each day
                                   # NB unit conversion
+```
 
+Q. Transforming the data from 30min to daily might be something we repeat, can you create a function to do this?
+
+Answer:
+
+```{r}
+conv_hlf_hr_to_daily <- function(df, var, var_name, stat) {
+  df_day <- df %>%
+    mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
+    group_by(day) %>%               # group by the day column
+    summarise(var_name=stat(var))   # calculate the sum/mean/max/min 
+                                    
+  return (df_day)
+}
+```
+
+Q. Can you plot the model output?
+
+```{r}
 ggplot(df_day, aes(day, GPP)) +
   geom_line() +
   xlab('Time') + 
   ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
   theme_classic() +
   scale_colour_brewer(palette = "Set2")
-
 ```
 
 

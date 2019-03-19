@@ -202,6 +202,7 @@ nc_close(f)
 ```
 
 It is a good idea to make a sanity plot at this point, garbage into a model leads to garbage out...
+
 Q. Can you plot Tair for the first year (the timestep of the data is 30 mins)?
 
 LSMs typically use SWdown, so we will need to convert this to PAR and for our big-leaf scaling we also need to transform this to APAR using the equations we outlined above.
@@ -220,6 +221,10 @@ Cs <- 400.0
 
 out <- calc_photosynthesis(p, Tleaf, APAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
+```
+
+Plotting half-hourly output will be a bit much, so let's generate daily output
+```{r}
 
 # Let's convert from 30 mins to daily sums as these will be easier to view.
 conv <- UMOL_TO_MOL * MOL_C_TO_GRAMS_C * SEC_2_HLFHR
@@ -234,14 +239,10 @@ df_day <- df %>%
   group_by(day) %>%               # group by the day column
   summarise(GPP=sum(An * conv))   # calculate the SUM of all the photosynthesis that occurred on each day
                                   # NB unit conversion
-
-ggplot(df_day, aes(day, GPP)) +
-  geom_line() +
-  xlab('Time') + 
-  ylab(expression("GPP" ~ (g ~ C ~  m^{-2}  ~  d^{-1}))) +
-  theme_classic() +
-  scale_colour_brewer(palette = "Set2")
 ```
+
+Q. Transforming the data from 30min to daily might be something we repeat, can you create a function to do this?
+Q. Can you plot the model output?
 
 OK we've now modelled some GPP based on real data, it is time to see how sensible our model simulation was! Let's compare the model output to the flux derived GPP. It is important to note that GPP isn't measured at flux sites, but is derived from other measurements; however, for the purposes of this practical you can view it is as a set of observations.
 

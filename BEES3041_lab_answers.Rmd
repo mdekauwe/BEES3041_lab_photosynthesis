@@ -323,9 +323,9 @@ head(time)
 Now let's extract the data we need to run our leaf model
 ```{r}
 Tair <- ncvar_get(f, "Tair") 
-vpd <- ncvar_get(f, "VPD")
-SWdown <- ncvar_get(f, "SWdown")
 ```
+
+Q. Can you get VPD and SWdown?
 
 It is good practice to clean up when we're done with the NetCDF file.
 ```{r}
@@ -333,6 +333,7 @@ nc_close(f)
 ```
 
 It is a good idea to make a sanity plot at this point, garbage into a model leads to garbage out...
+
 Q. Can you plot Tair for the first year (the timestep of the data is 30 mins)?
 
 Answer:

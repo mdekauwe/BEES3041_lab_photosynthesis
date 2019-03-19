@@ -157,10 +157,12 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 
 The plot shows the response of A to temperature increases steadily until it reaches an optimum point (T~opt~), after which A declines at a faster rate.
 
-The model assumes that the Rubisco-limited assimilation rate follows a Michaelis–Menten response function, accounting for a competitive inhibitor, oxygen. With Michaelis-Menten reactions, increasing the limiting substrate, CO~2~, the amount of enzyme present, Rubisco, or decreasing the competitive inhibitor, O2, will yield higher reaction rates. The model also assumes that the RuBP regeneration-limited rate of assimilation depends on the rate at which the light reactions generate ATP and NADPH; this process is limited at low light intensity. 
+The model assumes that the Rubisco-limited assimilation rate follows a Michaelis–Menten response function, accounting for a competitive inhibitor, oxygen. With Michaelis-Menten reactions: (i) increasing the limiting substrate, CO~2~; (ii) the amount of enzyme present, Rubisc; and/or (iii)  decreasing the competitive inhibitor, O2, will yield higher reaction rates. The model also assumes that the RuBP regeneration-limited rate of assimilation depends on the rate at which the light reactions generate ATP and NADPH; this process is limited at low light intensity. 
 
-Let's demonstrate this is the case by reducing and increasing the intercellular concentration of O2 parameter and plotting the impact. Rubisco catalyses the oxygenation of RuBP as well as carboxylation, although the affinity for oxygen is lower than that for CO~2~. 
+Q. Can you increase and decrease the intercellular concentration of O2 parameter (Oi) and plot the impact. Does your plot fit with what I said above?
+Q. Can you figure out how to test the other factors?
 
+Answer: 
 ```{r}
 Tleaf <- seq(0, 50.0, 0.5) + DEG_2_KELVIN
 PAR <- 1800.0
@@ -192,7 +194,6 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   theme(legend.position = c(0.9, 0.9)) +
   scale_colour_brewer(palette = "Set2")
 ```
-Can you work out how to test the factors two?
 
 ***
 

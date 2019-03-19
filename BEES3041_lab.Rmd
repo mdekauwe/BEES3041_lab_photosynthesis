@@ -89,4 +89,10 @@ Q. Now that you've seen how to call the functions to calculate V~cmax~ and J~max
 Q. From your new understanding of how the key model parameters change with temperature, can you predict how the rate of photosynthesis is likely to change with temperature? 
 Q. Can you make a plot to see if your prediction matched the models? (hint ... You will need to call the calc_photosynthesis function)
 
+The plot shows the response of A to temperature increases steadily until it reaches an optimum point (T~opt~), after which A declines at a faster rate.
+
+The model assumes that the Rubisco-limited assimilation rate follows a Michaelis–Menten response function, accounting for a competitive inhibitor, oxygen. With Michaelis-Menten reactions: (i) increasing the limiting substrate, CO~2~; (ii) the amount of enzyme present, Rubisc; and/or (iii)  decreasing the competitive inhibitor, O2, will yield higher reaction rates. The model also assumes that the RuBP regeneration-limited rate of assimilation depends on the rate at which the light reactions generate ATP and NADPH; this process is limited at low light intensity. 
+
+Q. Can you increase and decrease the intercellular concentration of O2 parameter (Oi) and plot the impact. Does your plot fit with what I said above?
+Q. Can you figure out how to test the other factors?
 

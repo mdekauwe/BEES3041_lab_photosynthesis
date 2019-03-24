@@ -366,15 +366,14 @@ class FarquharC3(object):
                 g0 = 1E-09
 
             # Medlyn moment can't have v.low VPD vals
-            if vpd < 0.05:
-                vpd = 0.05
+            vpd = np.where(vpd<0.05, 0.05, vpd)
 
             # 1.6 (from corrigendum to Medlyn et al 2011) is missing here,
             # because we are calculating conductance to CO2!
             gs_over_a = np.where(np.isclose(Cs, 0.0), 0.0,
-                                (1.0 + p.g1 / math.sqrt(vpd)) / Cs)
+                                (1.0 + p.g1 / np.sqrt(vpd)) / Cs)
 
-            #ci_over_ca = p.g1 / (p.g1 + math.sqrt(vpd))
+            #ci_over_ca = p.g1 / (p.g1 + np.sqrt(vpd))
 
         elif self.gs_model == "user_defined":
             # convert to conductance to CO2

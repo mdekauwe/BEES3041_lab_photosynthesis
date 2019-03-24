@@ -387,23 +387,10 @@ df_day <- df %>%
                                   # NB unit conversion
 ```
 
-**Q. Transforming the data from 30min to daily might be something we repeat, can you create a function to do this?**
+**Q. Can you plot the model output?**
 
 Answer:
 ```{r, include=FALSE}
-conv_hlf_hr_to_daily <- function(df, var, var_namem) {
-  df_day <- df %>%
-    mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
-    group_by(day) %>%               # group by the day column
-    summarise(var_name=sum(var))   # calculate the sum/mean/max/min
-
-  return (df_day)
-}
-```
-
-**Q. Can you plot the model output?**
-
-```{r}
 ggplot(df_day, aes(day, GPP)) +
   geom_line() +
   xlab('Time') +
@@ -426,7 +413,7 @@ nc_close(f)
 df_obs <- data.frame(time, GPP_obs)
 ```
 
-**Q. Can you use your function to turn this dataframe into daily data?**
+**Q. Can you turn the observation data into daily data?**
 
 **Q. Can you plot the obs and the model?**
 

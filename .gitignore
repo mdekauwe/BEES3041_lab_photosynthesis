@@ -9,3 +9,5 @@ plots/*
 *.tex
 *.knit.md
 *.utf8.md
+python/__pycache__/*
+.ipynb_checkpoints/*

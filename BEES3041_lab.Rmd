@@ -232,6 +232,12 @@ out <- calc_photosynthesis(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
 df <- data.frame(PAR, out$An, out$Ac, out$Aj, out$Rd)
 
 
+ggplot(df, aes(PAR)) +
+  geom_line(aes(y=out.An)) +
+  ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  xlab(expression('PAR' ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  #theme_classic(base_size=16) +
+  theme_classic()
 
 #if (dir.exists("plots") == FALSE) {
 #  dir.create("plots")

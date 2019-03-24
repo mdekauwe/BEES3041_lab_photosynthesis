@@ -85,7 +85,7 @@ Vcmax25 = 40.0
 Jmax25 = Vcmax25 * 1.67
 
 # Rspiration rate at the reference temperature 25 deg C or 298 K [deg K]
-Rd25 = 1.4 # Aspinwall et al 2016 New Phyt (WTC3 estimates)
+Rd25 = None # 1.4 Aspinwall et al 2016 New Phyt (WTC3 estimates)
 
 # ratio of respiration at a given temperature divided by respiration
 # at a temperature 10 degrees lower

@@ -147,28 +147,13 @@ def quadratic(a=None, b=None, c=None, large=False):
         positive root
     """
     d = b**2.0 - 4.0 * a * c # discriminant
-    if d < 0.0:
-        raise ValueError('imaginary root found')
-    #root1 = np.where(d>0.0, (-b - np.sqrt(d)) / (2.0 * a), d)
-    #root2 = np.where(d>0.0, (-b + np.sqrt(d)) / (2.0 * a), d)
+
+    # if < 0.0 then an imaginary root was found
+    d = np.where(np.logical_or(d<=0, np.any(np.isnan(d))), -999.9, d)
 
     if large:
-        if np.isclose(a, 0.0) and b > 0.0:
-            root = -c / b
-        elif np.isclose(a, 0.0) and np.isclose(b, 0.0):
-            root = 0.0
-            if c != 0.0:
-                raise ValueError('Cant solve quadratic')
-        else:
-            root = (-b + np.sqrt(d)) / (2.0 * a)
+        root = np.where(d>0.0, (-b + np.sqrt(d)) / (2.0 * a), d)
     else:
-        if np.isclose(a, 0.0) and b > 0.0:
-            root = -c / b
-        elif np.isclose(a, 0.0) and np.isclose(b, 0.0):
-            root == 0.0
-            if c != 0.0:
-                raise ValueError('Cant solve quadratic')
-        else:
-            root = (-b - np.sqrt(d)) / (2.0 * a)
+        root = np.where(d>0.0, (-b - np.sqrt(d)) / (2.0 * a), d)
 
     return root

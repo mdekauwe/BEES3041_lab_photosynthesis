@@ -165,37 +165,35 @@ class FarquharC3(object):
         J = self.calc_electron_transport_rate(p, PAR, Jmax)
         Vj = J / 4.0
 
-        (g0, gs_over_a) = self.calc_stomatal_coeff()
+        (g0, gs_over_a) = self.calc_stomatal_coeff(p, Cs, vpd)
+
+        # Solution when Rubisco activity is limiting
+        (Cic) = self.solve_ci(g0, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
 
         # Catch for low PAR, issue with Vj
-        if ( np.isclose(PAR, 0.0) | np.isclose(Vj, 0.0) ):
-            Cic = Cs
-            Cij = Cs
-        else:
-            # Solution when Rubisco activity is limiting
-            (Cic) = self.solve_ci(g0, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
+        Cic = np.where(np.logical_or(np.isclose(PAR, 0.0), np.isclose(Vj, 0.0)),
+                       Cs, Cic)
 
-            # Solution when electron transport rate is limiting
-            (Cij) = self.solve_ci(g0, gs_over_a, Rd, Cs, gamma_star, Vj,
-                                  2.0*gamma_star)
+        # Solution when electron transport rate is limiting
+        (Cij) = self.solve_ci(g0, gs_over_a, Rd, Cs, gamma_star, Vj,
+                              2.0*gamma_star)
+
+        # Catch for low PAR, issue with Vj
+        Cij = np.where(np.logical_or(np.isclose(PAR, 0.0), np.isclose(Vj, 0.0)),
+                       Cs, Cij)
+
+        # Rate of photosynthesis when Rubisco activity is limiting
+        Ac = self.assim(Cic, gamma_star, a1=Vcmax, a2=Km)
 
         # Catch for negative Ci and instances where Ci > Cs
-        if Cic <= 0.0 or Cic > Cs:
-            # Rate of photosynthesis when Rubisco activity is limiting
-            Ac = 0.0
-        else:
-            # Rate of photosynthesis when Rubisco activity is limiting
-            Ac = self.assim(Cic, gamma_star, a1=Vcmax, a2=Km)
+        Ac = np.where(np.logical_or(Cic <= 0.0, Cic > Cs), 0.0, Ac)
 
         # Rate of photosynthesis when RuBP regeneration is limiting
         Aj = self.assim(Cij, gamma_star, a1=Vj, a2=2.0*gamma_star)
 
         # When below light-compensation points, assume Ci=Ca.
-        if Aj <= Rd + 1E-09:
-            Cij = Cs
-
-            # Rate of photosynthesis when RuBP regeneration is limiting
-            Aj = self.assim(Cij, gamma_star, a1=Vj, a2=2.0*gamma_star)
+        Aj = np.where(Aj <= Rd + 1E-09,
+                      self.assim(Cs, gamma_star, a1=Vj, a2=2.0*gamma_star), Aj)
 
         # Hyperbolic minimum of Ac and Aj to smooth over discontinuity when
         # moving from electron # transport limited to rubisco limited
@@ -206,23 +204,19 @@ class FarquharC3(object):
         An = A - Rd
 
         # Calculate conductance to CO2 (mol m-2 s-1)
-        gsc = max(g0, g0 + gs_over_a * An)
+        gsc = np.maximum(g0, g0 + gs_over_a * An)
 
         # Calculate conductance to water (mol H2O m-2 s-1)
         gsw = gsc * c.GSC_2_GSW
 
         # calculate the real Ci
-        if gsc > 0.0 and An > 0.0:
-            Ci = Cs - An / gsc
-        else:
-            Ci = Cs
+        Ci = np.where(np.logical_and(gsc > 0.0, An > 0.0), Cs - An / gsc, Cs)
 
-        if np.isclose(Cs, 0.0):
-            An = 0.0 - Rd
-            gsc = 0.0
-            Ci = Cs
+        An = np.where(np.isclose(Cs, 0.0), 0.0 - Rd, An)
+        gsc = np.where(np.isclose(Cs, 0.0), 0.0, gsc)
+        Ci = np.where(np.isclose(Cs, 0.0), Cs, Ci)
 
-        return (An, gsc)
+        return (An, Ac, Aj, gsw, Rd)
 
     def calc_michaelis_menten_constants(self, p, Tleaf):
         """ Michaelis-Menten constant for O2/CO2, Arrhenius temp dependancy

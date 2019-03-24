@@ -95,7 +95,7 @@ class FarquharC3(object):
         self.adjust_for_low_temp = adjust_for_low_temp
 
     def photosynthesis(self, p, Cs=None, Tleaf=None, PAR=None, vpd=None,
-                       mult=None, Vcmax25=None, Jmax25=None, scalex=None):
+                       mult=None, scalex=None):
         """
         Parameters
         ----------
@@ -132,16 +132,16 @@ class FarquharC3(object):
         # Calculate the maximum rate of Rubisco activity (Vcmax), accounting
         # for temperature dependancies
         if self.peaked_Vcmax:
-            Vcmax = self.peaked_arrh(Vcmax25, p.Eav, Tleaf, p.deltaSv, p.Hdv)
+            Vcmax = self.peaked_arrh(p.Vcmax25, p.Eav, Tleaf, p.deltaSv, p.Hdv)
         else:
-            Vcmax = self.arrh(Vcmax25, Eav, Tleaf)
+            Vcmax = self.arrh(p.Vcmax25, Eav, Tleaf)
 
         # Calculate the potential rate of electron transport (Jmax), accounting
         # for temperature dependancies
         if self.peaked_Jmax:
-            Jmax = self.peaked_arrh(Jmax25, p.Eaj, Tleaf, p.deltaSj, p.Hdj)
+            Jmax = self.peaked_arrh(p.Jmax25, p.Eaj, Tleaf, p.deltaSj, p.Hdj)
         else:
-            Jmax = self.arrh(Jmax25, p.Eaj, Tleaf)
+            Jmax = self.arrh(p.Jmax25, p.Eaj, Tleaf)
 
         # Leaf mitochondrial respiration in the light or day respiration
         # (umol m-2 s-1).

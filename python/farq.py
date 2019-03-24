@@ -150,7 +150,7 @@ class FarquharC3(object):
         else:
             # Following Collatz et al. (1991), assume Rd 1.5% of Vcmax
             Rd = 0.015 * Vcmax
-
+            
         if self.adjust_for_low_temp:
             Jmax = self.adj_for_low_temp(Jmax, Tleaf)
             Vcmax = self.adj_for_low_temp(Vcmax, Tleaf)

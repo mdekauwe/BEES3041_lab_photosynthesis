@@ -79,7 +79,7 @@ In the model both parameters are modelled using a peaked form of the Arrhenius e
 **Q. Can you work out what parameter values you used?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 print(c(p$Vcmax25, p$Eav, p$deltaSv, p$Hdv))
 print(c(p$Jmax25, p$Eaj, p$deltaSj, p$Hdj))
 ```
@@ -87,10 +87,10 @@ print(c(p$Jmax25, p$Eaj, p$deltaSj, p$Hdj))
 **Q. Can you now tweak these values and explore how the functions respond to temperature?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
-Vcmax2 <- peaked_arrh(p$Vcmax25, 40000, Tleaf, 620.0, p$Hdv)
-Vcmax3 <- peaked_arrh(p$Vcmax25, 70000, Tleaf, 650.0, p$Hdv)
+Vcmax2 <- peaked_arrh(p$Vcmax25, 40000, Tleaf, p$deltaSv, p$Hdv)
+Vcmax3 <- peaked_arrh(p$Vcmax25, 70000, Tleaf, p$deltaSv, p$Hdv)
 
 
 df <- data.frame(Tleaf, Vcmax, Jmax)
@@ -138,7 +138,7 @@ knitr::include_graphics("data/rogers.png")
 
 Answer:
 
-```{r, include=FALSE}
+```{r, include=TRUE}
 Tleaf <- seq(0, 50.0, 0.5) + DEG_2_KELVIN
 PAR <- 1800.0
 Cs <- 400.0
@@ -174,7 +174,7 @@ The model assumes that the Rubisco-limited assimilation rate follows a Michaelis
 **Q. Can you figure out how to test the other factors?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 Tleaf <- seq(0, 50.0, 0.5) + DEG_2_KELVIN
 PAR <- 1800.0
 Cs <- 400.0
@@ -204,6 +204,9 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   theme(legend.title=element_blank()) +
   theme(legend.position = c(0.9, 0.9)) +
   scale_colour_brewer(palette = "Set2")
+
+# put param value back
+p$Oi = 210.0
 ```
 
 ***
@@ -218,7 +221,7 @@ At low PAR, A is RUBP regeneration-limited due to the low rates of electron tran
 
 Answer:
 
-```{r, include=FALSE}
+```{r, include=TRUE}
 Tleaf <- 25.0 + DEG_2_KELVIN
 PAR <- seq(0, 2000.0, 0.5)
 Cs <- 400.0
@@ -244,7 +247,7 @@ At low [CO~2~] concentrations, photosynthesis is Rubisco-limited except for when
 **Q. Can you vary [CO~2~] and plot the response of A?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 Tleaf <- 25.0 + DEG_2_KELVIN
 PAR <- 1800.0
 Cs <- seq(100., 1000, 0.5)
@@ -324,7 +327,7 @@ SWdown <- ncvar_get(f, "SWdown")
 **Q. Can you get also get the wind and precipitation variables?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 wind <- ncvar_get(f, "Wind")
 precip <- ncvar_get(f, "Precip")
 ```
@@ -339,7 +342,7 @@ It is a good idea to make a sanity plot at this point, garbage into a model lead
 **Q. Can you plot Tair for the first year (the timestep of the data is 30 mins)?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 
 # Just plot the first year
 df <- data.frame(time[1:(48*365)], Tair[1:(48*365)] - DEG_2_KELVIN)
@@ -365,7 +368,7 @@ APAR <- PAR * fPAR
 # Let's just assume this
 Cs <- 400.0
 
-out <- calc_photosynthesis(p, Tleaf, APAR, Cs, vpd, peaked_Vcmax=TRUE,
+out <- calc_photosynthesis(p, Tair, APAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
 ```
 
@@ -390,7 +393,7 @@ df_day <- df %>%
 **Q. Can you plot the model output?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 ggplot(df_day, aes(day, GPP)) +
   geom_line() +
   xlab('Time') +
@@ -404,7 +407,7 @@ OK we've now modelled some GPP based on real data, it is time to see how sensibl
 **Q. Can you use the previous logic to load the flux file and extract the GPP variable and make a dataframe?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 fname <- "data/FR-Pue_2002-2003_FLUXNET2015_Flux.nc"
 f <- nc_open(fname)
 GPP_obs <- ncvar_get(f, "GPP")
@@ -418,7 +421,7 @@ df_obs <- data.frame(time, GPP_obs)
 **Q. Can you plot the obs and the model?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 # Let's use the dplyr lib to aggregate to daily data
 df_obs_day <- df_obs %>%
   mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
@@ -480,7 +483,7 @@ df_par <- df %>%
 **Q. Can you do the same for vpd and Tair, taking the mean instead?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 df <- data.frame(time, vpd, Tair)
 colnames(df)<- c("time", "vpd", "Tair")
 
@@ -495,7 +498,7 @@ df_vpd_tair <- df %>%
 **Q. Can you merge par, tair and tair into one dataframe?**
 
 Answer
-```{r, include=FALSE}
+```{r, include=TRUE}
 df <- merge(df_par, df_vpd_tair, by="day")
 colnames(df)<- c("day", "PAR", "vpd", "Tair")
 ```
@@ -522,7 +525,7 @@ colnames(df)<- c("day", "GPP_obs", "GPP_mod", "GPP_lue")
 **Q. Can you plot the obs, farquhar model and the LUE model on one plot?**
 
 Answer:
-```{r, include=FALSE}
+```{r, include=TRUE}
 ggplot(df, aes(day)) +
   geom_line(aes(y=GPP_obs, colour="OBS"), size=1.0) +
   geom_line(aes(y=GPP_mod, colour="MOD - Farq"), size=1.0) +

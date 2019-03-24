@@ -60,7 +60,7 @@ absorptance = 1.0 - refl[0] - tau[0]
 # reflectance and transmittance should change to MAESTRA
 
 #alpha = quantum_yield * absorptance # (Medlyn et al 2002)
-alpha = 0.26
+alpha = 0.24
 
 # residual stomatal conductance as net assimilation rate reaches zero
 # (mol m-2 s-1)

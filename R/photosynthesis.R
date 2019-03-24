@@ -125,39 +125,54 @@ calc_photosynthesis <-function(p, Tleaf, PAR, Cs, vpd, peaked_Vcmax=TRUE,
 
   gs_over_a <- calc_stomatal_coeff(p, Cs, vpd)
 
+  # Solution when Rubisco activity is limiting
+  Cic <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
+  
+  # Solution when electron transport rate is limiting
+  Cij <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vj, 2.0*gamma_star)
+  
+  # Need to create a vector if we don't have one, else the ifelse
+  # doesn't work
+  if (length(PAR) == 1) {
+    PAR <- rep(PAR, length(Cij)) 
+  }
+  
+  # Need to create a vector if we don't have one, else the ifelse
+  # doesn't work
+  if (length(Vj) == 1) {
+    Vj <- rep(Vj, length(Cij)) 
+  }
+  
+  # Need to create a vector if we don't have one, else the ifelse
+  # doesn't work
+  if (length(Cs) == 1) {
+    Cs <- rep(Cs, length(Cic)) 
+  }
+  
   # Catch for low PAR, issue with Vj
-  if ( any(is_close(PAR, 0.0) | is_close(Vj, 0.0)) ) {
-    Cic <- Cs
-    Cij <- Cs
-  } else {
-    # Solution when Rubisco activity is limiting
-    Cic <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
-
-    # Solution when electron transport rate is limiting
-    Cij <- solve_ci(p, gs_over_a, Rd, Cs, gamma_star, Vj, 2.0*gamma_star)
-  }
-
+  Cic <- ifelse(is_close(PAR, 0.0) | is_close(Vj, 0.0), Cs, Cic)
+  Cij <- ifelse(is_close(PAR, 0.0) | is_close(Vj, 0.0), Cs, Cij)
+  
+  # Rate of photosynthesis when Rubisco activity is limiting
+  Ac <- assim(Cic, gamma_star, Vcmax, Km)
+  
+  # Rate of photosynthesis when RuBP regeneration is limiting
+  Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
+  
+  # Rate of photosynthesis when Rubisco activity is limiting
+  Ac <- assim(Cic, gamma_star, Vcmax, Km)
+  
+  # Rate of photosynthesis when RuBP regeneration is limiting
+  Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
+  
   # Catch for negative Ci and instances where Ci > Cs
-  if ( any((Cic <= 0.0) | (Cic > Cs)) ) {
-    # Rate of photosynthesis when Rubisco activity is limiting
-    Ac <- 0.0
-    Aj <- 0.0
-  } else {
-    # Rate of photosynthesis when Rubisco activity is limiting
-    Ac <- assim(Cic, gamma_star, Vcmax, Km)
-
-    # Rate of photosynthesis when RuBP regeneration is limiting
-    Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
-  }
-
+  Ac <- ifelse(Cic <= 0.0 | Cic > Cs, 0.0, Ac)
+  Aj <- ifelse(Cic <= 0.0 | Cic > Cs, 0.0, Aj)
+  
   # When below light-compensation points, assume Ci=Ca.
-  if ( any(Aj <= Rd + 1E-09) ) {
-    Cij <- Cs
-
-    # Rate of photosynthesis when RuBP regeneration is limiting
-    Aj <- assim(Cij, gamma_star, Vj, 2.0*gamma_star)
-  }
-
+  Aj <- ifelse(Aj <= Rd + 1E-09, 
+               assim(Cs, gamma_star, Vj, 2.0*gamma_star), Aj)
+  
   # Hyperbolic minimum of Ac and Aj to smooth over discontinuity when moving
   # from electron # transport limited to rubisco limited photosynthesis
   A <- -mapply(quadratic, 1.0-1E-04, Ac+Aj, Ac*Aj, large=TRUE)
@@ -369,8 +384,10 @@ calc_stomatal_coeff <- function(p, Cs, vpd) {
   #
 
   # Medlyn moment can't have v.low VPD vals
-  vpd <- ifelse(vpd < 0.05, 0.05, vpd)
-
+  #vpd <- ifelse(vpd < 0.05, 0.05, vpd)
+  if (any(vpd < 0.05)) {
+    vpd
+  }
   # 1.6 (from corrigendum to Medlyn et al 2011) is missing here,
   # because we are calculating conductance to CO2!
   if (any((is_close(Cs, 0.0)))) {

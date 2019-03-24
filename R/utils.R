@@ -35,9 +35,7 @@ is_close <- function(a, b, rel_tol=1e-09, abs_tol=0.0) {
 
 quadratic <- function(a, b, c, large=FALSE) {
   #
-  #   Minimilist quadratic solution as root for J solution should always
-  #   be positive, so I have excluded other quadratic solution steps. I am
-  #   only returning the smallest of the two roots
+  #   Solve the quadratic equation
   #
   #   Args:
   #   -----
@@ -47,6 +45,9 @@ quadratic <- function(a, b, c, large=FALSE) {
   #     co-efficient
   #   c : float
   #     co-efficient
+  #   large : logical
+  #     TRUE -> finds largest root
+  #     FALSE -> finds smallest root
   #
   #   Returns:
   #   -------
@@ -63,9 +64,9 @@ quadratic <- function(a, b, c, large=FALSE) {
 
   if (large) {
 
-    if ( (is_close(a, 0.0)) & (b > 0.0) ) {
+    if ( is_close(a, 0.0) & (b > 0.0) ) {
       root <- -c / b
-    } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
+    } else if ( is_close(a, 0.0) & (is_close(b, 0.0)) ) {
         root <- 0.0
         if (c != 0.0) {
           stop("Cant solve quadratic")
@@ -76,9 +77,9 @@ quadratic <- function(a, b, c, large=FALSE) {
 
   } else {
 
-    if ( (is_close(a, 0.0)) & (b > 0.0) ) {
+    if ( is_close(a, 0.0) & (b > 0.0) ) {
       root <- -c / b
-    } else if ( (is_close(a, 0.0)) & (is_close(b, 0.0)) ) {
+    } else if ( is_close(a, 0.0) & is_close(b, 0.0) ) {
       root <- 0.0
       if (c != 0.0) {
         stop('Cant solve quadratic')

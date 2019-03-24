@@ -128,9 +128,7 @@ def get_dewpoint(tair, rh):
     return Td
 
 def quadratic(a=None, b=None, c=None, large=False):
-    """ minimilist quadratic solution as root for J solution should always
-    be positive, so I have excluded other quadratic solution steps. I am
-    only returning the smallest of the two roots
+    """ Solve the quadratic equation
 
     Parameters:
     ----------
@@ -140,6 +138,9 @@ def quadratic(a=None, b=None, c=None, large=False):
         co-efficient
     c : float
         co-efficient
+    large : logical
+        True -> finds largest root
+        False -> finds smallest root
 
     Returns:
     -------
@@ -148,12 +149,16 @@ def quadratic(a=None, b=None, c=None, large=False):
     """
     d = b**2.0 - 4.0 * a * c # discriminant
 
-    # if < 0.0 then an imaginary root was found
-    d = np.where(np.logical_or(d<=0, np.any(np.isnan(d))), -999.9, d)
+    if np.any(d <= 0.0):
+        print("imaginary root found")
 
     if large:
-        root = np.where(d>0.0, (-b + np.sqrt(d)) / (2.0 * a), d)
+        root = (-b + np.sqrt(d)) / (2.0 * a)
     else:
-        root = np.where(d>0.0, (-b - np.sqrt(d)) / (2.0 * a), d)
+        root = (-b - np.sqrt(d)) / (2.0 * a)
+
+    root = np.where(np.logical_and(np.isclose(a, 0.0), b > 0.0), -c / b, root)
+    root = np.where(np.logical_and(np.isclose(a, 0.0), np.isclose(b, 0.0)),
+                    0.0, root)
 
     return root

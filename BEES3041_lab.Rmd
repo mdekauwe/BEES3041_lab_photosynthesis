@@ -376,7 +376,7 @@ Plotting half-hourly output will be a bit much, so let's generate daily output
 ```{r}
 
 # Let's convert from 30 mins to daily sums as these will be easier to view.
-conv <- 1.0 #UMOL_TO_MOL * MOL_C_TO_GRAMS_C * SEC_2_HLFHR
+conv <- UMOL_TO_MOL * MOL_C_TO_GRAMS_C * SEC_2_HLFHR
 
 # build a dataframe to ease manipulation
 df <- data.frame(time, out$An)

@@ -391,11 +391,11 @@ df_day <- df %>%
 
 Answer:
 ```{r, include=FALSE}
-conv_hlf_hr_to_daily <- function(df, var, var_name, stat) {
+conv_hlf_hr_to_daily <- function(df, var, var_namem) {
   df_day <- df %>%
     mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
     group_by(day) %>%               # group by the day column
-    summarise(var_name=stat(var))   # calculate the sum/mean/max/min 
+    summarise(var_name=sum(var))   # calculate the sum/mean/max/min 
                                     
   return (df_day)
 }

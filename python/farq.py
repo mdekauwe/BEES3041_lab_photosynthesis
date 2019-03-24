@@ -72,8 +72,7 @@ class FarquharC3(object):
     """
 
     def __init__(self, peaked_Jmax=False, peaked_Vcmax=False,
-                 model_Q10=False, gs_model=None,
-                 adjust_for_low_temp=False):
+                 model_Q10=False, gs_model=None):
         """
         Parameters
         ----------
@@ -85,14 +84,12 @@ class FarquharC3(object):
             use Q10 to calculate Rd
         gs_model : string
             medlyn or leuning model
-        adjust_for_low_temp : logical
-            adjust Vcmax/Jmax at the low temperature end
+
         """
         self.peaked_Jmax = peaked_Jmax
         self.peaked_Vcmax = peaked_Vcmax
         self.model_Q10 = model_Q10
         self.gs_model = gs_model
-        self.adjust_for_low_temp = adjust_for_low_temp
 
     def photosynthesis(self, p, Cs=None, Tleaf=None, PAR=None, vpd=None,
                        mult=None, scalex=None):
@@ -134,7 +131,7 @@ class FarquharC3(object):
         if self.peaked_Vcmax:
             Vcmax = self.peaked_arrh(p.Vcmax25, p.Eav, Tleaf, p.deltaSv, p.Hdv)
         else:
-            Vcmax = self.arrh(p.Vcmax25, Eav, Tleaf)
+            Vcmax = self.arrh(p.Vcmax25, p.Eav, Tleaf)
 
         # Calculate the potential rate of electron transport (Jmax), accounting
         # for temperature dependancies
@@ -150,10 +147,6 @@ class FarquharC3(object):
         else:
             # Following Collatz et al. (1991), assume Rd 1.5% of Vcmax
             Rd = 0.015 * Vcmax
-            
-        if self.adjust_for_low_temp:
-            Jmax = self.adj_for_low_temp(Jmax, Tleaf)
-            Vcmax = self.adj_for_low_temp(Vcmax, Tleaf)
 
         # Scaling from single leaf to canopy, see Wang & Leuning 1998 appendix C
         if scalex is not None:
@@ -168,28 +161,27 @@ class FarquharC3(object):
         (g0, gs_over_a) = self.calc_stomatal_coeff(p, Cs, vpd)
 
         # Solution when Rubisco activity is limiting
-        (Cic) = self.solve_ci(g0, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
+        Cic = self.solve_ci(g0, gs_over_a, Rd, Cs, gamma_star, Vcmax, Km)
+
+        # Solution when electron transport rate is limiting
+        Cij = self.solve_ci(g0, gs_over_a, Rd, Cs, gamma_star, Vj,
+                              2.0*gamma_star)
 
         # Catch for low PAR, issue with Vj
         Cic = np.where(np.logical_or(np.isclose(PAR, 0.0), np.isclose(Vj, 0.0)),
                        Cs, Cic)
-
-        # Solution when electron transport rate is limiting
-        (Cij) = self.solve_ci(g0, gs_over_a, Rd, Cs, gamma_star, Vj,
-                              2.0*gamma_star)
-
-        # Catch for low PAR, issue with Vj
         Cij = np.where(np.logical_or(np.isclose(PAR, 0.0), np.isclose(Vj, 0.0)),
                        Cs, Cij)
 
         # Rate of photosynthesis when Rubisco activity is limiting
         Ac = self.assim(Cic, gamma_star, a1=Vcmax, a2=Km)
 
-        # Catch for negative Ci and instances where Ci > Cs
-        Ac = np.where(np.logical_or(Cic <= 0.0, Cic > Cs), 0.0, Ac)
-
         # Rate of photosynthesis when RuBP regeneration is limiting
         Aj = self.assim(Cij, gamma_star, a1=Vj, a2=2.0*gamma_star)
+
+        # Catch for negative Ci and instances where Ci > Cs
+        Ac = np.where(np.logical_or(Cic <= 0.0, Cic > Cs), 0.0, Ac)
+        Aj = np.where(np.logical_or(Cic <= 0.0, Cic > Cs), 0.0, Aj)
 
         # When below light-compensation points, assume Ci=Ca.
         Aj = np.where(Aj <= Rd + 1E-09,
@@ -366,7 +358,7 @@ class FarquharC3(object):
                 g0 = 1E-09
 
             # Medlyn moment can't have v.low VPD vals
-            vpd = np.where(vpd<0.05, 0.05, vpd)
+            vpd = np.where(vpd < 0.05, 0.05, vpd)
 
             # 1.6 (from corrigendum to Medlyn et al 2011) is missing here,
             # because we are calculating conductance to CO2!

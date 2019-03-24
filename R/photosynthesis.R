@@ -369,7 +369,7 @@ calc_stomatal_coeff <- function(p, Cs, vpd) {
   #
   
   # Medlyn moment can't have v.low VPD vals
-  vpd <- ifelse(vpd<0.05, 0.05, vpd)
+  vpd <- ifelse(vpd < 0.05, 0.05, vpd)
   
   # 1.6 (from corrigendum to Medlyn et al 2011) is missing here,
   # because we are calculating conductance to CO2!

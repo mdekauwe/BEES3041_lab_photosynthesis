@@ -507,6 +507,7 @@ Answer
 ```{r, include=TRUE}
 df <- merge(df_par, df_vpd_tair, by="day")
 colnames(df)<- c("day", "PAR", "vpd", "Tair")
+#plot(df$PAR)
 ```
 
 Let's generate the LUE inputs and plot create a dataframe

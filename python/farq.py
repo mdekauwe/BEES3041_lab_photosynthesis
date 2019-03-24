@@ -95,8 +95,7 @@ class FarquharC3(object):
         self.adjust_for_low_temp = adjust_for_low_temp
 
     def photosynthesis(self, p, Cs=None, Tleaf=None, PAR=None, vpd=None,
-                       mult=None, scalex=None, Vcmax25=None,
-                       Jmax25=None, scalex=None):
+                       mult=None, Vcmax25=None, Jmax25=None, scalex=None):
         """
         Parameters
         ----------

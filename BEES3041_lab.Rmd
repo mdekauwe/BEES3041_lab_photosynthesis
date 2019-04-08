@@ -76,7 +76,7 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   scale_colour_brewer(palette = "Set2")
 ```
 
-In the model both parameters are modelled using a peaked form of the Arrhenius equation. The Eav/Eaj parameters give the exponential increase of the function below the optimum; the Hdv/Hdj parameters describe the rate of decrease of the function above the optimum.
+In the model both parameters are modelled using a peaked form (i.e. there is an optimum temperature) of the Arrhenius equation. What would we see if we used a standard Arrhenius equation? The Eav/Eaj parameters give the exponential increase of the function below the optimum (before the reaction can proceed, the substrate must be rasied to its activation energy); the Hdv/Hdj parameters describe the rate of decrease of the function above the optimum.
 
 **Q. Can you work out what parameter values you used?**
 

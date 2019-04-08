@@ -19,7 +19,7 @@ knitr::include_graphics("data/logo.jpeg")
 
 # Introduction
 
-In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by @Far80 and use this to simulate photosynthesis at leaf, ecosystem and global scales. The model is central to all land schemes embedded in coupled-climate models and predicts that photosynthesis is limited by the slowest of three biochemical processes:
+In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by @Far80 and use this to simulate photosynthesis at leaf and ecosystem scales. Photosynthesis is the primary production process in plants and as a result, the model is central to all land schemes embedded in coupled-climate model. The model predicts that photosynthesis is limited by the slowest of three biochemical processes:
 
   1. The maximum rate of Rubisco-catalysed carboxylation
   2. The rate of ribulose 1,5-bisphosphate (RuBP) regeneration via electron transport
@@ -37,7 +37,7 @@ From playing with these model we should start to see the key assumptions that ou
 
 ***
 
-# Temperature responses of model parameters
+# Temperature response of model parameters
 
 Let's start by exploring the response of the model to temperature. First we need to generate some temperature data:
 

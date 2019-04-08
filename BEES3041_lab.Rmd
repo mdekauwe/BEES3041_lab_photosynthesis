@@ -131,7 +131,27 @@ knitr::include_graphics("data/rogers.png")
 
 **Q. What impact do you think this variability will have on model simulations of GPP?**
 
-**Q. Now that you've seen how to call the functions to calculate V~cmax~ and J~max~, can you look in the code (R/photosynthesis.R) and also plot $\Gamma$$^{*}$, R~d~m, K~o~ and K~m~ as a function of temperature?**
+**Q. Now that you've seen how to call the functions to calculate V~cmax~ and J~max~, can you look in the code (R/photosynthesis.R) and also plot $\Gamma$$^{*}$, K~c~ and K~m~ as a function of temperature?**
+
+Answer:
+```{r, include=TRUE}
+Kc <- arrh(p$Kc25, p$Ec, Tleaf)
+Ko <- arrh(p$Ko25, p$Eo, Tleaf)
+gamma_star <- arrh(p$gamstar25, p$Eag, Tleaf)
+
+df <- data.frame(Tleaf, Kc, Ko, gamma_star)
+
+ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
+  geom_line(aes(y=Kc, colour="Ko")) +
+  geom_line(aes(y=Ko, colour="Km")) +
+  geom_line(aes(y=gamma_star, colour="gamma_star")) +
+  ylab(expression("Parameter" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
+  xlab(expression('Temperature ('*~degree*C*')')) +
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  scale_colour_brewer(palette = "Set2")
+```
+
 
 ***
 

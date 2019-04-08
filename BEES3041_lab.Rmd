@@ -125,7 +125,7 @@ The skill of the model depends on correctly accounting for these response to tem
 
 By contrast, leaf measurements suggest that V~cmax~ varies considerably: varying between leaves within a single plant, across growing seasons and across plants. In global models, we typically assume that we can represent this variability using 5-11 plant functional types, see @Rog14 for more details. Even when we do this in models, the disagreement across models is striking.
 
-```{r rogers, echo=FALSE, out.width = '40%', fig.align = "center"}
+```{r rogers, echo=FALSE, out.height = '20%', fig.align = "center"}
 knitr::include_graphics("data/rogers.png")
 ```
 
@@ -602,39 +602,12 @@ You can probably also make an informed guess about some of the factors that we h
 
 **Q. The model predicts and instantaneous response to temperature but what about acclimation to temperature? **
 
+Bonus question if you finish all of that.
 
+**Q. The plot shows the impact of the third limitation, triose phosphate utilisation (TPU) - look above 900 umol mol-1. Most models do not include this, can you think of the pros and cons of not doing so?**
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Let's get some CO2 data to run the model with
-
-#```{r}
-#mauna_loa_co2 <- read.table('ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt')
-#names(mauna_loa_co2) <- c('year', 'co2ppm', 'unc')
-#
-#ggplot(mauna_loa_co2, aes(year, co2ppm)) +
-#  geom_line() +
-#  ylab("CO2 (ppm)") +
-#  xlab('Year') +
-#  theme_classic()
-#```
+```{r rogers, echo=FALSE, out.height = '20%', fig.align = "center"}
+knitr::include_graphics("data/tpu.png")
+```
 
 # References

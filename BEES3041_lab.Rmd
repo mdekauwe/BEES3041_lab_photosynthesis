@@ -56,7 +56,7 @@ source("R/lue.R")
 Tleaf <- seq(0.0, 50.0, 0.5) + DEG_2_KELVIN
 ```
 
-The photosynthesis model has two major parameters, the potential rate of electron transport (Jmax) and the maximum rate of Rubisco activity (Vcmax). Both of these parameters vary as a function of temperature, let's plot them. I've copied the function calls from photosynthes.R:
+The photosynthesis model has two major parameters, the potential rate of electron transport (Jmax) and the maximum rate of Rubisco activity (Vcmax). Both of these parameters vary as a function of temperature, let's plot them. I've copied the function calls from R/photosynthesis.R:
 
 ```{r}
 Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)

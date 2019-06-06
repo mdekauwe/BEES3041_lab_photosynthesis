@@ -558,10 +558,10 @@ df_lue <- data.frame(df_flx$day, GPP)
 colnames(df_lue)<- c("day", "GPP_lue")
 
 df <- merge(df_flx, df_lue, by="day")
-colnames(df)<- c("day", "GPP_obs", "GPP_mod", "GPP_lue")
+colnames(df)<- c("day",  "GPP_mod", "GPP_obs", "GPP_lue")
 ```
 
-**Q. Can you plot the obs, farquhar model and the LUE model on one plot?**
+**Q. Can you plot the OBS, farquhar model result and the LUE model on one plot?**
 
 Answer:
 ```{r, include=TRUE}
@@ -599,13 +599,5 @@ You can probably also make an informed guess about some of the factors that we h
 **Q. What does the photosynthesis model predict happens in a drought? **
 
 **Q. The model predicts and instantaneous response to temperature but what about acclimation to temperature? **
-
-Bonus question if you finish all of that.
-
-**Q. The plot shows the impact of the third limitation, triose phosphate utilisation (TPU) - look above 900 umol mol-1. Most models do not include this, can you think of the pros and cons of not doing so?**
-
-```{r rogers, echo=FALSE, out.height = '20%', fig.align = "center"}
-knitr::include_graphics("data/tpu.png")
-```
 
 # References

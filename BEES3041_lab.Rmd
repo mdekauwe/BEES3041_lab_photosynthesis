@@ -405,6 +405,9 @@ APAR <- PAR * fPAR
 # Let's just assume this
 Cs <- 400.0
 
+p$Vcmax25 <- 60.
+p$Jmax25 <- p$Vcmax25 * 1.67
+
 out <- calc_photosynthesis(p, Tair, APAR, Cs, vpd, peaked_Vcmax=TRUE,
                            peaked_Jmax=TRUE)
 ```
@@ -492,7 +495,7 @@ Our simple model doesn't do that bad a job at simulating GPP at a larger scale, 
 
 ## Can we make a simpler model of GPP?
 
-In contrast to the complicated leaf photosynthesis model following Farquhar, we could use a much simpler light use efficiency (LUE) model to estimate GPP. The LUE model predicts that GPP is directly proportional to the absorbed PAR,.
+In contrast to the complicated leaf photosynthesis model following @Far80, we could use a much simpler light use efficiency (LUE) model to estimate GPP. The LUE model predicts that GPP is directly proportional to the absorbed PAR,.
 
 $$GPP = \epsilon * fPAR * PAR$$
 

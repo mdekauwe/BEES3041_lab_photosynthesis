@@ -19,11 +19,11 @@ knitr::include_graphics("data/logo.jpeg")
 
 # Introduction
 
-In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by @Far80 and use this to simulate photosynthesis at leaf and ecosystem scales. Photosynthesis is the primary production process in plants and as a result, the model is central to all land schemes embedded in coupled-climate model. The model predicts that photosynthesis is limited by the slowest of three biochemical processes:
+In this lab we are going to explore the C~3~ leaf-level photosynthesis model proposed by @Far80 and use this to simulate photosynthesis at leaf and ecosystem scales. As we saw in the lecture, the photosynthesis model is central to all land schemes embedded in coupled-climate model. The model predicts that photosynthesis is limited by the slowest of three biochemical processes:
 
-  1. The maximum rate of Rubisco-catalysed carboxylation
-  2. The rate of ribulose 1,5-bisphosphate (RuBP) regeneration via electron transport
-  3. The rate of RuBP regeneration via triose phosphate utilisation
+  1. The maximum rate of Rubisco-catalysed carboxylation (Ac)
+  2. The rate of ribulose 1,5-bisphosphate (RuBP) regeneration via electron transport (Aj)
+  3. The rate of RuBP regeneration via triose phosphate utilisation (Ap)
 
 In this practical we are only going to consider the first two limitations. There a number of great papers which cover this subject in detail, see for example, @Ber13, @Med02 and @Sha85.
 
@@ -56,7 +56,7 @@ source("R/lue.R")
 Tleaf <- seq(0.0, 50.0, 0.5) + DEG_2_KELVIN
 ```
 
-The biochemical reactions in the model depend on temperature because enzyme activity is temperature dependent. The photosynthesis model has two major parameters, the potential rate of electron transport (Jmax) and the maximum rate of Rubisco activity (Vcmax). Both of these parameters vary as a function of temperature and it is common practice to use the Arrhenius equation to express the rate of the process. 
+The biochemical reactions in the model depend on temperature because enzyme activity is temperature dependent. The photosynthesis model has two major parameters, the potential rate of electron transport (Jmax) and the maximum rate of Rubisco activity (Vcmax). Both of these parameters vary as a function of temperature and it is common practice to use the peaked Arrhenius equation to express the rate of the process. 
 
 Let's plot Vcmax and Jmax. I've copied the function calls from R/photosynthesis.R:
 

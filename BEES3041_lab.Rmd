@@ -76,7 +76,9 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
   scale_colour_brewer(palette = "Set2")
 ```
 
-In the model both parameters are modelled using a peaked form (i.e. there is an optimum temperature) of the Arrhenius equation. What would we see if we used a standard Arrhenius equation? The Eav/Eaj parameters give the exponential increase of the function below the optimum (before the reaction can proceed, the substrate must be rasied to its activation energy); the Hdv/Hdj parameters describe the rate of decrease of the function above the optimum.
+In the model both parameters are modelled using a peaked form (i.e. there is an optimum temperature) of the Arrhenius equation. What would we see if we used a standard Arrhenius equation? 
+
+The Eav/Eaj parameters give the exponential increase of the function below the optimum (before the reaction can proceed, the substrate must be raised to its activation energy); the Hdv/Hdj parameters describe the rate of decrease of the function above the optimum.
 
 **Q. Can you work out what parameter values you used?**
 
@@ -119,9 +121,7 @@ is made up of four parameters that are temperature dependent.
   3. K~o~: Michaelis– Menten coefficients for oxygenation.
   4. K~c~: Michaelis– Menten coefficients for carboxylation.
 
-The skill of the model depends on correctly accounting for these response to temperature when using the model. When we use these model parameters in global models we typical assume that the parameters (excluding V~cmax~) are conserved across species. This assumption is broadly supported by observations.
-
-**Q. What do we think happens in different growing conditions?**
+The skill of the model depends on correctly accounting for these responses to temperature when using the model. When we use these model parameters in global models we typical assume that the parameters (excluding V~cmax~) are conserved across species. This assumption is broadly supported by observations.
 
 By contrast, leaf measurements suggest that V~cmax~ varies considerably: varying between leaves within a single plant, across growing seasons and across plants. In global models, we typically assume that we can represent this variability using 5-11 plant functional types, see @Rog14 for more details. Even when we do this in models, the disagreement across models is striking.
 
@@ -159,11 +159,8 @@ ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
 
 **Q. From your new understanding of how the key model parameters change with temperature, can you predict how the rate of photosynthesis is likely to change with temperature? **
 
-**Q. Can you make a plot to see if your prediction matched the models? (hint ... You will need to call the calc_photosynthesis function)**
-
-Answer:
-
-```{r, include=TRUE}
+Can you make a plot to see if your prediction matched the models? 
+```{r}
 Tleaf <- seq(0, 50.0, 0.5) + DEG_2_KELVIN
 PAR <- 1800.0
 Cs <- 400.0
@@ -199,7 +196,7 @@ With Michaelis-Menten reactions:
     2. the amount of enzyme present, Rubisco; and/or 
     3. decreasing the competitive inhibitor, O~2~, will yield higher reaction rates. 
     
-The model also assumes that the RuBP regeneration-limited rate of assimilation, Aj:
+The photosynthesis model also assumes that the RuBP regeneration-limited rate of assimilation, Aj:
 
 $$A_{j} = \frac{J}{4}\bigg(\frac{C_{i} - \Gamma^*}{C_{i} + 2 \Gamma^*}\bigg)$$
 
@@ -319,9 +316,9 @@ ggplot(df, aes(Cs)) +
 
 ## Ecosystem scale
 
-Let's now apply the leaf-level model at a coarser spatial scale and compare our model simulations to measured data. In doing so, try and keep in mind the assumptions we are making. Can we explain any model-data disagreements based on these.
+Let's now apply the leaf-level model at a coarser spatial scale and compare our model simulations to measured data. In doing so, try and keep in mind the assumptions we are making. Can we explain any model-data disagreements based on these assumptions?
 
-To apply the leaf-level model at a km^2^ scale, we are going to use a big-leaf approximation to scale up our leaf-level model. We are going to assume that:
+To apply the leaf-level model at a ~km^2^ scale, we are going to use a big-leaf approximation to scale up our leaf-level model. We are simply going to assume that:
 
 $$APAR = PAR * fPAR$$
 
@@ -332,7 +329,7 @@ and k=0.5.
 
 Across the globe there is large network of sites (~900) with meteorological sensors measuring a range of variables (e.g. temperature, humidity, wind speed, rainfall) on a continuous basis. At each of these sites, the eddy covariance method is also used to measure the exchange of carbon dioxide, energy and water vapour fluxes between the vegetation and soils and the atmosphere. These data are freely avaliable at a number of sites (but not all!) under a release called FLUXNET2015 (https://fluxnet.fluxdata.org/).
 
-The original data from FLUXNET aren't readily useable by land surface models. These data must be first transformed into a LSM-readable file format - [NetCDF](https://www.unidata.ucar.edu/software/netcdf/), apply some unit corrections and be screened and gap-filled, where necessary. Fortunately [Anna Ukkola at UNSW](https://www.ccrc.unsw.edu.au/ccrc-team/alumni/anna-ukkola) has done all the heavy lifting here, so we will data that has been corrected by her [R package](https://www.geosci-model-dev.net/10/3379/2017/).
+The original data from FLUXNET aren't readily useable by land surface models. These data must be first transformed into a LSM-readable file format - [NetCDF](https://www.unidata.ucar.edu/software/netcdf/), units must then be corrected and the data screened and gap-filled, where necessary. Fortunately [Anna Ukkola at UNSW](https://www.ccrc.unsw.edu.au/ccrc-team/alumni/anna-ukkola) has done all the heavy lifting here, so we will data that has been corrected by her [R package](https://www.geosci-model-dev.net/10/3379/2017/).
 
 NetCDF files are the gold standard for the climate community as they are a self describing format that allows you to associate many layers of metadata with a binary file that wouldn't be possible with a text file. To be able to read these data we are going to have to use a NetCDF library and learn a few new commands...
 

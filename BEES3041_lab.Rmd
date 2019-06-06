@@ -453,9 +453,7 @@ nc_close(f)
 df_obs <- data.frame(time, GPP_obs)
 ```
 
-**Q. Can you turn the observation data into daily data?**
-
-**Q. Can you plot the obs and the model?**
+**Q. Can you turn the observation data into daily data? And plot the OBS and the model?**
 
 Answer:
 ```{r, include=TRUE}
@@ -467,7 +465,7 @@ df_obs_day <- df_obs %>%
                                        # occurred on each day. NB unit conversion
 
 df_flx <- merge(df_day, df_obs_day, by="day")
-colnames(df_flx)<- c("day", "GPP_obs", "GPP_mod")
+colnames(df_flx)<- c("day", "GPP_mod", "GPP_obs")
 
 
 

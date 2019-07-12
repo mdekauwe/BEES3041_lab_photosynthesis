@@ -142,7 +142,7 @@ gamma_star <- arrh(p$gamstar25, p$Eag, Tleaf)
 df <- data.frame(Tleaf, Kc, Ko, gamma_star)
 
 ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
-  geom_line(aes(y=Kc, colour="Ko")) +
+  geom_line(aes(y=Kc, colour="Kc")) +
   geom_line(aes(y=Ko, colour="Ko")) +
   geom_line(aes(y=gamma_star, colour="gamma_star")) +
   ylab(expression("Parameter" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +

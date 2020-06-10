@@ -1,5 +1,5 @@
 ---
-title: "BEES3041: Modelling the photosynthetic response to environmental conditions"
+title: "CLIM3001: Modelling the photosynthetic response to environmental conditions"
 output:
   pdf_document: default
   html_notebook: default
@@ -88,21 +88,31 @@ print(c(p$Vcmax25, p$Eav, p$deltaSv, p$Hdv))
 print(c(p$Jmax25, p$Eaj, p$deltaSj, p$Hdj))
 ```
 
-**Q. Can you now tweak these values and explore how the functions respond to temperature?**
+By default, the Australian land surface model assumes the parameter values are Eav = 73637.0, deltaSv = 486 and Hdv = 149252.0. For Eucalyptus tereticornis, a widely found coastal species in NSW, the values should be: Eav = 66386.2, deltaSv = 639.6 and Hdv = 200000.0
+
+**Q. Can you now tweak these values and explore how this changes the photosynthetic response to temperature? What are the implications of what you have plotted?**
 
 Answer:
 ```{r, include=TRUE}
-Vcmax <- peaked_arrh(p$Vcmax25, p$Eav, Tleaf, p$deltaSv, p$Hdv)
-Vcmax2 <- peaked_arrh(p$Vcmax25, 40000, Tleaf, p$deltaSv, p$Hdv)
-Vcmax3 <- peaked_arrh(p$Vcmax25, 70000, Tleaf, p$deltaSv, p$Hdv)
+
+eav_cable <- 73637.0
+deltaSv_cable <- 486.0
+Hdv_cable <- 149252.0
+
+Vcmax_cable <- peaked_arrh(p$Vcmax25, eav_cable, Tleaf, deltaSv_cable, Hdv_cable)
+
+eav_euc <- 66386.2
+deltaSv_euc <- 639.6
+Hdv_euc <- 200000.0
+Vcmax_euc <- peaked_arrh(p$Vcmax25, eav_euc, Tleaf, deltaSv_euc, Hdv_euc)
 
 
-df <- data.frame(Tleaf, Vcmax, Jmax)
+
+df <- data.frame(Tleaf, Vcmax_cable, Vcmax_euc)
 
 ggplot(df, aes(Tleaf-DEG_2_KELVIN)) +
-  geom_line(aes(y=Vcmax, colour="Vcmax")) +
-  geom_line(aes(y=Vcmax2, colour="Vcmax2")) +
-  geom_line(aes(y=Vcmax3, colour="Vcmax3")) +
+  geom_line(aes(y=Vcmax_cable, colour="LSM")) +
+  geom_line(aes(y=Vcmax_euc, colour="Eucalyptus tereticornis")) +
   ylab(expression("Vcmax" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
   xlab(expression('Temperature ('*~degree*C*')')) +
   theme_classic() +

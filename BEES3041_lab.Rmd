@@ -340,7 +340,7 @@ ggplot(df, aes(Cs)) +
 
 Let's now apply the leaf-level model at a coarser spatial scale and compare our model simulations to measured data. In doing so, try and keep in mind the assumptions we are making. Can we explain any model-data disagreements based on these assumptions?
 
-To apply the leaf-level model at a ~km^2^ scale, we are going to use a big-leaf approximation to scale up our leaf-level model. We are simply going to assume that:
+To apply the leaf-level model at a ~km^2^ scale, we are going to use a big-leaf approximation to scale up our leaf-level model. We are simply going to assume that the absorbed photosynthetically active radiation (APAR):
 
 $$APAR = PAR * fPAR$$
 

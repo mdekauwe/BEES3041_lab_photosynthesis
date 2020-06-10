@@ -448,7 +448,8 @@ colnames(df)<- c("time", "An")
 df_day <- df %>%
   mutate(day=as.Date(time, format="%Y-%m-%d")) %>%
   group_by(day) %>%               # group by the day column
-  summarise(GPP=sum(An * conv))   # calculate the SUM of all the photosynthesis that occurred on each day
+  summarise(GPP=sum(An * conv))   # calculate the SUM of all the photosynthesis 
+                                  # that occurred on each day
                                   # NB unit conversion
 ```
 

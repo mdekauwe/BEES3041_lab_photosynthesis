@@ -1,5 +1,5 @@
 ---
-title: "CLIM3001: Modelling the photosynthetic response to environmental conditions"
+title: "BEES3041: Modelling the photosynthetic response to environmental conditions"
 output:
   pdf_document: default
   html_notebook: default

@@ -290,8 +290,9 @@ ggplot(df, aes(PAR)) +
   ylab(expression("Photosynthesis" ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
   xlab(expression('PAR' ~ (mu * mol ~  m^{-2}  ~  s^{-1}))) +
   #theme_classic(base_size=16) +
-  theme_classic()
-
+  theme_classic() +
+  theme(legend.title=element_blank()) +
+  scale_colour_brewer(palette = "Set2")
 #if (dir.exists("plots") == FALSE) {
 #  dir.create("plots")
 #}
@@ -372,8 +373,10 @@ print(c(lat,lon))
 ```{r}
 t <- ncvar_get(f, "time")
 time_from <- substr(ncatt_get(f, "time")$units, 15, 33)
-time <- as.POSIXct(t, origin=time_from)
+time <- as.POSIXct(t, origin=time_from, tz="GMT")
 head(time)
+#print(time_from)
+
 ```
 
 Now let's extract the data we need to run our leaf model
@@ -404,7 +407,8 @@ Answer:
 ```{r, include=TRUE}
 
 # Just plot the first year
-df <- data.frame(time[1:(48*365)], Tair[1:(48*365)] - DEG_2_KELVIN)
+#df <- data.frame(time[1:(48*365)], Tair[1:(48*365)] - DEG_2_KELVIN)
+df <- data.frame(time[time <= "2002-12-31"], Tair[time <= "2002-12-31"] - DEG_2_KELVIN)
 colnames(df)<- c("time","Tair")
 
 ggplot(df, aes(time, Tair)) +

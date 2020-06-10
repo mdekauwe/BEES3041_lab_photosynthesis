@@ -511,7 +511,7 @@ Our simple model doesn't do that bad a job at simulating GPP at a larger scale, 
 
 **Q. Why do you think the model underestimates GPP during the peak of summer? (hint look at back at the things you assumed)**
 
-**Q. Why do you think the model overestimates GPP after July?**
+**Q. Why do you think the model overestimates GPP after July? (hint what is missing from our model?)**
 
 ***
 
